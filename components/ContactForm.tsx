@@ -5,6 +5,7 @@ import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { ArrowIcon, CheckIcon } from "./icons";
+import { buildContactMailto, CONTACT_EMAIL } from "@/lib/mailto";
 
 /** Contact form — client-side validation + success state, honeypot anti-spam.
  *  Front-end only: wire the submit to a Server Action / Resend before launch. */
@@ -46,9 +47,17 @@ export function ContactForm() {
         >
           Message envoyé !
         </h2>
-        <p style={{ color: "var(--muted)" }}>
-          Merci. Guillaume vous recontacte sous 24 h ouvrées pour échanger sur
-          votre projet.
+        <p style={{ color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
+          Votre messagerie s&apos;ouvre avec votre demande pré-remplie —
+          il ne reste qu&apos;à l&apos;envoyer. Guillaume vous répond sous 24&nbsp;h
+          ouvrées.
+        </p>
+        <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
+          Rien ne s&apos;est ouvert&nbsp;? Écrivez directement à{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "var(--sun-ink)", fontWeight: 600 }}>
+            {CONTACT_EMAIL}
+          </a>
+          .
         </p>
       </div>
     );
@@ -58,7 +67,10 @@ export function ContactForm() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (new FormData(e.currentTarget).get("website")) return; // honeypot
+        const fd = new FormData(e.currentTarget);
+        if (fd.get("website")) return; // honeypot
+        // Pas de backend : on ouvre la messagerie avec la demande pré-remplie.
+        window.location.href = buildContactMailto(fd, "contact");
         setSent(true);
       }}
       style={{ display: "flex", flexDirection: "column", gap: 18 }}

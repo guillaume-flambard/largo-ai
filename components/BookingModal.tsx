@@ -5,6 +5,7 @@ import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { ArrowIcon, CheckIcon, CloseIcon } from "./icons";
+import { buildContactMailto, CONTACT_EMAIL } from "@/lib/mailto";
 
 /** Largo IA — Booking modal. Honeypot anti-spam, client-side success state. */
 export function BookingModal({
@@ -123,9 +124,17 @@ export function BookingModal({
             >
               Demande envoyée !
             </h3>
-            <p style={{ color: "var(--muted)" }}>
-              Merci. Guillaume vous recontacte sous 24 h ouvrées pour caler votre
-              appel découverte.
+            <p style={{ color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
+              Votre messagerie s&apos;ouvre avec votre demande pré-remplie —
+              il ne reste qu&apos;à l&apos;envoyer. Guillaume cale votre créneau
+              sous 24&nbsp;h ouvrées.
+            </p>
+            <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
+              Rien ne s&apos;est ouvert&nbsp;? Écrivez à{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "var(--sun-ink)", fontWeight: 600 }}>
+                {CONTACT_EMAIL}
+              </a>
+              .
             </p>
             <Button variant="ghost" onClick={onClose}>
               Fermer
@@ -135,8 +144,10 @@ export function BookingModal({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const hp = new FormData(e.currentTarget).get("website");
-              if (hp) return; // honeypot caught a bot
+              const fd = new FormData(e.currentTarget);
+              if (fd.get("website")) return; // honeypot caught a bot
+              // Pas de backend : on ouvre la messagerie avec la demande pré-remplie.
+              window.location.href = buildContactMailto(fd, "booking");
               setSent(true);
             }}
             style={{ display: "flex", flexDirection: "column", gap: 18 }}
