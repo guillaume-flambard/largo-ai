@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "programme": "Programme",
+    "aPropos": "The trainer",
+    "contact": "Contact",
+    "reserver": "Book a call"
+  },
+  "programme": {
+    "sommaire": "Contents",
+    "module": "Module",
+    "lecon": "Lesson",
+    "suivant": "Next",
+    "precedent": "Previous",
+    "modeFormateur": "Trainer mode",
+    "dureeMin": "min",
+    "objectifs": "Objectives",
+    "prerequis": "Prerequisites",
+    "pourLeFormateur": "For the trainer"
+  },
+  "langue": {
+    "fr": "Français",
+    "en": "English"
+  }
+}
