@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Largo IA — accueil" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Largo IA" [ref=e5]
+      - button "Menu" [ref=e6] [cursor=pointer]:
+        - img [ref=e7]
+  - main [ref=e8]:
+    - generic [ref=e11]:
+      - generic [ref=e12]: Le formateur
+      - heading "Guillaume Flambard" [level=1] [ref=e13]
+      - paragraph [ref=e14]: Formateur IA pour les TPE et PME. J'aide les dirigeants et leurs équipes à utiliser l'IA générative de façon concrète, utile et conforme — sans jargon.
+    - generic [ref=e20]:
+      - generic [ref=e22]:
+        - generic [ref=e23]: GF
+        - generic [ref=e24]:
+          - generic [ref=e25]: Guillaume Flambard
+          - generic [ref=e26]: Formateur IA · TPE / PME
+      - generic [ref=e27]:
+        - heading "Rendre l'IA simple, utile et conforme" [level=2] [ref=e28]
+        - paragraph [ref=e29]: "La plupart des dirigeants de TPE/PME entendent parler d'IA partout, sans savoir par où commencer ni comment rester dans les clous. Mon métier : transformer ce flou en gestes concrets, sur vos propres cas, en quelques sessions."
+        - paragraph [ref=e30]: "Pas de conférence théorique : on ouvre vos outils, on travaille vos vrais documents, et on repart avec des méthodes réutilisables. Chaque parcours intègre le volet conformité (RGPD, AI Act) pour que vous avanciez l'esprit tranquille."
+        - generic [ref=e31]:
+          - img [ref=e33]
+          - text: Basé entre la France et l'Asie · 100 % visio toute l'année
+    - generic [ref=e37]:
+      - generic [ref=e39]:
+        - generic [ref=e40]: La méthode
+        - heading "Une méthode simple, en trois principes" [level=2] [ref=e42]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - img [ref=e46]
+          - heading "Zéro jargon" [level=3] [ref=e48]
+          - paragraph [ref=e49]: On parle métier, résultats et temps gagné — jamais technique pour la technique.
+        - generic [ref=e50]:
+          - img [ref=e52]
+          - heading "Sur vos vrais cas" [level=3] [ref=e55]
+          - paragraph [ref=e56]: On travaille sur vos documents, vos outils et vos objectifs, pas des exemples génériques.
+        - generic [ref=e57]:
+          - img [ref=e59]
+          - heading "Autonomie durable" [level=3] [ref=e61]
+          - paragraph [ref=e62]: Vous repartez capables de continuer seuls, sans dépendance à un prestataire.
+    - generic [ref=e65]:
+      - heading "Prêt à prendre le large avec votre équipe ?" [level=2] [ref=e66]
+      - paragraph [ref=e67]: Réservez un appel découverte de 30 minutes. On évalue vos besoins, sans engagement.
+      - generic [ref=e68]:
+        - button "Réserver un appel découverte" [ref=e70] [cursor=pointer]:
+          - text: Réserver un appel découverte
+          - img [ref=e71]
+        - link "contact@largo-ia.fr" [ref=e73] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+          - img [ref=e74]
+          - text: contact@largo-ia.fr
+  - contentinfo [ref=e79]:
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - generic [ref=e82]: Restons en contact
+        - paragraph [ref=e83]: Une question, un doute, un projet ? Écrivez à Guillaume — c'est lui qui vous répond, en personne, sous 24 h.
+        - link "contact@largo-ia.fr" [ref=e85] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - img "Largo IA" [ref=e89]
+          - paragraph [ref=e90]: Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, au tempo qui vous va.
+        - generic [ref=e91]:
+          - generic [ref=e92]: Se former
+          - link "Acculturation IA" [ref=e93] [cursor=pointer]:
+            - /url: /programme
+          - link "L'IA au quotidien" [ref=e94] [cursor=pointer]:
+            - /url: /programme
+          - link "Accompagnement dirigeant" [ref=e95] [cursor=pointer]:
+            - /url: /programme
+        - generic [ref=e96]:
+          - generic [ref=e97]: Largo IA
+          - link "Rencontrer Guillaume" [ref=e98] [cursor=pointer]:
+            - /url: /a-propos
+          - link "Le programme" [ref=e99] [cursor=pointer]:
+            - /url: /programme
+          - link "Réserver un appel" [ref=e100] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e101]:
+          - generic [ref=e102]: Le sérieux
+          - link "Mentions légales" [ref=e103] [cursor=pointer]:
+            - /url: /mentions-legales
+          - link "Confidentialité" [ref=e104] [cursor=pointer]:
+            - /url: /confidentialite
+          - link "AI Act & RGPD" [ref=e105] [cursor=pointer]:
+            - /url: /confidentialite
+      - generic [ref=e106]:
+        - generic [ref=e107]: © 2026 Largo IA — contact@largo-ia.fr
+        - generic [ref=e108]: Basé entre la France et l'Asie · 100 % visio toute l'année
+  - button "Open Next.js Dev Tools" [ref=e114] [cursor=pointer]:
+    - img [ref=e115]
+  - alert [ref=e118]

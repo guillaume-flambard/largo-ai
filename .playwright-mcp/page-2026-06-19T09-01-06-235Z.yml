@@ -1,0 +1,241 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Largo IA — accueil" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Largo IA" [ref=e5]
+      - navigation [ref=e6]:
+        - link "Programme" [ref=e7] [cursor=pointer]:
+          - /url: /programme
+        - link "Le formateur" [ref=e8] [cursor=pointer]:
+          - /url: /a-propos
+        - link "Contact" [ref=e9] [cursor=pointer]:
+          - /url: /contact
+        - button "Réserver un appel" [ref=e11] [cursor=pointer]:
+          - text: Réserver un appel
+          - img [ref=e12]
+  - main [ref=e14]:
+    - region "Prenez le large avec l'IA" [ref=e15]:
+      - heading "Prenez le large avec l'IA." [level=1] [ref=e17]:
+        - generic [ref=e19]: Prenez le large
+        - generic [ref=e21]: avec l'IA.
+    - generic [ref=e24]:
+      - generic [ref=e26]:
+        - generic [ref=e27]: Pourquoi Largo IA
+        - heading "Une formation faite pour les petites entreprises" [level=2] [ref=e29]
+        - paragraph [ref=e30]: Pas une conférence théorique. Un accompagnement pragmatique, conçu pour des équipes qui n'ont pas de temps à perdre.
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: "01"
+            - heading "100 % en visio" [level=3] [ref=e35]
+          - paragraph [ref=e36]: Aucun déplacement. Vos équipes se forment depuis leur bureau, partout en France — caméra allumée, en petit groupe.
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]: "02"
+            - heading "Du concret, vite" [level=3] [ref=e40]
+          - paragraph [ref=e41]: On travaille sur vos vrais cas et vos propres outils. Des résultats applicables dès la première semaine, pas dans six mois.
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: "03"
+            - heading "Conforme & sécurisé" [level=3] [ref=e45]
+          - paragraph [ref=e46]: RGPD et AI Act intégrés à chaque parcours. Vos données restent protégées, vos usages restent dans les clous.
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - generic [ref=e49]: "04"
+            - heading "Pensé pour les TPE / PME" [level=3] [ref=e50]
+          - paragraph [ref=e51]: Petits groupes, sans jargon, au rythme d'équipes qui ont un métier à faire tourner et peu de temps à y consacrer.
+    - generic [ref=e54]:
+      - generic [ref=e55]: Notre conviction
+      - paragraph [ref=e57]: Pas besoin d'être technicien, ni de tout changer. Quelques heures, vos propres outils, une méthode claire — et l'IA devient un réflexe utile, pas une source de stress.
+      - generic [ref=e58]:
+        - button "Réserver un appel découverte" [ref=e60] [cursor=pointer]:
+          - text: Réserver un appel découverte
+          - img [ref=e61]
+        - link "Découvrir le programme" [ref=e63] [cursor=pointer]:
+          - /url: /programme
+    - generic [ref=e65]:
+      - generic [ref=e67]:
+        - generic [ref=e68]: Les formations
+        - heading "Trois façons de prendre le large" [level=2] [ref=e70]
+        - paragraph [ref=e71]: De la première sensibilisation à l'accompagnement sur-mesure du dirigeant.
+      - generic [ref=e72]:
+        - generic [ref=e74]:
+          - heading "Acculturation IA" [level=3] [ref=e75]
+          - paragraph [ref=e76]: Demi-journée (3h30) · visio
+          - generic [ref=e78]: dès 690 €
+          - paragraph [ref=e79]: HT / groupe
+          - paragraph [ref=e80]: Sensibiliser, lever les freins
+          - list [ref=e81]:
+            - listitem [ref=e82]:
+              - img [ref=e83]
+              - generic [ref=e85]: Comprendre l'IA sans jargon
+            - listitem [ref=e86]:
+              - img [ref=e87]
+              - generic [ref=e89]: Repérer vos premiers cas d'usage
+            - listitem [ref=e90]:
+              - img [ref=e91]
+              - generic [ref=e93]: Lever les craintes de l'équipe
+          - link "Réserver un appel" [ref=e94] [cursor=pointer]:
+            - /url: "#contact"
+        - generic [ref=e96]:
+          - generic [ref=e98]: Le plus choisi
+          - heading "L'IA au quotidien" [level=3] [ref=e100]
+          - paragraph [ref=e101]: 2 jours (4×3h30) · visio
+          - generic [ref=e103]: dès 1 900 €
+          - paragraph [ref=e104]: HT / groupe
+          - paragraph [ref=e105]: Monter en compétence toute l'équipe
+          - list [ref=e106]:
+            - listitem [ref=e107]:
+              - img [ref=e108]
+              - generic [ref=e110]: Écrire & communiquer plus vite
+            - listitem [ref=e111]:
+              - img [ref=e112]
+              - generic [ref=e114]: Marketing & création de contenu
+            - listitem [ref=e115]:
+              - img [ref=e116]
+              - generic [ref=e118]: Productivité & automatisation
+            - listitem [ref=e119]:
+              - img [ref=e120]
+              - generic [ref=e122]: Sécurité, RGPD & AI Act
+          - link "Réserver un appel" [ref=e123] [cursor=pointer]:
+            - /url: "#contact"
+        - generic [ref=e125]:
+          - heading "Accompagnement dirigeant" [level=3] [ref=e126]
+          - paragraph [ref=e127]: Parcours 4–6 semaines
+          - generic [ref=e129]: sur devis
+          - paragraph [ref=e130]: Transformation + mise en conformité
+          - list [ref=e131]:
+            - listitem [ref=e132]:
+              - img [ref=e133]
+              - generic [ref=e135]: Feuille de route IA sur-mesure
+            - listitem [ref=e136]:
+              - img [ref=e137]
+              - generic [ref=e139]: Sessions individuelles
+            - listitem [ref=e140]:
+              - img [ref=e141]
+              - generic [ref=e143]: Conformité AI Act de l'entreprise
+          - link "En parler" [ref=e144] [cursor=pointer]:
+            - /url: "#contact"
+    - generic [ref=e146]:
+      - generic [ref=e148]:
+        - generic [ref=e149]: Comment ça marche
+        - heading "Du premier appel à l'autonomie" [level=2] [ref=e151]
+      - generic [ref=e152]:
+        - generic [ref=e153]:
+          - generic [ref=e154]: "01"
+          - heading "Appel découverte" [level=3] [ref=e155]
+          - paragraph [ref=e156]: 30 minutes pour comprendre votre activité, vos outils et vos objectifs.
+        - generic [ref=e157]:
+          - generic [ref=e158]: "02"
+          - heading "Programme sur-mesure" [level=3] [ref=e159]
+          - paragraph [ref=e160]: On construit un parcours adapté à vos vrais cas — rien d'inutile.
+        - generic [ref=e161]:
+          - generic [ref=e162]: "03"
+          - heading "Sessions en visio" [level=3] [ref=e163]
+          - paragraph [ref=e164]: En direct, en petits groupes, avec des exercices sur vos documents.
+        - generic [ref=e165]:
+          - generic [ref=e166]: "04"
+          - heading "Suivi & autonomie" [level=3] [ref=e167]
+          - paragraph [ref=e168]: On vérifie que les acquis tiennent dans la durée, sans dépendance.
+    - generic [ref=e171]:
+      - generic [ref=e172]:
+        - generic [ref=e173]: GF
+        - generic [ref=e174]:
+          - generic [ref=e175]: Guillaume Flambard
+          - generic [ref=e176]: Formateur IA · TPE / PME
+      - generic [ref=e177]:
+        - generic [ref=e178]: Le formateur
+        - heading "Une méthode simple, en trois principes" [level=2] [ref=e179]
+        - generic [ref=e180]:
+          - generic [ref=e181]:
+            - img [ref=e183]
+            - generic [ref=e185]: Zéro jargon
+            - generic [ref=e186]: On parle métier, pas technique.
+          - generic [ref=e187]:
+            - img [ref=e189]
+            - generic [ref=e192]: Sur vos vrais cas
+            - generic [ref=e193]: Vos documents, vos outils, vos objectifs.
+          - generic [ref=e194]:
+            - img [ref=e196]
+            - generic [ref=e198]: Autonomie durable
+            - generic [ref=e199]: Vous repartez capables, sans dépendance.
+        - link "En savoir plus sur Guillaume" [ref=e201] [cursor=pointer]:
+          - /url: /a-propos
+    - generic [ref=e203]:
+      - generic [ref=e205]:
+        - generic [ref=e206]: Questions fréquentes
+        - heading "Tout ce que vous vous demandez" [level=2] [ref=e208]
+      - generic [ref=e209]:
+        - group [ref=e210]:
+          - generic "Faut-il des prérequis techniques ?" [ref=e211] [cursor=pointer]:
+            - text: Faut-il des prérequis techniques ?
+            - img [ref=e213]
+          - generic [ref=e215]: Aucun. On part de votre niveau actuel, de vos outils et de vos vrais cas. Si vous savez écrire un email, vous pouvez suivre.
+        - group [ref=e216]:
+          - generic "Comment se déroulent les sessions en visio ?" [ref=e217] [cursor=pointer]:
+            - text: Comment se déroulent les sessions en visio ?
+            - img [ref=e219]
+        - group [ref=e221]:
+          - generic "Les formations sont-elles finançables (OPCO / CPF) ?" [ref=e222] [cursor=pointer]:
+            - text: Les formations sont-elles finançables (OPCO / CPF) ?
+            - img [ref=e224]
+        - group [ref=e226]:
+          - generic "En quoi êtes-vous concernés par l'AI Act ?" [ref=e227] [cursor=pointer]:
+            - text: En quoi êtes-vous concernés par l'AI Act ?
+            - img [ref=e229]
+        - group [ref=e231]:
+          - generic "Quelle est la taille idéale des groupes ?" [ref=e232] [cursor=pointer]:
+            - text: Quelle est la taille idéale des groupes ?
+            - img [ref=e234]
+    - generic [ref=e238]:
+      - heading "Prêt à prendre le large avec votre équipe ?" [level=2] [ref=e239]
+      - paragraph [ref=e240]: Réservez un appel découverte de 30 minutes. On évalue vos besoins, sans engagement.
+      - generic [ref=e241]:
+        - button "Réserver un appel découverte" [ref=e243] [cursor=pointer]:
+          - text: Réserver un appel découverte
+          - img [ref=e244]
+        - link "contact@largo-ia.fr" [ref=e246] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+          - img [ref=e247]
+          - text: contact@largo-ia.fr
+  - contentinfo [ref=e252]:
+    - generic [ref=e253]:
+      - generic [ref=e254]:
+        - generic [ref=e255]: Restons en contact
+        - paragraph [ref=e256]: Une question, un doute, un projet ? Écrivez à Guillaume — c'est lui qui vous répond, en personne, sous 24 h.
+        - link "contact@largo-ia.fr" [ref=e258] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+      - generic [ref=e260]:
+        - generic [ref=e261]:
+          - img "Largo IA" [ref=e262]
+          - paragraph [ref=e263]: Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, au tempo qui vous va.
+        - generic [ref=e264]:
+          - generic [ref=e265]: Se former
+          - link "Acculturation IA" [ref=e266] [cursor=pointer]:
+            - /url: /programme
+          - link "L'IA au quotidien" [ref=e267] [cursor=pointer]:
+            - /url: /programme
+          - link "Accompagnement dirigeant" [ref=e268] [cursor=pointer]:
+            - /url: /programme
+        - generic [ref=e269]:
+          - generic [ref=e270]: Largo IA
+          - link "Rencontrer Guillaume" [ref=e271] [cursor=pointer]:
+            - /url: /a-propos
+          - link "Le programme" [ref=e272] [cursor=pointer]:
+            - /url: /programme
+          - link "Réserver un appel" [ref=e273] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e274]:
+          - generic [ref=e275]: Le sérieux
+          - link "Mentions légales" [ref=e276] [cursor=pointer]:
+            - /url: /mentions-legales
+          - link "Confidentialité" [ref=e277] [cursor=pointer]:
+            - /url: /confidentialite
+          - link "AI Act & RGPD" [ref=e278] [cursor=pointer]:
+            - /url: /confidentialite
+      - generic [ref=e279]:
+        - generic [ref=e280]: © 2026 Largo IA — contact@largo-ia.fr
+        - generic [ref=e281]: Basé entre la France et l'Asie · 100 % visio toute l'année
+  - button "Open Next.js Dev Tools" [ref=e287] [cursor=pointer]:
+    - img [ref=e288]

@@ -1,0 +1,191 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Largo IA — accueil" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Largo IA" [ref=e5]
+      - navigation [ref=e6]:
+        - link "Programme" [ref=e7] [cursor=pointer]:
+          - /url: /programme
+        - link "Le formateur" [ref=e8] [cursor=pointer]:
+          - /url: /a-propos
+        - link "Contact" [ref=e9] [cursor=pointer]:
+          - /url: /contact
+        - button "Réserver un appel" [ref=e11] [cursor=pointer]:
+          - text: Réserver un appel
+          - img [ref=e12]
+  - main [ref=e14]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Le programme
+      - heading "Un parcours IA conçu pour votre métier" [level=1] [ref=e19]
+      - paragraph [ref=e20]: Quatre modules concrets, travaillés sur vos vrais cas et vos propres outils. On adapte la profondeur de chaque module à votre format et à votre équipe.
+    - generic [ref=e25]:
+      - generic [ref=e27]:
+        - generic [ref=e28]: Le contenu
+        - heading "Quatre modules, du fondamental à l'automatisation" [level=2] [ref=e30]
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]: "01"
+          - heading "Fondamentaux & état d'esprit IA" [level=3] [ref=e34]
+          - paragraph [ref=e35]: Comprendre ce que l'IA générative sait (et ne sait pas) faire, et l'utiliser en confiance.
+          - list [ref=e36]:
+            - listitem [ref=e37]:
+              - img [ref=e39]
+              - text: Panorama des outils utiles à votre métier
+            - listitem [ref=e41]:
+              - img [ref=e43]
+              - text: "Bons réflexes : vérifier, recouper, garder la main"
+            - listitem [ref=e45]:
+              - img [ref=e47]
+              - text: "Sécurité, RGPD & AI Act : ce que vous devez savoir"
+        - generic [ref=e49]:
+          - generic [ref=e50]: "02"
+          - heading "Écrire & communiquer" [level=3] [ref=e51]
+          - paragraph [ref=e52]: Gagner du temps sur tout ce qui s'écrit, sans perdre votre ton ni votre exigence.
+          - list [ref=e53]:
+            - listitem [ref=e54]:
+              - img [ref=e56]
+              - text: Emails, comptes-rendus, propositions
+            - listitem [ref=e58]:
+              - img [ref=e60]
+              - text: Reformuler, résumer, traduire
+            - listitem [ref=e62]:
+              - img [ref=e64]
+              - text: Créer vos modèles réutilisables
+        - generic [ref=e66]:
+          - generic [ref=e67]: "03"
+          - heading "Marketing & contenu" [level=3] [ref=e68]
+          - paragraph [ref=e69]: Produire du contenu utile et à votre image, en autonomie.
+          - list [ref=e70]:
+            - listitem [ref=e71]:
+              - img [ref=e73]
+              - text: Posts, articles, pages — du brief au texte final
+            - listitem [ref=e75]:
+              - img [ref=e77]
+              - text: Visuels et idées de campagnes
+            - listitem [ref=e79]:
+              - img [ref=e81]
+              - text: Garder une ligne éditoriale cohérente
+        - generic [ref=e83]:
+          - generic [ref=e84]: "04"
+          - heading "Productivité & automatisation" [level=3] [ref=e85]
+          - paragraph [ref=e86]: Alléger les tâches répétitives et fluidifier vos process.
+          - list [ref=e87]:
+            - listitem [ref=e88]:
+              - img [ref=e90]
+              - text: Automatiser le récurrent du quotidien
+            - listitem [ref=e92]:
+              - img [ref=e94]
+              - text: Connecter l'IA à vos outils
+            - listitem [ref=e96]:
+              - img [ref=e98]
+              - text: Mesurer le temps réellement gagné
+    - generic [ref=e101]:
+      - generic [ref=e103]:
+        - generic [ref=e104]: Les formats
+        - heading "Trois intensités, selon vos objectifs" [level=2] [ref=e106]
+        - paragraph [ref=e107]: "Le même fond, calibré différemment : de la sensibilisation à l'accompagnement sur-mesure du dirigeant."
+      - generic [ref=e108]:
+        - generic [ref=e110]:
+          - heading "Acculturation IA" [level=3] [ref=e111]
+          - paragraph [ref=e112]: Demi-journée (3h30) · visio
+          - generic [ref=e114]: dès 690 €
+          - paragraph [ref=e115]: HT / groupe
+          - paragraph [ref=e116]: Sensibiliser, lever les freins
+          - list [ref=e117]:
+            - listitem [ref=e118]:
+              - img [ref=e119]
+              - generic [ref=e121]: Comprendre l'IA sans jargon
+            - listitem [ref=e122]:
+              - img [ref=e123]
+              - generic [ref=e125]: Repérer vos premiers cas d'usage
+            - listitem [ref=e126]:
+              - img [ref=e127]
+              - generic [ref=e129]: Lever les craintes de l'équipe
+          - link "Réserver un appel" [ref=e130] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e132]:
+          - generic [ref=e134]: Le plus choisi
+          - heading "L'IA au quotidien" [level=3] [ref=e136]
+          - paragraph [ref=e137]: 2 jours (4×3h30) · visio
+          - generic [ref=e139]: dès 1 900 €
+          - paragraph [ref=e140]: HT / groupe
+          - paragraph [ref=e141]: Monter en compétence toute l'équipe
+          - list [ref=e142]:
+            - listitem [ref=e143]:
+              - img [ref=e144]
+              - generic [ref=e146]: Écrire & communiquer plus vite
+            - listitem [ref=e147]:
+              - img [ref=e148]
+              - generic [ref=e150]: Marketing & création de contenu
+            - listitem [ref=e151]:
+              - img [ref=e152]
+              - generic [ref=e154]: Productivité & automatisation
+            - listitem [ref=e155]:
+              - img [ref=e156]
+              - generic [ref=e158]: Sécurité, RGPD & AI Act
+          - link "Réserver un appel" [ref=e159] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e161]:
+          - heading "Accompagnement dirigeant" [level=3] [ref=e162]
+          - paragraph [ref=e163]: Parcours 4–6 semaines
+          - generic [ref=e165]: sur devis
+          - paragraph [ref=e166]: Transformation + mise en conformité
+          - list [ref=e167]:
+            - listitem [ref=e168]:
+              - img [ref=e169]
+              - generic [ref=e171]: Feuille de route IA sur-mesure
+            - listitem [ref=e172]:
+              - img [ref=e173]
+              - generic [ref=e175]: Sessions individuelles
+            - listitem [ref=e176]:
+              - img [ref=e177]
+              - generic [ref=e179]: Conformité AI Act de l'entreprise
+          - link "En parler" [ref=e180] [cursor=pointer]:
+            - /url: /contact
+    - generic [ref=e183]:
+      - heading "Prêt à prendre le large avec votre équipe ?" [level=2] [ref=e184]
+      - paragraph [ref=e185]: Réservez un appel découverte de 30 minutes. On évalue vos besoins, sans engagement.
+      - generic [ref=e186]:
+        - button "Réserver un appel découverte" [ref=e188] [cursor=pointer]:
+          - text: Réserver un appel découverte
+          - img [ref=e189]
+        - link "contact@largo-ia.fr" [ref=e191] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+          - img [ref=e192]
+          - text: contact@largo-ia.fr
+  - contentinfo [ref=e197]:
+    - generic [ref=e198]:
+      - generic [ref=e199]:
+        - generic [ref=e200]:
+          - img "Largo IA" [ref=e201]
+          - paragraph [ref=e202]: Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon.
+        - generic [ref=e203]:
+          - generic [ref=e204]: Formations
+          - link "Acculturation IA" [ref=e205] [cursor=pointer]:
+            - /url: /programme
+          - link "L'IA au quotidien" [ref=e206] [cursor=pointer]:
+            - /url: /programme
+          - link "Accompagnement dirigeant" [ref=e207] [cursor=pointer]:
+            - /url: /programme
+        - generic [ref=e208]:
+          - generic [ref=e209]: Largo IA
+          - link "Le formateur" [ref=e210] [cursor=pointer]:
+            - /url: /a-propos
+          - link "Programme" [ref=e211] [cursor=pointer]:
+            - /url: /programme
+          - link "Contact" [ref=e212] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e213]:
+          - generic [ref=e214]: Légal
+          - link "Mentions légales" [ref=e215] [cursor=pointer]:
+            - /url: /mentions-legales
+          - link "Confidentialité" [ref=e216] [cursor=pointer]:
+            - /url: /confidentialite
+          - link "AI Act & RGPD" [ref=e217] [cursor=pointer]:
+            - /url: /confidentialite
+      - generic [ref=e218]:
+        - generic [ref=e219]: © 2026 Largo IA — contact@largo-ia.fr
+        - generic [ref=e220]: Basé entre la France et l'Asie · 100 % visio toute l'année
+  - button "Open Next.js Dev Tools" [ref=e226] [cursor=pointer]:
+    - img [ref=e227]

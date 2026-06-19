@@ -1,26 +1,755 @@
-@import "tailwindcss";
+/* ============================================================
+   Largo IA — Global stylesheet
+   Concept: « Largo » — le large, au tempo lent.
+   Encre profonde sur papier clair, un seul accent ocre-soleil,
+   beaucoup d'air, la typographie en vedette.
+   Type: Bricolage Grotesque (variable), self-hosted via next/font
+   (app/layout.tsx), exposed through --font-bricolage.
+   Source of truth for the design system: DESIGN.md.
+   ============================================================ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---------------- Brand palette (OKLCH-derived, hex for support) ----- */
+  --ink: #1a222e;          /* oklch(0.205 0.028 255) — texte + fonds encre */
+  --ink-2: #232f3e;        /* encre légèrement plus claire (dégradés) */
+  --ink-soft: #3c4654;     /* oklch(0.34 0.025 255) */
+  --muted-ink: #5b6573;    /* oklch(0.46 0.018 255) — tertiaire, ≥4.5:1 */
+
+  --paper: #fbfcfd;        /* oklch(0.985 0.004 250) — surface principale */
+  --paper-2: #f1f4f7;      /* oklch(0.965 0.006 250) — surface alternée */
+
+  --sun: #e69a3c;          /* oklch(0.74 0.142 66) — accent UNIQUE */
+  --sun-deep: #c87d2b;     /* oklch(0.64 0.135 56) — hover / texte ocre */
+  --sun-wash: #f9efe1;     /* lavis ocre très doux */
+
+  --line: #e3e8ee;         /* filets fins sur papier */
+  --line-strong: #cdd5de;
+
+  --paper-on-ink: #eef2f6;       /* texte clair sur encre */
+  --paper-on-ink-muted: #9aa7b6; /* texte clair secondaire sur encre */
+  --line-on-ink: rgba(238, 242, 246, 0.16);
+
+  /* ---------------- Backward-compatible aliases ----------------
+     Older components reference the previous token names. They now
+     resolve to the new system, so the whole site adopts the identity
+     even where markup isn't hand-rewritten. */
+  --navy: var(--ink);
+  --navy-700: var(--ink-2);
+  --teal: var(--sun);
+  --teal-dark: var(--sun-deep);
+  --teal-050: var(--sun-wash);
+  --teal-light: var(--sun);
+  --green: var(--sun);
+  --green-dark: var(--sun-deep);
+  --green-050: var(--sun-wash);
+  --amber: var(--sun);
+  --amber-dark: var(--sun-deep);
+  --amber-050: var(--sun-wash);
+  --bg: var(--paper);
+  --bg-soft: var(--paper-2);
+
+  --text-heading: var(--ink);
+  --text-body: var(--ink);
+  --text-muted: var(--muted-ink);
+  --text-accent: var(--sun-deep);
+  --text-on-dark: var(--paper-on-ink);
+  --text-on-dark-muted: var(--paper-on-ink-muted);
+
+  --surface-page: var(--paper);
+  --surface-soft: var(--paper-2);
+  --surface-card: var(--paper);
+  --surface-dark: var(--ink);
+  --surface-tint-teal: var(--sun-wash);
+  --surface-tint-green: var(--sun-wash);
+  --surface-tint-amber: var(--sun-wash);
+
+  --border-subtle: var(--line);
+  --border-strong: var(--line-strong);
+
+  --accent: var(--sun);
+  --accent-hover: var(--sun-deep);
+  --cta: var(--sun);
+  --cta-hover: var(--sun-deep);
+
+  --success: var(--sun-deep);
+  --warning: var(--sun-deep);
+  --info: var(--ink-soft);
+
+  --focus-ring: 0 0 0 3px rgba(230, 154, 60, 0.45);
+
+  /* ---------------- Typography ---------------- */
+  --font-sans: var(--font-bricolage), "Bricolage Grotesque", system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-sans);
+
+  --fw-thin: 200;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Fluid modular scale (ratio ≥ 1.25). Display caps at ~5rem. */
+  --fs-display: clamp(2.75rem, 1.5rem + 5.2vw, 5rem);
+  --fs-h1: clamp(2.1rem, 1.4rem + 2.8vw, 3.25rem);
+  --fs-h2: clamp(1.65rem, 1.2rem + 1.9vw, 2.4rem);
+  --fs-h3: clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  --fs-h4: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
+  --fs-lead: clamp(1.15rem, 1.05rem + 0.5vw, 1.375rem);
+  --fs-body: 1.0625rem;
+  --fs-sm: 0.9375rem;
+  --fs-xs: 0.8125rem;
+
+  --lh-tight: 1.03;
+  --lh-snug: 1.12;
+  --lh-normal: 1.6;
+  --lh-relaxed: 1.72;
+
+  --ls-display: -0.025em;
+  --ls-tight: -0.02em;
+  --ls-snug: -0.012em;
+  --ls-normal: 0;
+
+  /* ---------------- Spacing / radius ---------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* The "largo" rhythm: generous, varied section spacing. */
+  --section-y: clamp(5rem, 3.5rem + 6vw, 8.5rem);
+  --section-y-sm: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+  --section-y-lg: clamp(6rem, 4rem + 8vw, 11rem);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  /* Shadows are nearly absent by design — structure comes from rules,
+     not from decorative drop shadows. */
+  --shadow-xs: 0 1px 2px rgba(26, 34, 46, 0.04);
+  --shadow-sm: 0 1px 2px rgba(26, 34, 46, 0.05);
+  --shadow-md: 0 10px 30px rgba(26, 34, 46, 0.07);
+  --shadow-lg: 0 24px 60px rgba(26, 34, 46, 0.1);
+  --shadow-cta: none;
+  --shadow-teal: none;
+
+  --container: 1120px;
+  --container-narrow: 720px;
+  --gutter: clamp(20px, 5vw, 40px);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);       /* ease-out-expo-ish */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur: 280ms;
+  --dur-slow: 560ms;
+
+  /* Semantic z-index scale */
+  --z-sticky: 50;
+  --z-modal-backdrop: 100;
+  --z-modal: 110;
+  --z-toast: 120;
+  --z-cursor: 200;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---------------- Base resets ---------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: var(--fw-light);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-snug);
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--sun-deep);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease-out);
+}
+a:hover {
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--sun);
+  color: var(--ink);
+}
+
+/* ---------------- Layout helpers ---------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+.section-y {
+  padding-block: var(--section-y);
+}
+.section {
+  padding-block: var(--section-y);
+}
+.section--sm {
+  padding-block: var(--section-y-sm);
+}
+.section--lg {
+  padding-block: var(--section-y-lg);
+}
+
+/* Encre full-bleed sections — les temps forts du largo. */
+.section--ink {
+  background: var(--ink);
+  color: var(--paper-on-ink);
+}
+.section--ink h1,
+.section--ink h2,
+.section--ink h3,
+.section--ink h4 {
+  color: var(--paper-on-ink);
+}
+.section--paper2 {
+  background: var(--paper-2);
+}
+
+/* ---------------- Typographic primitives ---------------- */
+.display {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-thin);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-tight);
+}
+.lead {
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-relaxed);
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+.section--ink .lead {
+  color: var(--paper-on-ink-muted);
+}
+.measure {
+  max-width: 68ch;
+}
+
+/* Kicker: a single, restrained label — NOT an uppercase tracked eyebrow.
+   A short ocre rule + sentence-case word. Use sparingly, never on every
+   section. */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-snug);
+  color: var(--sun-deep);
+}
+.kicker::before {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--sun);
+  border-radius: 2px;
+}
+.section--ink .kicker {
+  color: var(--sun);
+}
+
+/* Legacy eyebrow — neutralised to the kicker look so old markup stays
+   on-brand instead of shipping the banned tracked-caps eyebrow. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-snug);
+  text-transform: none;
+  color: var(--sun-deep);
+}
+
+/* Thin divider rule */
+.rule {
+  border: 0;
+  height: 1px;
+  background: var(--line);
+  margin: 0;
+}
+.section--ink .rule {
+  background: var(--line-on-ink);
+}
+
+/* ============================================================
+   Horizon motif — un filet d'horizon + un soleil ocre.
+   Réutilisé : hero, séparateurs, CTA final.
+   ============================================================ */
+.horizon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+.section--ink .horizon {
+  background: var(--line-on-ink);
+}
+.horizon__sun {
+  position: absolute;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--sun);
+  transform: translateY(-50%);
+  top: 50%;
+}
+
+/* ============================================================
+   Button — plat, sans ghost-card.
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  letter-spacing: var(--ls-snug);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--dur) var(--ease-out),
+    background var(--dur) var(--ease-out), color var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out);
+}
+
+.btn--sm {
+  padding: 10px 18px;
+  font-size: var(--fs-sm);
+  gap: 8px;
+}
+.btn--md {
+  padding: 14px 24px;
+  font-size: var(--fs-body);
+  gap: 10px;
+}
+.btn--lg {
+  padding: 17px 30px;
+  font-size: var(--fs-lead);
+  gap: 12px;
+}
+.btn--full {
+  width: 100%;
+}
+
+/* Primaire — aplat ocre, texte encre. L'unique geste de couleur forte. */
+.btn--primary {
+  background: var(--sun);
+  color: var(--ink);
+}
+.btn--primary:hover {
+  background: var(--sun-deep);
+  color: var(--ink);
+}
+
+/* Accent (alias) = primaire dans le système à une couleur. */
+.btn--accent {
+  background: var(--sun);
+  color: var(--ink);
+}
+.btn--accent:hover {
+  background: var(--sun-deep);
+}
+
+/* Secondaire — contour fin encre, sur papier. */
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.btn--ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* Encre — pilule sombre, pour les fonds clairs/colorés (ex. aplat ocre). */
+.btn--ink {
+  background: var(--ink);
+  color: var(--paper-on-ink);
+}
+.btn--ink:hover {
+  background: var(--ink-2);
+  color: var(--paper-on-ink);
+}
+
+/* Sur fond encre. */
+.btn--light {
+  background: transparent;
+  color: var(--paper-on-ink);
+  border-color: var(--line-on-ink);
+}
+.btn--light:hover {
+  background: var(--paper-on-ink);
+  color: var(--ink);
+  border-color: var(--paper-on-ink);
+}
+
+.btn:not(.btn--disabled):hover {
+  transform: translateY(-2px);
+}
+.btn:not(.btn--disabled):active {
+  transform: translateY(0) scale(0.99);
+}
+.btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Lien souligné — secondaire discret, voix « praticien ». */
+.link-underline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+  border-bottom: 2px solid var(--sun);
+  padding-bottom: 2px;
+  transition: gap var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.link-underline:hover {
+  gap: 12px;
+  color: var(--sun-deep);
+}
+.section--ink .link-underline {
+  color: var(--paper-on-ink);
+}
+.section--ink .link-underline:hover {
+  color: var(--sun);
+}
+
+/* ============================================================
+   Card (used sparingly — formations, trainer)
+   ============================================================ */
+.card {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition: transform var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out);
+}
+.card--hover:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+}
+
+/* ============================================================
+   Offer column — plate, filet fin ; la mise en avant se fait par
+   un bloc encre drenché, pas par une ombre.
+   ============================================================ */
+.offer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 3vw, 36px) clamp(22px, 2.5vw, 30px);
+  transition: transform var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out);
+}
+.offer:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+}
+.offer--featured {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-on-ink);
+}
+.offer--featured h3,
+.offer--featured .offer__price {
+  color: var(--paper-on-ink);
+}
+
+/* ============================================================
+   Editorial row — remplace les grilles de cartes identiques.
+   ============================================================ */
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: clamp(16px, 4vw, 64px);
+  padding-block: clamp(28px, 4vw, 44px);
+  border-top: 1px solid var(--line);
+  align-items: baseline;
+}
+.row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.section--ink .row {
+  border-color: var(--line-on-ink);
+}
+.row__index {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--sun-deep);
+  letter-spacing: var(--ls-snug);
+}
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* ============================================================
+   Input
+   ============================================================ */
+.field {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.field--input {
+  padding: 13px 16px;
+}
+.field--textarea {
+  padding: 14px 16px;
+  min-height: 130px;
+  resize: vertical;
+}
+.field::placeholder {
+  color: var(--muted-ink);
+}
+.field:focus {
+  border-color: var(--sun);
+  box-shadow: var(--focus-ring);
+}
+
+/* ============================================================
+   FAQ accordion
+   ============================================================ */
+.faq-chevron {
+  flex: 0 0 auto;
+  display: inline-flex;
+  transition: transform var(--dur) var(--ease-out);
+  color: var(--sun-deep);
+}
+details[open] > summary .faq-chevron {
+  transform: rotate(180deg);
+}
+summary {
+  list-style: none;
+  cursor: pointer;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ============================================================
+   Header nav links
+   ============================================================ */
+.nav-link {
+  position: relative;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--ink);
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 2px;
+  width: 0;
+  background: var(--sun);
+  border-radius: 2px;
+  transition: width var(--dur) var(--ease-out);
+}
+.nav-link:hover {
+  color: var(--ink);
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ============================================================
+   Responsive grids (legacy class hooks kept working)
+   ============================================================ */
+@media (max-width: 880px) {
+  .nav-desktop {
+    display: none !important;
+  }
+  .nav-toggle {
+    display: inline-flex !important;
+  }
+  .grid-hero,
+  .grid-trainer {
+    grid-template-columns: 1fr !important;
+  }
+  .grid-atouts,
+  .grid-offers,
+  .grid-steps,
+  .grid-footer {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .grid-principles {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+}
+@media (max-width: 560px) {
+  .grid-atouts,
+  .grid-offers,
+  .grid-steps,
+  .grid-footer,
+  .grid-principles {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   Prose (legal / long-form pages)
+   ============================================================ */
+.prose {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+}
+.prose h2 {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+  letter-spacing: var(--ls-tight);
+  margin-top: 44px;
+  margin-bottom: 12px;
+}
+.prose p {
+  margin-bottom: 16px;
+  color: var(--ink-soft);
+  line-height: var(--lh-relaxed);
+}
+.prose ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--ink-soft);
+}
+.prose li {
+  margin-bottom: 8px;
+}
+.prose a {
+  color: var(--sun-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   Custom cursor (kept; additive ring)
+   ============================================================ */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 1.5px solid var(--sun);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  will-change: transform;
+  visibility: hidden;
+}
+
+/* ============================================================
+   Reveal — enhances an already-visible default (never gates content).
+   ============================================================ */
+.reveal {
+  opacity: 1;
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover,
+  .card--hover:hover,
+  .offer:hover,
+  .offer--featured:hover {
+    transform: none !important;
+  }
 }

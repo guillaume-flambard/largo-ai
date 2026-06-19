@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Brand marks are inline SVGs served straight from /public/brand. */
 };
 
 export default nextConfig;

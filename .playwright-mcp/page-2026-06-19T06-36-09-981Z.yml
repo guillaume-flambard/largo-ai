@@ -1,0 +1,111 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Largo IA — accueil" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Largo IA" [ref=e5]
+      - navigation [ref=e6]:
+        - link "Programme" [ref=e7] [cursor=pointer]:
+          - /url: /programme
+        - link "Le formateur" [ref=e8] [cursor=pointer]:
+          - /url: /a-propos
+        - link "Contact" [ref=e9] [cursor=pointer]:
+          - /url: /contact
+        - button "Réserver un appel" [ref=e11] [cursor=pointer]:
+          - text: Réserver un appel
+          - img [ref=e12]
+  - main [ref=e14]:
+    - generic [ref=e17]:
+      - generic [ref=e18]: Contact
+      - heading "Parlons de votre projet" [level=1] [ref=e19]
+      - paragraph [ref=e20]: Réservez un appel découverte ou envoyez-nous un message. Réponse sous 24 h ouvrées, sans engagement.
+    - generic [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]: Nom *
+          - textbox "Nom *" [ref=e31]:
+            - /placeholder: Votre nom
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Entreprise
+            - textbox "Entreprise" [ref=e35]:
+              - /placeholder: Votre société
+          - generic [ref=e36]:
+            - generic [ref=e37]: Taille d'équipe
+            - textbox "Taille d'équipe" [ref=e38]:
+              - /placeholder: ex. 8
+        - generic [ref=e39]:
+          - generic [ref=e40]: Email professionnel *
+          - textbox "Email professionnel *" [ref=e41]:
+            - /placeholder: vous@entreprise.fr
+        - generic [ref=e42]:
+          - generic [ref=e43]: Votre besoin
+          - textbox "Votre besoin" [ref=e44]:
+            - /placeholder: "En quelques mots : vos objectifs, votre équipe, vos outils…"
+        - textbox [ref=e45]
+        - button "Envoyer ma demande" [ref=e46] [cursor=pointer]:
+          - text: Envoyer ma demande
+          - img [ref=e47]
+        - paragraph [ref=e49]: Vos données ne servent qu'à vous recontacter (RGPD). Aucune newsletter, aucun partage.
+        - generic [ref=e50]: Réponse sous 24 h ouvrées
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - generic [ref=e54]: Comment ça se passe
+          - heading "Trois étapes, sans pression" [level=2] [ref=e55]
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: "1"
+            - generic [ref=e59]:
+              - generic [ref=e60]: Vous nous écrivez
+              - generic [ref=e61]: Quelques mots sur votre activité, votre équipe et vos objectifs.
+          - generic [ref=e62]:
+            - generic [ref=e63]: "2"
+            - generic [ref=e64]:
+              - generic [ref=e65]: Appel découverte (30 min)
+              - generic [ref=e66]: On clarifie vos besoins et on vérifie que l'on peut vous aider.
+          - generic [ref=e67]:
+            - generic [ref=e68]: "3"
+            - generic [ref=e69]:
+              - generic [ref=e70]: Proposition sur-mesure
+              - generic [ref=e71]: Un programme et un format adaptés, avec un devis clair.
+        - link "contact@largo-ia.fr" [ref=e72] [cursor=pointer]:
+          - /url: mailto:contact@largo-ia.fr
+          - img [ref=e73]
+          - text: contact@largo-ia.fr
+        - generic [ref=e75]:
+          - strong [ref=e76]: Prise de rendez-vous —
+          - text: "l'agenda de réservation (Cal.com) s'intègre ici. En attendant, écrivez-nous : on vous propose un créneau rapidement."
+  - contentinfo [ref=e77]:
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - img "Largo IA" [ref=e81]
+          - paragraph [ref=e82]: Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon.
+        - generic [ref=e83]:
+          - generic [ref=e84]: Formations
+          - link "Acculturation IA" [ref=e85] [cursor=pointer]:
+            - /url: /programme
+          - link "L'IA au quotidien" [ref=e86] [cursor=pointer]:
+            - /url: /programme
+          - link "Accompagnement dirigeant" [ref=e87] [cursor=pointer]:
+            - /url: /programme
+        - generic [ref=e88]:
+          - generic [ref=e89]: Largo IA
+          - link "Le formateur" [ref=e90] [cursor=pointer]:
+            - /url: /a-propos
+          - link "Programme" [ref=e91] [cursor=pointer]:
+            - /url: /programme
+          - link "Contact" [ref=e92] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e93]:
+          - generic [ref=e94]: Légal
+          - link "Mentions légales" [ref=e95] [cursor=pointer]:
+            - /url: /mentions-legales
+          - link "Confidentialité" [ref=e96] [cursor=pointer]:
+            - /url: /confidentialite
+          - link "AI Act & RGPD" [ref=e97] [cursor=pointer]:
+            - /url: /confidentialite
+      - generic [ref=e98]:
+        - generic [ref=e99]: © 2026 Largo IA — contact@largo-ia.fr
+        - generic [ref=e100]: Basé entre la France et l'Asie · 100 % visio toute l'année
+  - alert [ref=e101]
