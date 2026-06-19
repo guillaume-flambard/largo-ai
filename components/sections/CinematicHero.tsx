@@ -146,7 +146,7 @@ export function CinematicHero() {
               height: "clamp(52px, 6vw, 88px)",
               borderRadius: "999px",
               background: "var(--sun)",
-              boxShadow: "0 -6px 60px 6px rgba(230,154,60,0.16)",
+              boxShadow: "0 0 26px 0 rgba(230,154,60,0.12)",
             }}
           />
           <div

@@ -97,8 +97,8 @@ export default function ContactPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 10,
-                  fontWeight: 700,
-                  color: "var(--teal-dark)",
+                  fontWeight: 600,
+                  color: "var(--sun-ink)",
                 }}
               >
                 <PhoneIcon width={20} height={20} />

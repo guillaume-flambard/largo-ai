@@ -116,8 +116,9 @@ export function BookingModal({
             <h3
               style={{
                 fontSize: "var(--fs-h3)",
-                fontWeight: "var(--fw-extrabold)",
-                color: "var(--navy)",
+                fontWeight: "var(--fw-light)",
+                letterSpacing: "var(--ls-display)",
+                color: "var(--ink)",
               }}
             >
               Demande envoyée !
@@ -147,8 +148,9 @@ export function BookingModal({
               <h3
                 style={{
                   fontSize: "var(--fs-h3)",
-                  fontWeight: "var(--fw-extrabold)",
-                  color: "var(--navy)",
+                  fontWeight: "var(--fw-light)",
+                  letterSpacing: "var(--ls-display)",
+                  color: "var(--ink)",
                   marginTop: 8,
                 }}
               >
