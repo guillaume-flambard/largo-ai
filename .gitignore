@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# QA / browser automation artifacts (screenshots, snapshots, logs)
+.playwright-mcp/
+/*.png
+/*.jpeg
+/*.log

@@ -31,7 +31,7 @@ export function OfferCard({
   const heading = featured ? "var(--paper-on-ink)" : "var(--ink)";
   const muted = featured ? "var(--paper-on-ink-muted)" : "var(--muted-ink)";
   const body = featured ? "var(--paper-on-ink)" : "var(--ink-soft)";
-  const accent = featured ? "var(--sun)" : "var(--sun-deep)";
+  const accent = featured ? "var(--sun)" : "var(--sun-ink)";
 
   return (
     <div className={featured ? "offer offer--featured" : "offer"}>

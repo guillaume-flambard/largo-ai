@@ -4,6 +4,7 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { Offers } from "@/components/sections/Offers";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { TrainerTeaser } from "@/components/sections/TrainerTeaser";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { FinalCta } from "@/components/sections/FinalCta";
 
@@ -33,6 +34,7 @@ export default function Home() {
       <Offers />
       <HowItWorks />
       <TrainerTeaser />
+      <Testimonials />
       <Faq />
       <FinalCta />
     </>

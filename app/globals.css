@@ -18,8 +18,9 @@
   --paper: #fbfcfd;        /* oklch(0.985 0.004 250) — surface principale */
   --paper-2: #f1f4f7;      /* oklch(0.965 0.006 250) — surface alternée */
 
-  --sun: #e69a3c;          /* oklch(0.74 0.142 66) — accent UNIQUE */
-  --sun-deep: #c87d2b;     /* oklch(0.64 0.135 56) — hover / texte ocre */
+  --sun: #e69a3c;          /* oklch(0.74 0.142 66) — accent UNIQUE : aplats, filets, soleil */
+  --sun-deep: #c87d2b;     /* oklch(0.64 0.135 56) — hover & aplats ocre foncé (non-texte) */
+  --sun-ink: #9c5e1a;      /* ocre EN TEXTE sur fond clair — 5.07:1 papier / 4.72 papier-2 (AA) */
   --sun-wash: #f9efe1;     /* lavis ocre très doux */
 
   --line: #e3e8ee;         /* filets fins sur papier */
@@ -51,7 +52,7 @@
   --text-heading: var(--ink);
   --text-body: var(--ink);
   --text-muted: var(--muted-ink);
-  --text-accent: var(--sun-deep);
+  --text-accent: var(--sun-ink);
   --text-on-dark: var(--paper-on-ink);
   --text-on-dark-muted: var(--paper-on-ink-muted);
 
@@ -207,7 +208,7 @@ p {
 }
 
 a {
-  color: var(--sun-deep);
+  color: var(--sun-ink);
   text-decoration: none;
   transition: color var(--dur) var(--ease-out);
 }
@@ -216,9 +217,13 @@ a:hover {
 }
 
 :focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  outline: 2px solid var(--sun-ink); /* 5.07:1 sur papier — visible (WCAG 2.4.11) */
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring); /* halo ocre doux, décoratif */
   border-radius: var(--radius-sm);
+}
+.section--ink :focus-visible {
+  outline-color: var(--sun); /* 6.90:1 sur encre */
 }
 
 ::selection {
@@ -296,7 +301,7 @@ a:hover {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-snug);
-  color: var(--sun-deep);
+  color: var(--sun-ink);
 }
 .kicker::before {
   content: "";
@@ -320,7 +325,7 @@ a:hover {
   font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-snug);
   text-transform: none;
-  color: var(--sun-deep);
+  color: var(--sun-ink);
 }
 
 /* Thin divider rule */
@@ -477,7 +482,7 @@ a:hover {
 }
 .link-underline:hover {
   gap: 12px;
-  color: var(--sun-deep);
+  color: var(--sun-ink);
 }
 .section--ink .link-underline {
   color: var(--paper-on-ink);
@@ -555,8 +560,11 @@ a:hover {
 .row__index {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
-  color: var(--sun-deep);
+  color: var(--sun-ink);
   letter-spacing: var(--ls-snug);
+}
+.section--ink .row__index {
+  color: var(--sun);
 }
 @media (max-width: 720px) {
   .row {
@@ -603,7 +611,7 @@ a:hover {
   flex: 0 0 auto;
   display: inline-flex;
   transition: transform var(--dur) var(--ease-out);
-  color: var(--sun-deep);
+  color: var(--sun-ink);
 }
 details[open] > summary .faq-chevron {
   transform: rotate(180deg);
@@ -706,7 +714,7 @@ summary::-webkit-details-marker {
   margin-bottom: 8px;
 }
 .prose a {
-  color: var(--sun-deep);
+  color: var(--sun-ink);
   text-decoration: underline;
   text-underline-offset: 3px;
 }

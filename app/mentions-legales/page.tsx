@@ -20,8 +20,8 @@ export default function MentionsLegalesPage() {
           <div className="prose">
             <p>
               <em>
-                Modèle à compléter avant mise en ligne (raison sociale, statut,
-                SIRET, adresse, hébergeur).
+                Modèle à compléter avant mise en ligne. Les champs marqués « à
+                compléter » attendent les informations officielles de l&apos;éditeur.
               </em>
             </p>
 
@@ -30,9 +30,25 @@ export default function MentionsLegalesPage() {
               Largo IA — Guillaume Flambard, organisme de formation à l&apos;IA
               générative pour les TPE et PME.
               <br />
-              Email : <a href="mailto:contact@largo-ia.fr">contact@largo-ia.fr</a>
+              Forme juridique : <em>à compléter</em> (ex. entreprise individuelle,
+              SASU…).
               <br />
-              Statut juridique, SIRET et adresse : <em>à compléter.</em>
+              SIRET : <em>à compléter.</em>
+              <br />
+              Numéro de TVA intracommunautaire : <em>à compléter</em> (ou « non
+              applicable, TVA non applicable — art. 293 B du CGI » le cas échéant).
+              <br />
+              Siège : <em>à compléter.</em>
+              <br />
+              Email : <a href="mailto:contact@largo-ia.fr">contact@largo-ia.fr</a>
+            </p>
+
+            <h2>Activité de formation</h2>
+            <p>
+              Déclaration d&apos;activité enregistrée sous le numéro{" "}
+              <em>à compléter</em> auprès du préfet de région <em>à compléter.</em>
+              <br />
+              Cet enregistrement ne vaut pas agrément de l&apos;État.
             </p>
 
             <h2>Directeur de la publication</h2>
@@ -56,6 +72,15 @@ export default function MentionsLegalesPage() {
               Largo IA s&apos;efforce de fournir des informations exactes et à
               jour, sans pouvoir en garantir l&apos;exhaustivité. Les tarifs
               indiqués sont donnés à titre indicatif (HT) et confirmés sur devis.
+            </p>
+
+            <h2>Données personnelles</h2>
+            <p>
+              Le traitement de vos données est décrit dans notre{" "}
+              <a href="/confidentialite">politique de confidentialité</a>.
+              Conformément au RGPD, vous disposez d&apos;un droit d&apos;accès, de
+              rectification et de suppression de vos données, exerçable à{" "}
+              <a href="mailto:contact@largo-ia.fr">contact@largo-ia.fr</a>.
             </p>
 
             <h2>Contact</h2>

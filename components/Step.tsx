@@ -29,7 +29,7 @@ export function Step({
           fontWeight: "var(--fw-thin)",
           letterSpacing: "var(--ls-display)",
           lineHeight: 1,
-          color: "var(--sun-deep)",
+          color: "var(--sun-ink)",
         }}
       >
         {String(number).padStart(2, "0")}

@@ -97,7 +97,7 @@ export default function ProgrammePage() {
                     fontFamily: "var(--font-display)",
                     fontSize: "var(--fs-h2)",
                     fontWeight: "var(--fw-thin)",
-                    color: "var(--sun-deep)",
+                    color: "var(--sun-ink)",
                     letterSpacing: "var(--ls-display)",
                   }}
                 >
@@ -226,6 +226,28 @@ export default function ProgrammePage() {
                 ]}
               />
             </TiltCard>
+          </Reveal>
+
+          <Reveal>
+            <p
+              style={{
+                marginTop: 40,
+                paddingTop: 24,
+                borderTop: "1px solid var(--line)",
+                fontSize: "var(--fs-sm)",
+                lineHeight: "var(--lh-relaxed)",
+                color: "var(--muted)",
+                maxWidth: "64ch",
+              }}
+            >
+              <strong style={{ color: "var(--ink)", fontWeight: "var(--fw-semibold)" }}>
+                Financement —
+              </strong>{" "}
+              La certification Qualiopi, qui ouvre le financement par votre OPCO,
+              est en cours d&apos;obtention. Parlons de votre situation lors de
+              l&apos;appel découverte : on vous oriente vers les dispositifs
+              mobilisables.
+            </p>
           </Reveal>
         </div>
       </section>

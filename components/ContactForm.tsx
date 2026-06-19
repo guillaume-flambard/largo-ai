@@ -29,7 +29,7 @@ export function ContactForm() {
             height: 56,
             borderRadius: "var(--radius-pill)",
             background: "var(--sun-wash)",
-            color: "var(--sun-deep)",
+            color: "var(--sun-ink)",
             alignItems: "center",
             justifyContent: "center",
           }}

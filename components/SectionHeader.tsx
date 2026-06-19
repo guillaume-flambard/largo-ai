@@ -37,7 +37,7 @@ export function SectionHeader({
             fontSize: "var(--fs-sm)",
             fontWeight: "var(--fw-semibold)",
             letterSpacing: "var(--ls-snug)",
-            color: dark ? "var(--sun)" : "var(--sun-deep)",
+            color: dark ? "var(--sun)" : "var(--sun-ink)",
           }}
         >
           <span

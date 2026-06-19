@@ -113,7 +113,7 @@ export default function AProposPage() {
                   width: "fit-content",
                 }}
               >
-                <span style={{ color: "var(--sun-deep)", display: "inline-flex" }}>
+                <span style={{ color: "var(--sun-ink)", display: "inline-flex" }}>
                   <VideoIcon width={22} height={22} />
                 </span>
                 Basé entre la France et l&apos;Asie · 100 % visio toute l&apos;année
@@ -152,7 +152,7 @@ export default function AProposPage() {
                   borderTop: "1px solid var(--line-strong)",
                 }}
               >
-                <span style={{ color: "var(--sun-deep)" }}>{p.icon}</span>
+                <span style={{ color: "var(--sun-ink)" }}>{p.icon}</span>
                 <h3
                   style={{
                     fontFamily: "var(--font-display)",

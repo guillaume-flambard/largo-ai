@@ -13,8 +13,8 @@ const items = [
     a: "En direct, en petits groupes, avec partage d'écran et exercices pratiques sur vos propres documents. Un support est fourni après chaque session.",
   },
   {
-    q: "Les formations sont-elles finançables (OPCO / CPF) ?",
-    a: "Nous vous orientons selon votre situation. La certification Qualiopi, utile au financement OPCO, est en cours — parlons-en lors de l'appel découverte.",
+    q: "Les formations sont-elles finançables par mon OPCO ?",
+    a: "La certification Qualiopi — celle qui ouvre le financement par votre OPCO — est en cours d'obtention. En attendant, on regarde ensemble votre situation lors de l'appel découverte et on vous indique les démarches. Dès la certification obtenue, nos parcours sont finançables OPCO.",
   },
   {
     q: "En quoi êtes-vous concernés par l'AI Act ?",

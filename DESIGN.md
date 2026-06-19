@@ -20,8 +20,9 @@ Tokens (OKLCH source of truth, hex fallback in `globals.css`):
 | `--ink`         | oklch(0.205 0.028 255)    | Texte principal + fonds sombres « encre » (remplace le navy) |
 | `--ink-soft`    | oklch(0.34 0.025 255)     | Texte secondaire sur papier |
 | `--muted`       | oklch(0.46 0.018 255)     | Texte tertiaire (≥4.5:1 sur papier) |
-| `--sun`         | oklch(0.74 0.142 66)      | **Accent unique** : CTA, liens, filet d'horizon, soleil |
-| `--sun-deep`    | oklch(0.64 0.135 56)      | Hover / texte ocre sur papier (contraste) |
+| `--sun`         | oklch(0.74 0.142 66)      | **Accent unique** : aplats CTA, filet d'horizon, soleil, ocre sur fond encre |
+| `--sun-deep`    | oklch(0.64 0.135 56)      | Hover des aplats ocre, marques graphiques (non-texte) — ne pas utiliser en texte sur papier |
+| `--sun-ink`     | #9c5e1a                   | **Ocre EN TEXTE sur fond clair** (kicker, index, ligne audience, liens, chevrons FAQ, prose) — 5.07:1 papier / 4.72 papier-2, AA |
 | `--line`        | oklch(0.90 0.006 250)     | Filets fins sur papier |
 | `--paper-on-ink`| oklch(0.96 0.006 250)     | Texte clair sur encre |
 
