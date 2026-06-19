@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { OfferCard } from "@/components/OfferCard";
 import { SectionHeader } from "@/components/SectionHeader";
-import { FinalCta } from "@/components/sections/FinalCta";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { CheckIcon } from "@/components/icons";
@@ -251,8 +250,6 @@ export default function ProgrammePage() {
           </Reveal>
         </div>
       </section>
-
-      <FinalCta />
     </>
   );
 }

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { ReserveButton } from "./ReserveButton";
+import { Magnetic } from "./motion/Magnetic";
+import { ArrowIcon } from "./icons";
 
 const cols = [
   {
@@ -34,13 +37,14 @@ export function SiteFooter() {
       style={{ paddingTop: "var(--section-y)" }}
     >
       <div className="container">
-        {/* Voix — une invitation personnelle, pas un formulaire. */}
-        <div style={{ maxWidth: "30ch", marginBottom: "clamp(48px, 6vw, 80px)" }}>
+        {/* Voix — une invitation personnelle qui porte la clôture, et l'action. */}
+        <div style={{ marginBottom: "clamp(48px, 6vw, 80px)" }}>
           <span className="kicker" style={{ marginBottom: 20, display: "inline-flex" }}>
             Restons en contact
           </span>
           <p
             style={{
+              maxWidth: "30ch",
               fontFamily: "var(--font-display)",
               fontSize: "var(--fs-h2)",
               fontWeight: "var(--fw-light)",
@@ -55,7 +59,20 @@ export function SiteFooter() {
             </span>
             , en personne, sous 24&nbsp;h.
           </p>
-          <div style={{ marginTop: 28 }}>
+          <div
+            style={{
+              marginTop: 32,
+              display: "flex",
+              gap: 20,
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <Magnetic>
+              <ReserveButton variant="primary" iconRight={<ArrowIcon />}>
+                Réserver un appel découverte
+              </ReserveButton>
+            </Magnetic>
             <a href="mailto:contact@largo-ia.fr" className="link-underline">
               contact@largo-ia.fr
             </a>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
-import { FinalCta } from "@/components/sections/FinalCta";
 import { Reveal } from "@/components/motion/Reveal";
 import { CompassIcon, MapIcon, SparkleIcon, VideoIcon } from "@/components/icons";
 
@@ -171,8 +170,6 @@ export default function AProposPage() {
           </Reveal>
         </div>
       </section>
-
-      <FinalCta />
     </>
   );
 }

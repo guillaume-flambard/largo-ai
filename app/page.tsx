@@ -6,7 +6,6 @@ import { HowItWorks } from "@/components/sections/HowItWorks";
 import { TrainerTeaser } from "@/components/sections/TrainerTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
-import { FinalCta } from "@/components/sections/FinalCta";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -36,7 +35,6 @@ export default function Home() {
       <TrainerTeaser />
       <Testimonials />
       <Faq />
-      <FinalCta />
     </>
   );
 }
