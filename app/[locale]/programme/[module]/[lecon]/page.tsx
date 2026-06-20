@@ -3,6 +3,7 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import { LocaleLink } from "@/components/LocaleLink";
 import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-blocks";
 import { Formateur } from "@/components/learn/Formateur";
+import { RoleToggle } from "@/components/learn/RoleToggle";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
 import {
@@ -64,9 +65,21 @@ export default async function LessonPage({
         >
           {lesson.meta.title}
         </h1>
-        <p style={{ marginTop: 12, fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
-          {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.meta.level}
-        </p>
+        <div
+          style={{
+            marginTop: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 16,
+            flexWrap: "wrap",
+          }}
+        >
+          <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
+            {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.meta.level}
+          </p>
+          <RoleToggle label={dict.programme.modeFormateur} />
+        </div>
 
         {/* Objectifs */}
         {lesson.meta.objectives.length > 0 && (

@@ -70,7 +70,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={bricolage.variable}>
       <body>
-        <RoleProvider formateur={false}>
+        <RoleProvider>
           <BookingProvider>
             <SiteHeader />
             <main>{children}</main>
