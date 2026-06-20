@@ -1,0 +1,154 @@
+---
+title: "Se construire un assistant réutilisable"
+slug: "construire-un-assistant"
+module: "m4-productivite-automatisation"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "Transformer une tâche récurrente en instructions claires et figées"
+  - "Donner à l'IA un rôle et des règles stables une fois pour toutes"
+  - "Tester et corriger son assistant avant de s'y fier"
+prerequisites:
+  - "reperer-ce-qui-est-automatisable"
+  - "vos-modeles-reutilisables"
+quiz:
+  - prompt: "Un « assistant » réutilisable, c'est…"
+    choices:
+      - text: "un jeu d'instructions stables qu'on réutilise sans tout réexpliquer"
+        correct: true
+      - text: "un robot autonome qui agit sans vous"
+      - text: "une seule question posée une fois"
+  - prompt: "Que met-on dans les instructions d'un assistant ?"
+    multiple: true
+    choices:
+      - text: "son rôle et le contexte stable de votre métier"
+        correct: true
+      - text: "les règles à toujours respecter et le format de sortie"
+        correct: true
+      - text: "uniquement le tout premier exemple, sans consigne"
+  - prompt: "Avant de se fier à un assistant, on…"
+    choices:
+      - text: "le teste sur plusieurs cas réels et on corrige ses instructions"
+        correct: true
+      - text: "l'utilise directement en production sans vérifier"
+      - text: "attend qu'il tombe en panne"
+---
+
+Vous avez repéré une tâche à automatiser (leçon 1). L'étape suivante n'est pas
+technique : il s'agit de **figer la bonne demande une fois pour toutes**, pour ne
+plus avoir à tout réexpliquer à chaque fois. C'est le prolongement direct des
+modèles vus au module M2 — en plus structuré et plus puissant.
+
+## L'idée à retenir
+
+<Idee>
+Un « assistant », ici, ce n'est pas un robot autonome : c'est un **jeu
+d'instructions stables** que vous donnez une fois et réutilisez ensuite. Vous
+définissez son **rôle**, le **contexte** de votre métier, les **règles** à
+toujours respecter et le **format** attendu. Ensuite, vous ne faites plus que lui
+soumettre le cas du jour. Le gros du travail de cadrage est fait une seule fois.
+</Idee>
+
+La plupart des outils IA permettent d'enregistrer ce genre d'assistant (sous des
+noms variés : « instructions personnalisées », « GPTs », « projets »…). Mais même
+sans fonctionnalité dédiée, il suffit de garder vos instructions dans un document
+et de les coller en tête de chaque demande.
+
+## Les quatre briques d'un assistant
+
+<Exemple>
+Un assistant « réponse aux demandes de devis » pourrait tenir dans ces
+instructions, gardées une fois pour toutes :
+
+> **Rôle :** tu réponds aux demandes de devis de mon entreprise de menuiserie.
+> **Contexte :** clients particuliers, ton chaleureux et professionnel, je
+> travaille le bois sur mesure dans la région lyonnaise.
+> **Règles :** toujours remercier de la demande, annoncer un délai de réponse
+> sous 48 h, ne jamais donner de prix ferme (proposer un rendez-vous), rester
+> sous 8 lignes.
+> **Format :** un email prêt à envoyer, objet compris.
+
+À l'usage, vous n'ajoutez que le message du client. L'assistant connaît déjà le
+reste.
+</Exemple>
+
+## Rôle, contexte, règles, format
+
+- **Rôle** — ce que l'assistant fait, en une phrase.
+- **Contexte** — ce qui ne change jamais : votre métier, votre clientèle, votre
+  ton.
+- **Règles** — les consignes à toujours respecter (et les interdits).
+- **Format** — la forme exacte de la sortie attendue.
+
+Plus ces quatre briques sont précises, moins vous aurez à corriger ensuite.
+
+## Tester avant de se fier
+
+<Attention>
+Un assistant n'est pas fiable parce qu'il est écrit : il l'est parce qu'il a été
+**testé.** Avant de l'utiliser pour de vrai, passez-lui **plusieurs cas réels et
+variés**, y compris des cas un peu tordus. Vous verrez vite où ses instructions
+sont trop vagues ou produisent un résultat à côté — et vous corrigez les
+instructions, pas chaque résultat. Un assistant mal testé répète son erreur à
+grande échelle.
+</Attention>
+
+## Le faire évoluer
+
+<Idee>
+Comme un modèle (module M2), un assistant **se perfectionne à l'usage.** Chaque
+fois qu'un résultat vous oblige à une correction récurrente, ajoutez la règle
+correspondante dans ses instructions. Au fil des semaines, il a de moins en moins
+besoin d'être repris — l'effort initial s'amortit largement.
+</Idee>
+
+## À votre tour
+
+<Exercice>
+Reprenez la tâche cible de la leçon 1. Rédigez son assistant avec les **quatre
+briques** : rôle, contexte, règles, format. Soyez précis sur les règles (ce qu'il
+doit toujours faire, ce qu'il ne doit jamais faire).
+
+Puis **testez-le sur 3 cas réels différents.** À chaque écart, ne corrigez pas le
+résultat : corrigez **l'instruction.** Au bout de trois essais, vous aurez un
+assistant que vous pourrez réutiliser des dizaines de fois.
+</Exercice>
+
+## En résumé
+
+- Un assistant = des **instructions stables** réutilisables, pas un robot
+  autonome.
+- Quatre briques : **rôle, contexte, règles, format.**
+- On le **teste sur plusieurs cas réels** et on corrige **les instructions**,
+  pas les résultats.
+- Il **évolue à l'usage**, comme un modèle — l'effort de cadrage est fait une
+  fois.
+
+<Formateur>
+**Déroulé (≈ 15 min).** 2 min de lien avec les modèles du M2 · 5 min sur les
+quatre briques, avec un assistant construit en direct · 4 min sur le test
+multi-cas · 2 min sur le faire évoluer · 2 min de lancement d'exercice.
+
+**Construction en direct.** Prenez la tâche d'un participant et écrivez son
+assistant à l'écran, brique par brique, puis testez-le sur deux cas. Le « aha »
+arrive au test : un cas tordu révèle une règle manquante, qu'on ajoute en direct.
+C'est le cœur pédagogique de la leçon.
+
+**Niveau intermédiaire.** C'est la première leçon notée « intermédiaire » du
+programme : certains participants seront à l'aise, d'autres moins. Insister sur
+le fait qu'on **réutilise tout** ce qui a été vu (contexte/but/format du M1,
+modèles du M2) — rien de nouveau, juste assemblé.
+
+**Questions fréquentes**
+- *« Faut-il un outil payant pour enregistrer un assistant ? »* → non : un
+  document avec les instructions à copier-coller suffit. Les fonctions dédiées
+  (GPTs, projets) sont un confort, pas une nécessité.
+- *« Mon assistant peut-il agir tout seul (envoyer l'email) ? »* → on touche là à
+  la connexion aux outils (leçon 3) ; et même alors, on garde une validation
+  humaine sur ce qui sort. Patience.
+
+**Piège à éviter :** ne pas viser l'assistant « parfait » du premier coup. Le but
+est d'apprendre la boucle écrire → tester → corriger. Un assistant imparfait mais
+testé vaut mieux qu'un assistant ambitieux jamais éprouvé.
+</Formateur>

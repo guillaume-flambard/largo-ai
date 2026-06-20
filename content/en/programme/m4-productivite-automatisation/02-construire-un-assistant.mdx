@@ -1,0 +1,147 @@
+---
+title: "Building yourself a reusable assistant"
+slug: "construire-un-assistant"
+module: "m4-productivite-automatisation"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "Turn a recurring task into clear, fixed instructions"
+  - "Give the AI a role and stable rules once and for all"
+  - "Test and fix your assistant before relying on it"
+prerequisites:
+  - "reperer-ce-qui-est-automatisable"
+  - "vos-modeles-reutilisables"
+quiz:
+  - prompt: "A reusable 'assistant' is…"
+    choices:
+      - text: "a set of stable instructions you reuse without re-explaining everything"
+        correct: true
+      - text: "an autonomous robot that acts without you"
+      - text: "a single question asked once"
+  - prompt: "What goes into an assistant's instructions?"
+    multiple: true
+    choices:
+      - text: "its role and the stable context of your trade"
+        correct: true
+      - text: "the rules to always respect and the output format"
+        correct: true
+      - text: "only the very first example, with no brief"
+  - prompt: "Before relying on an assistant, you…"
+    choices:
+      - text: "test it on several real cases and fix its instructions"
+        correct: true
+      - text: "use it straight in production without checking"
+      - text: "wait for it to break down"
+---
+
+You've spotted a task to automate (lesson 1). The next step isn't technical: it's
+about **fixing the right request once and for all**, so you no longer have to
+re-explain everything each time. It's the direct extension of the templates from
+module M2 — more structured and more powerful.
+
+## The key idea
+
+<Idee>
+An "assistant", here, isn't an autonomous robot: it's a **set of stable
+instructions** you give once and reuse afterward. You define its **role**, the
+**context** of your trade, the **rules** to always respect and the **format**
+expected. Then you just submit the day's case. The bulk of the framing work is
+done once.
+</Idee>
+
+Most AI tools let you save this kind of assistant (under various names: "custom
+instructions", "GPTs", "projects"…). But even without a dedicated feature, just
+keep your instructions in a document and paste them at the top of each request.
+
+## The four bricks of an assistant
+
+<Exemple>
+A "reply to quote requests" assistant could fit in these instructions, kept once
+and for all:
+
+> **Role:** you reply to quote requests for my joinery business.
+> **Context:** private clients, warm and professional tone, I do bespoke
+> woodwork in the Lyon region.
+> **Rules:** always thank them for the request, announce a reply within 48h,
+> never give a firm price (offer a meeting), stay under 8 lines.
+> **Format:** an email ready to send, subject line included.
+
+In use, you add only the client's message. The assistant already knows the rest.
+</Exemple>
+
+## Role, context, rules, format
+
+- **Role** — what the assistant does, in one sentence.
+- **Context** — what never changes: your trade, your clientele, your tone.
+- **Rules** — the instructions to always respect (and the don'ts).
+- **Format** — the exact shape of the expected output.
+
+The more precise these four bricks, the less you'll have to correct afterward.
+
+## Test before relying
+
+<Attention>
+An assistant isn't reliable because it's written: it's reliable because it's been
+**tested.** Before using it for real, run **several varied real cases** through
+it, including slightly tricky ones. You'll quickly see where its instructions are
+too vague or produce an off result — and you fix the instructions, not each
+result. A poorly tested assistant repeats its error at scale.
+</Attention>
+
+## Making it evolve
+
+<Idee>
+Like a template (module M2), an assistant **improves through use.** Each time a
+result forces a recurring correction, add the matching rule to its instructions.
+Over the weeks, it needs fewer and fewer fixes — the initial effort pays off many
+times over.
+</Idee>
+
+## Your turn
+
+<Exercice>
+Take the target task from lesson 1. Write its assistant with the **four bricks**:
+role, context, rules, format. Be precise about the rules (what it must always do,
+what it must never do).
+
+Then **test it on 3 different real cases.** At each slip, don't fix the result:
+fix the **instruction.** After three tries, you'll have an assistant you can reuse
+dozens of times.
+</Exercice>
+
+## In short
+
+- An assistant = **stable, reusable instructions**, not an autonomous robot.
+- Four bricks: **role, context, rules, format.**
+- You **test it on several real cases** and fix the **instructions**, not the
+  results.
+- It **evolves through use**, like a template — the framing effort is done once.
+
+<Formateur>
+**Run-through (≈ 15 min).** 2 min linking to the M2 templates · 5 min on the four
+bricks, with an assistant built live · 4 min on multi-case testing · 2 min on
+making it evolve · 2 min launching the exercise.
+
+**Live building.** Take a participant's task and write its assistant on screen,
+brick by brick, then test it on two cases. The "aha" comes at the test: a tricky
+case reveals a missing rule, added live. That's the pedagogical core of the
+lesson.
+
+**Intermediate level.** This is the programme's first lesson marked
+"intermediate": some participants will be comfortable, others less. Stress that
+you **reuse everything** seen before (context/goal/format from M1, templates from
+M2) — nothing new, just assembled.
+
+**Frequent questions**
+- *"Do I need a paid tool to save an assistant?"* → no: a document with the
+  instructions to copy-paste is enough. Dedicated features (GPTs, projects) are a
+  convenience, not a necessity.
+- *"Can my assistant act on its own (send the email)?"* → that touches on
+  connecting to tools (lesson 3); and even then, we keep a human validation on
+  what goes out. Patience.
+
+**Pitfall to avoid:** don't aim for the "perfect" assistant on the first go. The
+goal is to learn the write → test → fix loop. An imperfect but tested assistant
+beats an ambitious one that's never been tried.
+</Formateur>
