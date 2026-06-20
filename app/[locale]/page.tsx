@@ -36,13 +36,13 @@ export default async function Home({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <CinematicHero copy={m.hero} />
-      <Atouts />
-      <Manifesto />
-      <Offers />
-      <HowItWorks />
-      <TrainerTeaser />
+      <Atouts copy={m.atouts} />
+      <Manifesto copy={m.manifesto} />
+      <Offers copy={m.offers} />
+      <HowItWorks copy={m.how} />
+      <TrainerTeaser copy={m.trainer} />
       <Testimonials />
-      <Faq />
+      <Faq copy={m.faq} />
     </>
   );
 }

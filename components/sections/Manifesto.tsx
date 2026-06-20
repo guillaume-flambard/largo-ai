@@ -3,11 +3,11 @@ import { LocaleLink } from "../LocaleLink";
 import { Magnetic } from "../motion/Magnetic";
 import { Reveal } from "../motion/Reveal";
 import { ArrowIcon } from "../icons";
+import type { Marketing } from "@/lib/marketing";
 
 /** Largo IA — Manifeste sur aplat ocre. L'unique champ de couleur pleine du
- *  parcours : une conviction qui rassure (pas qui vante), façon « statement »
- *  d'Instrument mais au service d'un dirigeant inquiet. */
-export function Manifesto() {
+ *  parcours : une conviction qui rassure (pas qui vante). */
+export function Manifesto({ copy }: { copy: Marketing["manifesto"] }) {
   return (
     <section
       className="section section--lg"
@@ -26,11 +26,8 @@ export function Manifesto() {
               color: "var(--ink)",
             }}
           >
-            <span
-              aria-hidden
-              style={{ width: 28, height: 2, borderRadius: 2, background: "var(--ink)" }}
-            />
-            Notre conviction
+            <span aria-hidden style={{ width: 28, height: 2, borderRadius: 2, background: "var(--ink)" }} />
+            {copy.kicker}
           </span>
 
           <p
@@ -41,23 +38,19 @@ export function Manifesto() {
               letterSpacing: "var(--ls-display)",
               lineHeight: 1.28,
               color: "var(--ink)",
-              maxWidth: "20ch",
+              maxWidth: "22ch",
               textWrap: "balance",
             }}
           >
-            Pas besoin d&apos;être technicien, ni de tout changer. Quelques
-            heures, vos propres outils, une méthode claire —&nbsp;et l&apos;IA
-            devient{" "}
-            <span style={{ fontWeight: "var(--fw-semibold)" }}>
-              un réflexe utile
-            </span>
-            , pas une source de stress.
+            {copy.before}
+            <span style={{ fontWeight: "var(--fw-semibold)" }}>{copy.emphasis}</span>
+            {copy.after}
           </p>
 
           <div style={{ display: "flex", gap: "16px 24px", flexWrap: "wrap", alignItems: "center", marginTop: 4 }}>
             <Magnetic>
               <ReserveButton variant="ink" size="lg" iconRight={<ArrowIcon />}>
-                Réserver un appel découverte
+                {copy.ctaPrimary}
               </ReserveButton>
             </Magnetic>
             <LocaleLink
@@ -69,7 +62,7 @@ export function Manifesto() {
                 paddingBottom: 2,
               }}
             >
-              Découvrir le programme
+              {copy.ctaSecondary}
             </LocaleLink>
           </div>
         </Reveal>

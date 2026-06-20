@@ -1,26 +1,11 @@
 import { Button } from "../Button";
 import { Reveal } from "../motion/Reveal";
 import { CompassIcon, MapIcon, SparkleIcon } from "../icons";
+import type { Marketing } from "@/lib/marketing";
 
-const principles = [
-  {
-    icon: <SparkleIcon />,
-    t: "Zéro jargon",
-    d: "On parle métier, pas technique.",
-  },
-  {
-    icon: <CompassIcon />,
-    t: "Sur vos vrais cas",
-    d: "Vos documents, vos outils, vos objectifs.",
-  },
-  {
-    icon: <MapIcon />,
-    t: "Autonomie durable",
-    d: "Vous repartez capables, sans dépendance.",
-  },
-];
+const ICONS = [<SparkleIcon key="s" />, <CompassIcon key="c" />, <MapIcon key="m" />];
 
-export function TrainerTeaser() {
+export function TrainerTeaser({ copy }: { copy: Marketing["trainer"] }) {
   return (
     <section id="formateur" className="section section--ink">
       <div className="container">
@@ -64,22 +49,16 @@ export function TrainerTeaser() {
                   color: "var(--paper-on-ink)",
                 }}
               >
-                Guillaume Flambard
+                {copy.name}
               </div>
-              <div
-                style={{
-                  fontSize: "var(--fs-sm)",
-                  color: "var(--paper-on-ink-muted)",
-                  marginTop: 4,
-                }}
-              >
-                Formateur IA · TPE / PME
+              <div style={{ fontSize: "var(--fs-sm)", color: "var(--paper-on-ink-muted)", marginTop: 4 }}>
+                {copy.role}
               </div>
             </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
-            <span className="kicker">Le formateur</span>
+            <span className="kicker">{copy.kicker}</span>
             <h2
               style={{
                 fontSize: "var(--fs-h2)",
@@ -90,17 +69,13 @@ export function TrainerTeaser() {
                 maxWidth: "16ch",
               }}
             >
-              Une méthode simple, en trois principes
+              {copy.title}
             </h2>
             <div
               className="grid-principles"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 28,
-              }}
+              style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}
             >
-              {principles.map((p) => (
+              {copy.principles.map((p, i) => (
                 <div
                   key={p.t}
                   style={{
@@ -111,7 +86,7 @@ export function TrainerTeaser() {
                     borderTop: "1px solid var(--line-on-ink)",
                   }}
                 >
-                  <span style={{ color: "var(--sun)" }}>{p.icon}</span>
+                  <span style={{ color: "var(--sun)" }}>{ICONS[i]}</span>
                   <div
                     style={{
                       fontFamily: "var(--font-display)",
@@ -122,13 +97,7 @@ export function TrainerTeaser() {
                   >
                     {p.t}
                   </div>
-                  <div
-                    style={{
-                      fontSize: "var(--fs-sm)",
-                      color: "var(--paper-on-ink-muted)",
-                      lineHeight: 1.55,
-                    }}
-                  >
+                  <div style={{ fontSize: "var(--fs-sm)", color: "var(--paper-on-ink-muted)", lineHeight: 1.55 }}>
                     {p.d}
                   </div>
                 </div>
@@ -136,7 +105,7 @@ export function TrainerTeaser() {
             </div>
             <div>
               <Button variant="light" href="/a-propos">
-                En savoir plus sur Guillaume
+                {copy.cta}
               </Button>
             </div>
           </div>
