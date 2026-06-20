@@ -1,4 +1,5 @@
 import { ReserveButton } from "../ReserveButton";
+import { LocaleLink } from "../LocaleLink";
 import { Magnetic } from "../motion/Magnetic";
 import { Reveal } from "../motion/Reveal";
 import { ArrowIcon } from "../icons";
@@ -59,7 +60,7 @@ export function Manifesto() {
                 Réserver un appel découverte
               </ReserveButton>
             </Magnetic>
-            <a
+            <LocaleLink
               href="/programme"
               style={{
                 fontWeight: "var(--fw-semibold)",
@@ -69,7 +70,7 @@ export function Manifesto() {
               }}
             >
               Découvrir le programme
-            </a>
+            </LocaleLink>
           </div>
         </Reveal>
       </div>

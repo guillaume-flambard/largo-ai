@@ -1,4 +1,5 @@
 import type { ReactNode, ButtonHTMLAttributes } from "react";
+import { LocaleLink } from "./LocaleLink";
 
 export type ButtonVariant = "primary" | "accent" | "ghost" | "light" | "ink";
 export type ButtonSize = "sm" | "md" | "lg";
@@ -58,6 +59,14 @@ export function Button({
   );
 
   if (href && !disabled) {
+    const isInternal = href.startsWith("/") && !href.startsWith("//");
+    if (isInternal) {
+      return (
+        <LocaleLink href={href} className={className}>
+          {content}
+        </LocaleLink>
+      );
+    }
     return (
       <a href={href} className={className}>
         {content}

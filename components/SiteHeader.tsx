@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { LocaleLink } from "./LocaleLink";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ReserveButton } from "./ReserveButton";
 import { Magnetic } from "./motion/Magnetic";
 import { ArrowIcon, CloseIcon, MenuIcon } from "./icons";
@@ -48,24 +49,25 @@ export function SiteHeader() {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" aria-label="Largo IA — accueil" style={{ display: "block" }}>
+        <LocaleLink href="/" aria-label="Largo IA — accueil" style={{ display: "block" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/brand/logo-wordmark.svg"
             alt="Largo IA"
             style={{ display: "block", height: 36, width: "auto" }}
           />
-        </Link>
+        </LocaleLink>
 
         <nav
           className="nav-desktop"
           style={{ display: "flex", alignItems: "center", gap: "32px" }}
         >
           {links.map((l) => (
-            <Link key={l.label} href={l.href} className="nav-link">
+            <LocaleLink key={l.label} href={l.href} className="nav-link">
               {l.label}
-            </Link>
+            </LocaleLink>
           ))}
+          <LanguageSwitcher />
           <Magnetic>
             <ReserveButton variant="primary" size="sm" iconRight={<ArrowIcon />}>
               Réserver un appel
@@ -105,7 +107,7 @@ export function SiteHeader() {
           }}
         >
           {links.map((l) => (
-            <Link
+            <LocaleLink
               key={l.label}
               href={l.href}
               onClick={() => setMenuOpen(false)}
@@ -117,11 +119,14 @@ export function SiteHeader() {
               }}
             >
               {l.label}
-            </Link>
+            </LocaleLink>
           ))}
           <ReserveButton variant="primary" fullWidth iconRight={<ArrowIcon />}>
             Réserver un appel
           </ReserveButton>
+          <div style={{ paddingTop: 4 }}>
+            <LanguageSwitcher />
+          </div>
         </div>
       )}
     </header>

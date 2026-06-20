@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
+import { LocaleLink } from "@/components/LocaleLink";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -77,7 +78,7 @@ export default function MentionsLegalesPage() {
             <h2>Données personnelles</h2>
             <p>
               Le traitement de vos données est décrit dans notre{" "}
-              <a href="/confidentialite">politique de confidentialité</a>.
+              <LocaleLink href="/confidentialite">politique de confidentialité</LocaleLink>.
               Conformément au RGPD, vous disposez d&apos;un droit d&apos;accès, de
               rectification et de suppression de vos données, exerçable à{" "}
               <a href="mailto:contact@largo-ia.fr">contact@largo-ia.fr</a>.

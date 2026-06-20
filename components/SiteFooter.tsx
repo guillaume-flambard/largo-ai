@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink } from "./LocaleLink";
 import { ReserveButton } from "./ReserveButton";
 import { Magnetic } from "./motion/Magnetic";
 import { ArrowIcon } from "./icons";
@@ -123,13 +123,13 @@ export function SiteFooter() {
                 {c.h}
               </div>
               {c.items.map((i) => (
-                <Link
+                <LocaleLink
                   key={i.label}
                   href={i.href}
                   style={{ fontSize: "var(--fs-sm)", color: "var(--paper-on-ink-muted)" }}
                 >
                   {i.label}
-                </Link>
+                </LocaleLink>
               ))}
             </div>
           ))}

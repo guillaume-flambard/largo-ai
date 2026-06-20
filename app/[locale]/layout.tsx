@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Bricolage_Grotesque } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { BookingProvider } from "@/components/BookingContext";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { RoleProvider } from "@/components/learn/RoleContext";
+import { LOCALES, isLocale } from "@/lib/i18n";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -50,19 +53,30 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+
   return (
-    <html lang="fr" className={bricolage.variable}>
+    <html lang={locale} className={bricolage.variable}>
       <body>
-        <BookingProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
-        </BookingProvider>
+        <RoleProvider formateur={false}>
+          <BookingProvider>
+            <SiteHeader />
+            <main>{children}</main>
+            <SiteFooter />
+          </BookingProvider>
+        </RoleProvider>
       </body>
     </html>
   );
