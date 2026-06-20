@@ -7,13 +7,14 @@ import { ReserveButton } from "./ReserveButton";
 import { Magnetic } from "./motion/Magnetic";
 import { ArrowIcon, CloseIcon, MenuIcon } from "./icons";
 
-const links = [
-  { label: "Programme", href: "/programme" },
-  { label: "Le formateur", href: "/a-propos" },
-  { label: "Contact", href: "/contact" },
-];
+type Nav = { programme: string; aPropos: string; contact: string; reserver: string };
 
-export function SiteHeader() {
+export function SiteHeader({ nav }: { nav: Nav }) {
+  const links = [
+    { label: nav.programme, href: "/programme" },
+    { label: nav.aPropos, href: "/a-propos" },
+    { label: nav.contact, href: "/contact" },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -70,7 +71,7 @@ export function SiteHeader() {
           <LanguageSwitcher />
           <Magnetic>
             <ReserveButton variant="primary" size="sm" iconRight={<ArrowIcon />}>
-              Réserver un appel
+              {nav.reserver}
             </ReserveButton>
           </Magnetic>
         </nav>
@@ -122,7 +123,7 @@ export function SiteHeader() {
             </LocaleLink>
           ))}
           <ReserveButton variant="primary" fullWidth iconRight={<ArrowIcon />}>
-            Réserver un appel
+            {nav.reserver}
           </ReserveButton>
           <div style={{ paddingTop: 4 }}>
             <LanguageSwitcher />

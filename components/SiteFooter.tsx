@@ -2,49 +2,20 @@ import { LocaleLink } from "./LocaleLink";
 import { ReserveButton } from "./ReserveButton";
 import { Magnetic } from "./motion/Magnetic";
 import { ArrowIcon } from "./icons";
+import type { Marketing } from "@/lib/marketing";
 
-const cols = [
-  {
-    h: "Se former",
-    items: [
-      { label: "Acculturation IA", href: "/programme" },
-      { label: "L'IA au quotidien", href: "/programme" },
-      { label: "Accompagnement dirigeant", href: "/programme" },
-    ],
-  },
-  {
-    h: "Largo IA",
-    items: [
-      { label: "Rencontrer Guillaume", href: "/a-propos" },
-      { label: "Le programme", href: "/programme" },
-      { label: "Réserver un appel", href: "/contact" },
-    ],
-  },
-  {
-    h: "Le sérieux",
-    items: [
-      { label: "Mentions légales", href: "/mentions-legales" },
-      { label: "Confidentialité", href: "/confidentialite" },
-      { label: "AI Act & RGPD", href: "/confidentialite" },
-    ],
-  },
-];
-
-export function SiteFooter() {
+export function SiteFooter({ copy }: { copy: Marketing["footer"] }) {
   return (
-    <footer
-      className="section--ink"
-      style={{ paddingTop: "var(--section-y)" }}
-    >
+    <footer className="section--ink" style={{ paddingTop: "var(--section-y)" }}>
       <div className="container">
         {/* Voix — une invitation personnelle qui porte la clôture, et l'action. */}
         <div style={{ marginBottom: "clamp(48px, 6vw, 80px)" }}>
           <span className="kicker" style={{ marginBottom: 20, display: "inline-flex" }}>
-            Restons en contact
+            {copy.kicker}
           </span>
           <p
             style={{
-              maxWidth: "30ch",
+              maxWidth: "32ch",
               fontFamily: "var(--font-display)",
               fontSize: "var(--fs-h2)",
               fontWeight: "var(--fw-light)",
@@ -53,11 +24,9 @@ export function SiteFooter() {
               color: "var(--paper-on-ink)",
             }}
           >
-            Une question, un doute, un projet&nbsp;? Écrivez à Guillaume —&nbsp;
-            <span style={{ color: "var(--sun)" }}>
-              c&apos;est lui qui vous répond
-            </span>
-            , en personne, sous 24&nbsp;h.
+            {copy.voiceBefore}
+            <span style={{ color: "var(--sun)" }}>{copy.voiceEmphasis}</span>
+            {copy.voiceAfter}
           </p>
           <div
             style={{
@@ -70,7 +39,7 @@ export function SiteFooter() {
           >
             <Magnetic>
               <ReserveButton variant="primary" iconRight={<ArrowIcon />}>
-                Réserver un appel découverte
+                {copy.ctaPrimary}
               </ReserveButton>
             </Magnetic>
             <a href="mailto:contact@largo-ia.fr" className="link-underline">
@@ -104,11 +73,10 @@ export function SiteFooter() {
                 lineHeight: "var(--lh-normal)",
               }}
             >
-              Formation à l&apos;IA générative pour les TPE et PME françaises.
-              100&nbsp;% en visio, sans jargon, au tempo qui vous va.
+              {copy.tagline}
             </p>
           </div>
-          {cols.map((c) => (
+          {copy.cols.map((c) => (
             <div key={c.h} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div
                 style={{
@@ -150,8 +118,7 @@ export function SiteFooter() {
             © 2026 Largo IA — contact@largo-ia.fr
           </span>
           <span style={{ fontSize: "var(--fs-xs)", color: "var(--paper-on-ink-muted)" }}>
-            Basé entre la France et l&apos;Asie · 100&nbsp;% visio toute
-            l&apos;année
+            {copy.baseline}
           </span>
         </div>
       </div>

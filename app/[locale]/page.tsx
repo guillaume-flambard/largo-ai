@@ -1,4 +1,6 @@
 import { CinematicHero } from "@/components/sections/CinematicHero";
+import { getMarketing } from "@/lib/marketing";
+import { isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
 import { Atouts } from "@/components/sections/Atouts";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Offers } from "@/components/sections/Offers";
@@ -20,14 +22,20 @@ const jsonLd = {
   knowsLanguage: "fr",
 };
 
-export default function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const m = getMarketing(isLocale(locale) ? locale : DEFAULT_LOCALE);
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <CinematicHero />
+      <CinematicHero copy={m.hero} />
       <Atouts />
       <Manifesto />
       <Offers />

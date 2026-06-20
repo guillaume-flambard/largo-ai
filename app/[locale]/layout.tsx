@@ -7,6 +7,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { RoleProvider } from "@/components/learn/RoleContext";
 import { LOCALES, isLocale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/dictionary";
+import { getMarketing } from "@/lib/marketing";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -67,14 +69,17 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
+  const dict = await getDictionary(locale);
+  const m = getMarketing(locale);
+
   return (
     <html lang={locale} className={bricolage.variable}>
       <body>
         <RoleProvider>
           <BookingProvider>
-            <SiteHeader />
+            <SiteHeader nav={dict.nav} />
             <main>{children}</main>
-            <SiteFooter />
+            <SiteFooter copy={m.footer} />
           </BookingProvider>
         </RoleProvider>
       </body>

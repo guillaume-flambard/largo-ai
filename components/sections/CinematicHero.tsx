@@ -6,12 +6,13 @@ import { Button } from "../Button";
 import { ReserveButton } from "../ReserveButton";
 import { Magnetic } from "../motion/Magnetic";
 import { ArrowIcon } from "../icons";
+import type { Marketing } from "@/lib/marketing";
 
 /** Largo IA — Hero « le large, au tempo lent ».
  *  Typographie ample, beaucoup d'air, un seul geste de couleur : le soleil
  *  ocre qui se lève sur le filet d'horizon. Le contenu est visible par
  *  défaut ; GSAP ne fait qu'orchestrer une arrivée calme. */
-export function CinematicHero() {
+export function CinematicHero({ copy }: { copy: Marketing["hero"] }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -62,11 +63,11 @@ export function CinematicHero() {
   return (
     <section
       ref={root}
-      aria-label="Prenez le large avec l'IA"
+      aria-label={`${copy.titleBefore}${copy.titleEmphasis}${copy.titleAfter}`}
       style={{ paddingBlock: "clamp(7rem, 5rem + 9vw, 12rem) 0" }}
     >
       <div className="container">
-        <span className="kicker hero-fade">Formation IA · TPE &amp; PME</span>
+        <span className="kicker hero-fade">{copy.kicker}</span>
 
         <h1
           className="display"
@@ -76,14 +77,8 @@ export function CinematicHero() {
             className="hero-line"
             style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}
           >
-            <span style={{ display: "block" }}>Prenez le large</span>
-          </span>
-          <span
-            className="hero-line"
-            style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}
-          >
             <span style={{ display: "block" }}>
-              avec l&apos;
+              {copy.titleBefore}
               <span
                 style={{
                   fontWeight: 600,
@@ -91,9 +86,9 @@ export function CinematicHero() {
                   paddingBottom: "0.04em",
                 }}
               >
-                IA
+                {copy.titleEmphasis}
               </span>
-              .
+              {copy.titleAfter}
             </span>
           </span>
         </h1>
@@ -102,9 +97,7 @@ export function CinematicHero() {
           className="lead hero-fade"
           style={{ margin: "clamp(22px, 3vw, 34px) 0 0", maxWidth: "48ch" }}
         >
-          Formez vos dirigeants et vos équipes à l&apos;IA générative, en visio,
-          sans jargon. Des résultats concrets dès la première semaine — et la
-          conformité AI Act incluse.
+          {copy.lead}
         </p>
 
         <div
@@ -119,11 +112,11 @@ export function CinematicHero() {
         >
           <Magnetic>
             <ReserveButton variant="primary" size="lg" iconRight={<ArrowIcon />}>
-              Réserver un appel découverte
+              {copy.ctaPrimary}
             </ReserveButton>
           </Magnetic>
           <a href="#offres" className="link-underline">
-            Voir les formations
+            {copy.ctaSecondary}
           </a>
         </div>
 
@@ -165,9 +158,9 @@ export function CinematicHero() {
               fontWeight: 500,
             }}
           >
-            <span>100 % en visio, partout en France</span>
-            <span>Sans jargon</span>
-            <span>Conforme AI Act &amp; RGPD</span>
+            {copy.proof.map((p) => (
+              <span key={p}>{p}</span>
+            ))}
           </div>
         </div>
       </div>
