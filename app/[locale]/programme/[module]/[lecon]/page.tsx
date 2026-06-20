@@ -4,6 +4,7 @@ import { LocaleLink } from "@/components/LocaleLink";
 import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-blocks";
 import { Formateur } from "@/components/learn/Formateur";
 import { RoleToggle } from "@/components/learn/RoleToggle";
+import { LessonProvider } from "@/components/learn/LessonProgress";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
 import {
@@ -111,9 +112,11 @@ export default async function LessonPage({
         )}
 
         {/* Corps de la leçon */}
-        <div className="prose" style={{ marginTop: 8 }}>
-          {content}
-        </div>
+        <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
+          <div className="prose" style={{ marginTop: 8 }}>
+            {content}
+          </div>
+        </LessonProvider>
 
         {/* Navigation prev / next */}
         <nav
