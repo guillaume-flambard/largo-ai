@@ -7,14 +7,19 @@ import { LocaleLink } from "@/components/LocaleLink";
 import { FormateurGate } from "@/components/learn/FormateurGate";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
-import { isLocale } from "@/lib/i18n";
+import { isLocale, type Locale } from "@/lib/i18n";
 import { listModules, getModule } from "@/lib/content/programme";
+import { getPageCopy } from "@/lib/pages";
 
-export const metadata: Metadata = {
-  title: "Programme",
-  description:
-    "Un parcours IA en 4 modules conçu pour les TPE/PME : fondamentaux & conformité, écrire & communiquer, marketing & contenu, productivité & automatisation. Trois formats au choix.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = getPageCopy(isLocale(locale) ? locale : "fr").programme;
+  return { title: t.metaTitle, description: t.metaDescription };
+}
 
 export default async function ProgrammePage({
   params,
@@ -23,6 +28,7 @@ export default async function ProgrammePage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const c = getPageCopy(locale as Locale).programme;
 
   const modulesMeta = await listModules(locale);
   const modules = (
@@ -32,9 +38,9 @@ export default async function ProgrammePage({
   return (
     <>
       <PageHero
-        eyebrow="Le programme"
-        title="Un parcours IA conçu pour votre métier"
-        subtitle="Quatre modules concrets, travaillés sur vos vrais cas et vos propres outils. On adapte la profondeur de chaque module à votre format et à votre équipe."
+        eyebrow={c.heroEyebrow}
+        title={c.heroTitle}
+        subtitle={c.heroSubtitle}
       />
 
       <section style={{ background: "var(--bg)" }}>
@@ -42,8 +48,8 @@ export default async function ProgrammePage({
           <Reveal>
             <SectionHeader
               align="left"
-              eyebrow="Le contenu"
-              title="Quatre modules, du fondamental à l'automatisation"
+              eyebrow={c.contentEyebrow}
+              title={c.contentTitle}
             />
           </Reveal>
           <Reveal
@@ -175,9 +181,9 @@ export default async function ProgrammePage({
         <div className="container" style={{ padding: "var(--section-y) var(--gutter)" }}>
           <Reveal>
             <SectionHeader
-              eyebrow="Les formats"
-              title="Trois intensités, selon vos objectifs"
-              subtitle="Le même fond, calibré différemment : de la sensibilisation à l'accompagnement sur-mesure du dirigeant."
+              eyebrow={c.formatsEyebrow}
+              title={c.formatsTitle}
+              subtitle={c.formatsSubtitle}
             />
           </Reveal>
           <Reveal
@@ -192,54 +198,21 @@ export default async function ProgrammePage({
               marginTop: 56,
             }}
           >
-            <TiltCard max={5}>
-              <OfferCard
-                name="Acculturation IA"
-                format="Demi-journée (3h30) · visio"
-                price="dès 690 €"
-                priceNote="HT / groupe"
-                audience="Sensibiliser, lever les freins"
-                ctaLabel="Réserver un appel"
-                ctaHref="/contact"
-                benefits={[
-                  "Comprendre l'IA sans jargon",
-                  "Repérer vos premiers cas d'usage",
-                  "Lever les craintes de l'équipe",
-                ]}
-              />
-            </TiltCard>
-            <TiltCard max={5}>
-              <OfferCard
-                featured
-                name="L'IA au quotidien"
-                format="2 jours (4×3h30) · visio"
-                price="dès 1 900 €"
-                priceNote="HT / groupe"
-                audience="Monter en compétence toute l'équipe"
-                ctaHref="/contact"
-                benefits={[
-                  "Écrire & communiquer plus vite",
-                  "Marketing & création de contenu",
-                  "Productivité & automatisation",
-                  "Sécurité, RGPD & AI Act",
-                ]}
-              />
-            </TiltCard>
-            <TiltCard max={5}>
-              <OfferCard
-                name="Accompagnement dirigeant"
-                format="Parcours 4–6 semaines"
-                price="sur devis"
-                audience="Transformation + mise en conformité"
-                ctaLabel="En parler"
-                ctaHref="/contact"
-                benefits={[
-                  "Feuille de route IA sur-mesure",
-                  "Sessions individuelles",
-                  "Conformité AI Act de l'entreprise",
-                ]}
-              />
-            </TiltCard>
+            {c.offers.map((offer, i) => (
+              <TiltCard key={offer.name} max={5}>
+                <OfferCard
+                  featured={i === 1}
+                  name={offer.name}
+                  format={offer.format}
+                  price={offer.price}
+                  priceNote={offer.priceNote}
+                  audience={offer.audience}
+                  ctaLabel={offer.ctaLabel}
+                  ctaHref="/contact"
+                  benefits={offer.benefits}
+                />
+              </TiltCard>
+            ))}
           </Reveal>
 
           <Reveal>
@@ -255,12 +228,9 @@ export default async function ProgrammePage({
               }}
             >
               <strong style={{ color: "var(--ink)", fontWeight: "var(--fw-semibold)" }}>
-                Financement —
-              </strong>{" "}
-              La certification Qualiopi, qui ouvre le financement par votre OPCO,
-              est en cours d&apos;obtention. Parlons de votre situation lors de
-              l&apos;appel découverte : on vous oriente vers les dispositifs
-              mobilisables.
+                {c.financingStrong}
+              </strong>
+              {c.financingText}
             </p>
           </Reveal>
         </div>

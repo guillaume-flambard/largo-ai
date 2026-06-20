@@ -1,28 +1,38 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageHero } from "@/components/PageHero";
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { PhoneIcon } from "@/components/icons";
+import { isLocale, type Locale } from "@/lib/i18n";
+import { getPageCopy } from "@/lib/pages";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Réservez un appel découverte de 30 minutes avec Guillaume Flambard, ou écrivez-nous. On évalue vos besoins en IA, sans engagement.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = getPageCopy(isLocale(locale) ? locale : "fr").contact;
+  return { title: t.metaTitle, description: t.metaDescription };
+}
 
-const steps = [
-  { n: "1", t: "Vous nous écrivez", d: "Quelques mots sur votre activité, votre équipe et vos objectifs." },
-  { n: "2", t: "Appel découverte (30 min)", d: "On clarifie vos besoins et on vérifie que l'on peut vous aider." },
-  { n: "3", t: "Proposition sur-mesure", d: "Un programme et un format adaptés, avec un devis clair." },
-];
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = getPageCopy(locale as Locale).contact;
+  const steps = t.steps.map((s, i) => ({ ...s, n: String(i + 1) }));
 
-export default function ContactPage() {
   return (
     <>
       <PageHero
-        eyebrow="Contact"
-        title="Parlons de votre projet"
-        subtitle="Réservez un appel découverte ou envoyez-nous un message. Réponse sous 24 h ouvrées, sans engagement."
+        eyebrow={t.heroEyebrow}
+        title={t.heroTitle}
+        subtitle={t.heroSubtitle}
       />
 
       <section style={{ background: "var(--bg)" }}>
@@ -40,12 +50,12 @@ export default function ContactPage() {
               className="card"
               style={{ padding: "32px 30px" }}
             >
-              <ContactForm />
+              <ContactForm copy={t.form} />
             </Reveal>
 
             <Reveal as="div" stagger={0.1} style={{ display: "flex", flexDirection: "column", gap: 28 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <span className="kicker">Comment ça se passe</span>
+                <span className="kicker">{t.stepsEyebrow}</span>
                 <h2
                   style={{
                     fontSize: "var(--fs-h2)",
@@ -55,7 +65,7 @@ export default function ContactPage() {
                     color: "var(--ink)",
                   }}
                 >
-                  Trois étapes, sans pression
+                  {t.stepsTitle}
                 </h2>
               </div>
 
@@ -116,9 +126,8 @@ export default function ContactPage() {
                   lineHeight: 1.6,
                 }}
               >
-                <strong style={{ color: "var(--navy)" }}>Prise de rendez-vous —</strong>{" "}
-                l&apos;agenda de réservation (Cal.com) s&apos;intègre ici. En
-                attendant, écrivez-nous : on vous propose un créneau rapidement.
+                <strong style={{ color: "var(--navy)" }}>{t.bookingStrong}</strong>
+                {t.bookingText}
               </div>
             </Reveal>
           </div>

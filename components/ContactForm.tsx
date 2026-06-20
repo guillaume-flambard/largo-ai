@@ -6,10 +6,11 @@ import { Button } from "./Button";
 import { Input } from "./Input";
 import { ArrowIcon, CheckIcon } from "./icons";
 import { buildContactMailto, CONTACT_EMAIL } from "@/lib/mailto";
+import type { ContactFormCopy } from "@/lib/pages";
 
 /** Contact form — client-side validation + success state, honeypot anti-spam.
  *  Front-end only: wire the submit to a Server Action / Resend before launch. */
-export function ContactForm() {
+export function ContactForm({ copy }: { copy: ContactFormCopy }) {
   const [sent, setSent] = useState(false);
 
   if (sent) {
@@ -45,15 +46,13 @@ export function ContactForm() {
             color: "var(--ink)",
           }}
         >
-          Message envoyé !
+          {copy.sentTitle}
         </h2>
         <p style={{ color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-          Votre messagerie s&apos;ouvre avec votre demande pré-remplie —
-          il ne reste qu&apos;à l&apos;envoyer. Guillaume vous répond sous 24&nbsp;h
-          ouvrées.
+          {copy.sentBody}
         </p>
         <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
-          Rien ne s&apos;est ouvert&nbsp;? Écrivez directement à{" "}
+          {copy.sentFallbackPre}{" "}
           <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "var(--sun-ink)", fontWeight: 600 }}>
             {CONTACT_EMAIL}
           </a>
@@ -75,35 +74,35 @@ export function ContactForm() {
       }}
       style={{ display: "flex", flexDirection: "column", gap: 18 }}
     >
-      <Input label="Nom" id="ct-nom" name="nom" placeholder="Votre nom" required />
+      <Input label={copy.name} id="ct-nom" name="nom" placeholder={copy.namePh} required />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <Input
-          label="Entreprise"
+          label={copy.company}
           id="ct-ent"
           name="entreprise"
-          placeholder="Votre société"
+          placeholder={copy.companyPh}
         />
         <Input
-          label="Taille d'équipe"
+          label={copy.teamSize}
           id="ct-size"
           name="taille"
-          placeholder="ex. 8"
+          placeholder={copy.teamSizePh}
         />
       </div>
       <Input
-        label="Email professionnel"
+        label={copy.email}
         id="ct-email"
         name="email"
         type="email"
         required
-        placeholder="vous@entreprise.fr"
+        placeholder={copy.emailPh}
       />
       <Input
         as="textarea"
-        label="Votre besoin"
+        label={copy.need}
         id="ct-besoin"
         name="besoin"
-        placeholder="En quelques mots : vos objectifs, votre équipe, vos outils…"
+        placeholder={copy.needPh}
       />
       <input
         type="text"
@@ -114,14 +113,13 @@ export function ContactForm() {
         style={{ position: "absolute", left: "-9999px" }}
       />
       <Button variant="primary" type="submit" iconRight={<ArrowIcon />}>
-        Envoyer ma demande
+        {copy.submit}
       </Button>
       <p style={{ fontSize: "var(--fs-xs)", color: "var(--muted)" }}>
-        Vos données ne servent qu&apos;à vous recontacter (RGPD). Aucune
-        newsletter, aucun partage.
+        {copy.privacy}
       </p>
       <Badge tone="neutral" dot>
-        Réponse sous 24 h ouvrées
+        {copy.badge}
       </Badge>
     </form>
   );

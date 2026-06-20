@@ -1,28 +1,40 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { CompassIcon, MapIcon, SparkleIcon, VideoIcon } from "@/components/icons";
+import { isLocale, type Locale } from "@/lib/i18n";
+import { getPageCopy } from "@/lib/pages";
 
-export const metadata: Metadata = {
-  title: "Le formateur",
-  description:
-    "Guillaume Flambard, formateur IA pour les TPE et PME. Une méthode en trois principes : zéro jargon, sur vos vrais cas, autonomie durable. 100 % en visio, toute l'année.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = getPageCopy(isLocale(locale) ? locale : "fr").aPropos;
+  return { title: t.metaTitle, description: t.metaDescription };
+}
 
-const principles = [
-  { icon: <SparkleIcon />, t: "Zéro jargon", d: "On parle métier, résultats et temps gagné — jamais technique pour la technique." },
-  { icon: <CompassIcon />, t: "Sur vos vrais cas", d: "On travaille sur vos documents, vos outils et vos objectifs, pas des exemples génériques." },
-  { icon: <MapIcon />, t: "Autonomie durable", d: "Vous repartez capables de continuer seuls, sans dépendance à un prestataire." },
-];
+const principleIcons = [<SparkleIcon key="s" />, <CompassIcon key="c" />, <MapIcon key="m" />];
 
-export default function AProposPage() {
+export default async function AProposPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = getPageCopy(locale as Locale).aPropos;
+  const principles = t.principles.map((p, i) => ({ ...p, icon: principleIcons[i] }));
+
   return (
     <>
       <PageHero
-        eyebrow="Le formateur"
+        eyebrow={t.heroEyebrow}
         title="Guillaume Flambard"
-        subtitle="Formateur IA pour les TPE et PME. J'aide les dirigeants et leurs équipes à utiliser l'IA générative de façon concrète, utile et conforme — sans jargon."
+        subtitle={t.heroSubtitle}
       />
 
       <section className="section">
@@ -69,7 +81,7 @@ export default function AProposPage() {
                     Guillaume Flambard
                   </div>
                   <div style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)", marginTop: 2 }}>
-                    Formateur IA · TPE / PME
+                    {t.cardRole}
                   </div>
                 </div>
               </div>
@@ -85,19 +97,13 @@ export default function AProposPage() {
                   lineHeight: "var(--lh-snug)",
                 }}
               >
-                Rendre l&apos;IA simple, utile et conforme
+                {t.bodyTitle}
               </h2>
               <p style={{ fontSize: "var(--fs-lead)", color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-                La plupart des dirigeants de TPE/PME entendent parler d&apos;IA
-                partout, sans savoir par où commencer ni comment rester dans les
-                clous. Mon métier : transformer ce flou en gestes concrets, sur
-                vos propres cas, en quelques sessions.
+                {t.bodyP1}
               </p>
               <p style={{ fontSize: "var(--fs-body)", color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-                Pas de conférence théorique : on ouvre vos outils, on travaille
-                vos vrais documents, et on repart avec des méthodes réutilisables.
-                Chaque parcours intègre le volet conformité (RGPD, AI Act) pour
-                que vous avanciez l&apos;esprit tranquille.
+                {t.bodyP2}
               </p>
               <div
                 style={{
@@ -115,7 +121,7 @@ export default function AProposPage() {
                 <span style={{ color: "var(--sun-ink)", display: "inline-flex" }}>
                   <VideoIcon width={22} height={22} />
                 </span>
-                Basé entre la France et l&apos;Asie · 100 % visio toute l&apos;année
+                {t.location}
               </div>
             </Reveal>
           </div>
@@ -126,8 +132,8 @@ export default function AProposPage() {
         <div className="container">
           <Reveal style={{ marginBottom: "clamp(40px, 5vw, 56px)" }}>
             <SectionHeader
-              eyebrow="La méthode"
-              title="Une méthode simple, en trois principes"
+              eyebrow={t.methodEyebrow}
+              title={t.methodTitle}
             />
           </Reveal>
           <Reveal
