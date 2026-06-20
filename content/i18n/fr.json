@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "programme": "Programme",
+    "aPropos": "Le formateur",
+    "contact": "Contact",
+    "reserver": "Réserver un appel"
+  },
+  "programme": {
+    "sommaire": "Sommaire",
+    "module": "Module",
+    "lecon": "Leçon",
+    "suivant": "Suivant",
+    "precedent": "Précédent",
+    "modeFormateur": "Mode formateur",
+    "dureeMin": "min",
+    "objectifs": "Objectifs",
+    "prerequis": "Prérequis",
+    "pourLeFormateur": "Pour le formateur",
+    "quiz": "Vérifiez votre compréhension"
+  },
+  "langue": {
+    "fr": "Français",
+    "en": "English"
+  }
+}

@@ -1,0 +1,6 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Largo IA">
+  <rect width="96" height="96" rx="20" fill="#1A222E"/>
+  <clipPath id="fav-horizon"><rect x="0" y="0" width="96" height="54"/></clipPath>
+  <circle cx="48" cy="52" r="17" fill="#E69A3C" clip-path="url(#fav-horizon)"/>
+  <line x1="20" y1="54" x2="76" y2="54" stroke="#EEF2F6" stroke-width="6" stroke-linecap="round"/>
+</svg>
