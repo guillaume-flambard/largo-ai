@@ -25,11 +25,13 @@ export const lessonFrontmatter = z.object({
 });
 export type LessonMeta = z.infer<typeof lessonFrontmatter>;
 
-/** Métadonnées d'un module (`_module.json`). */
+/** Métadonnées d'un module (`_module.json`). `formateurOnly` réserve le module à
+ *  la couche train-the-trainer : caché de l'index public, révélé en mode formateur. */
 export const moduleMeta = z.object({
   slug: z.string(),
   title: z.string(),
   summary: z.string(),
   order: z.number(),
+  formateurOnly: z.boolean().default(false),
 });
 export type ModuleMeta = z.infer<typeof moduleMeta>;

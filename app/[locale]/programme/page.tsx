@@ -4,6 +4,7 @@ import { PageHero } from "@/components/PageHero";
 import { OfferCard } from "@/components/OfferCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { LocaleLink } from "@/components/LocaleLink";
+import { FormateurGate } from "@/components/learn/FormateurGate";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { isLocale } from "@/lib/i18n";
@@ -56,17 +57,25 @@ export default async function ProgrammePage({
             }}
             className="grid-offers"
           >
-            {modules.map(({ meta, lessons }) => (
-              <LocaleLink
-                key={meta.slug}
-                href={`/programme/${meta.slug}`}
-                style={{ textDecoration: "none", display: "block", height: "100%" }}
-              >
+            {modules.map(({ meta, lessons }) => {
+              const card = (
+                <LocaleLink
+                  key={meta.slug}
+                  href={`/programme/${meta.slug}`}
+                  style={{ textDecoration: "none", display: "block", height: "100%" }}
+                >
                 <TiltCard
                   max={4}
                   className="card"
                   style={{ padding: 30, height: "100%" }}
                 >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                   <div
                     style={{
                       fontFamily: "var(--font-display)",
@@ -77,6 +86,22 @@ export default async function ProgrammePage({
                     }}
                   >
                     {String(meta.order).padStart(2, "0")}
+                  </div>
+                  {meta.formateurOnly && (
+                    <span
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: "var(--fs-xs)",
+                        fontWeight: "var(--fw-semibold)",
+                        color: "var(--sun-ink)",
+                        border: "1px solid var(--line-strong)",
+                        borderRadius: "var(--radius-pill)",
+                        padding: "3px 10px",
+                      }}
+                    >
+                      Formateur
+                    </span>
+                  )}
                   </div>
                   <h3
                     style={{
@@ -135,7 +160,13 @@ export default async function ProgrammePage({
                   </ul>
                 </TiltCard>
               </LocaleLink>
-            ))}
+              );
+              return meta.formateurOnly ? (
+                <FormateurGate key={meta.slug}>{card}</FormateurGate>
+              ) : (
+                card
+              );
+            })}
           </Reveal>
         </div>
       </section>
