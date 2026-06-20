@@ -32,7 +32,13 @@ type OfferCopy = {
   benefits: string[];
 };
 
-type PageCopy = {
+export type PageCopy = {
+  formateur: {
+    label: string;
+    on: string;
+    off: string;
+    hint: string;
+  };
   aPropos: {
     metaTitle: string;
     metaDescription: string;
@@ -78,6 +84,12 @@ type PageCopy = {
 };
 
 const fr: PageCopy = {
+  formateur: {
+    label: "Mode formateur",
+    on: "activé",
+    off: "désactivé",
+    hint: "Vous animez des formations ? Activez le mode formateur pour afficher, dans chaque leçon, les notes d'animation réservées — et le module « Devenir formateur ».",
+  },
   aPropos: {
     metaTitle: "Le formateur",
     metaDescription:
@@ -191,6 +203,12 @@ const fr: PageCopy = {
 };
 
 const en: PageCopy = {
+  formateur: {
+    label: "Trainer mode",
+    on: "on",
+    off: "off",
+    hint: "Run training sessions? Turn on trainer mode to reveal, in each lesson, the reserved facilitation notes — and the « Becoming a trainer » module.",
+  },
   aPropos: {
     metaTitle: "The trainer",
     metaDescription:

@@ -5,6 +5,7 @@ import { OfferCard } from "@/components/OfferCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { LocaleLink } from "@/components/LocaleLink";
 import { FormateurGate } from "@/components/learn/FormateurGate";
+import { RoleToggle } from "@/components/learn/RoleToggle";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -28,7 +29,9 @@ export default async function ProgrammePage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const c = getPageCopy(locale as Locale).programme;
+  const copy = getPageCopy(locale as Locale);
+  const c = copy.programme;
+  const f = copy.formateur;
 
   const modulesMeta = await listModules(locale);
   const modules = (
@@ -51,6 +54,34 @@ export default async function ProgrammePage({
               eyebrow={c.contentEyebrow}
               title={c.contentTitle}
             />
+          </Reveal>
+          <Reveal
+            as="div"
+            style={{
+              marginTop: 28,
+              padding: "18px 22px",
+              border: "1px solid var(--line)",
+              borderRadius: "var(--radius-md)",
+              background: "var(--paper-2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 20,
+              flexWrap: "wrap",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                maxWidth: "56ch",
+                fontSize: "var(--fs-sm)",
+                lineHeight: "var(--lh-normal)",
+                color: "var(--ink-soft)",
+              }}
+            >
+              {f.hint}
+            </p>
+            <RoleToggle label={f.label} stateOn={f.on} stateOff={f.off} />
           </Reveal>
           <Reveal
             as="div"

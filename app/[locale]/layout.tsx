@@ -9,6 +9,7 @@ import { RoleProvider } from "@/components/learn/RoleContext";
 import { LOCALES, isLocale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
 import { getMarketing } from "@/lib/marketing";
+import { getPageCopy } from "@/lib/pages";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -71,6 +72,7 @@ export default async function LocaleLayout({
 
   const dict = await getDictionary(locale);
   const m = getMarketing(locale);
+  const pageCopy = getPageCopy(locale);
 
   return (
     <html lang={locale} className={bricolage.variable}>
@@ -79,7 +81,7 @@ export default async function LocaleLayout({
           <BookingProvider>
             <SiteHeader nav={dict.nav} />
             <main>{children}</main>
-            <SiteFooter copy={m.footer} />
+            <SiteFooter copy={m.footer} formateur={pageCopy.formateur} />
           </BookingProvider>
         </RoleProvider>
       </body>

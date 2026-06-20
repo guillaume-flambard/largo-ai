@@ -7,6 +7,7 @@ import { RoleToggle } from "@/components/learn/RoleToggle";
 import { LessonProvider } from "@/components/learn/LessonProgress";
 import { Quiz } from "@/components/learn/quiz/Quiz";
 import { getDictionary } from "@/lib/dictionary";
+import { getPageCopy } from "@/lib/pages";
 import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
 import {
   getLesson,
@@ -41,6 +42,7 @@ export default async function LessonPage({
   if (!lesson) notFound();
 
   const dict = await getDictionary(locale);
+  const f = getPageCopy(locale).formateur;
   const mod = await getModule(locale, moduleSlug);
   const { prev, next } = await getAdjacentLessons(locale, moduleSlug, lecon);
 
@@ -80,7 +82,7 @@ export default async function LessonPage({
           <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
             {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.meta.level}
           </p>
-          <RoleToggle label={dict.programme.modeFormateur} />
+          <RoleToggle label={dict.programme.modeFormateur} stateOn={f.on} stateOff={f.off} />
         </div>
 
         {/* Objectifs */}

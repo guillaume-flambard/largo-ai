@@ -1,10 +1,18 @@
 import { LocaleLink } from "./LocaleLink";
 import { ReserveButton } from "./ReserveButton";
+import { RoleToggle } from "./learn/RoleToggle";
 import { Magnetic } from "./motion/Magnetic";
 import { ArrowIcon } from "./icons";
 import type { Marketing } from "@/lib/marketing";
+import type { PageCopy } from "@/lib/pages";
 
-export function SiteFooter({ copy }: { copy: Marketing["footer"] }) {
+export function SiteFooter({
+  copy,
+  formateur,
+}: {
+  copy: Marketing["footer"];
+  formateur: PageCopy["formateur"];
+}) {
   return (
     <footer className="section--ink" style={{ paddingTop: "var(--section-y)" }}>
       <div className="container">
@@ -101,6 +109,36 @@ export function SiteFooter({ copy }: { copy: Marketing["footer"] }) {
               ))}
             </div>
           ))}
+        </div>
+
+        <div
+          style={{
+            borderTop: "1px solid var(--line-on-ink)",
+            padding: "28px 0",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 20,
+          }}
+        >
+          <p
+            style={{
+              maxWidth: "52ch",
+              fontSize: "var(--fs-sm)",
+              lineHeight: "var(--lh-normal)",
+              color: "var(--paper-on-ink-muted)",
+              margin: 0,
+            }}
+          >
+            {formateur.hint}
+          </p>
+          <RoleToggle
+            label={formateur.label}
+            stateOn={formateur.on}
+            stateOff={formateur.off}
+            tone="dark"
+          />
         </div>
 
         <div
