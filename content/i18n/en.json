@@ -15,7 +15,8 @@
     "dureeMin": "min",
     "objectifs": "Objectives",
     "prerequis": "Prerequisites",
-    "pourLeFormateur": "For the trainer"
+    "pourLeFormateur": "For the trainer",
+    "quiz": "Check your understanding"
   },
   "langue": {
     "fr": "Français",

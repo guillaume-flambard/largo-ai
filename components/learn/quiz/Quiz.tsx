@@ -1,57 +1,21 @@
 "use client";
 
-import {
-  Children,
-  isValidElement,
-  useMemo,
-  useState,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { useMemo, useState } from "react";
 import { scoreQuiz, type QuizQuestion } from "@/lib/learn/scoring";
 import { useLessonKey } from "@/components/learn/LessonProgress";
 import { useProgress } from "@/lib/learn/progress";
 
-// Question/Choice : marqueurs de config (ne rendent rien seuls). Quiz lit leurs
-// props via React.Children pour construire le modèle puis rend l'UI interactive.
-export function Choice(_: { correct?: boolean; children: ReactNode }) {
-  return null;
-}
-export function Question(_: {
-  prompt: string;
-  multiple?: boolean;
-  children: ReactNode;
-}) {
-  return null;
-}
-
-type QEl = ReactElement<{ prompt: string; multiple?: boolean; children: ReactNode }>;
-type CEl = ReactElement<{ correct?: boolean; children: ReactNode }>;
-
-function named(el: unknown, name: string): boolean {
-  return isValidElement(el) && (el.type as { name?: string })?.name === name;
-}
-
-function parse(children: ReactNode): QuizQuestion[] {
-  return Children.toArray(children)
-    .filter((c): c is QEl => named(c, "Question"))
-    .map((q) => ({
-      prompt: q.props.prompt,
-      multiple: Boolean(q.props.multiple),
-      choices: Children.toArray(q.props.children)
-        .filter((c): c is CEl => named(c, "Choice"))
-        .map((c) => ({ text: String(c.props.children), correct: Boolean(c.props.correct) })),
-    }));
-}
-
-export function Quiz({ children }: { children: ReactNode }) {
-  const questions = useMemo(() => parse(children), [children]);
-  const [answers, setAnswers] = useState<number[][]>(() => questions.map(() => []));
+// Les questions sont passées en **prop données** (sérialisable RSC), pas via des
+// enfants JSX — l'introspection d'enfants ne traverse pas la frontière
+// serveur→client de façon fiable.
+export function Quiz({ questions = [] }: { questions?: QuizQuestion[] }) {
+  const initial = useMemo<number[][]>(() => questions.map(() => []), [questions]);
+  const [answers, setAnswers] = useState<number[][]>(initial);
   const [submitted, setSubmitted] = useState(false);
   const lessonKey = useLessonKey();
   const record = useProgress((s) => s.record);
 
-  if (questions.length === 0) return null;
+  if (!questions || questions.length === 0) return null;
   const result = submitted ? scoreQuiz(questions, answers) : null;
 
   function pick(qi: number, ci: number, multiple: boolean) {
@@ -153,3 +117,5 @@ export function Quiz({ children }: { children: ReactNode }) {
     </section>
   );
 }
+
+export type { QuizQuestion };

@@ -1,7 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-blocks";
 import { Formateur } from "@/components/learn/Formateur";
-import { Quiz, Question, Choice } from "@/components/learn/quiz/Quiz";
 
 // Required by @next/mdx with the App Router: this file declares the React
 // components made available to every compiled MDX file. Base HTML elements
@@ -13,9 +12,6 @@ const components: MDXComponents = {
   Exercice,
   Attention,
   Formateur,
-  Quiz,
-  Question,
-  Choice,
 };
 
 export function useMDXComponents(): MDXComponents {

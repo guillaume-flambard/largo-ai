@@ -1,6 +1,17 @@
 import { z } from "zod";
 
-/** Frontmatter d'une leçon MDX. Le `level` est en français (vocabulaire métier). */
+const quizChoice = z.object({
+  text: z.string(),
+  correct: z.boolean().default(false),
+});
+const quizQuestion = z.object({
+  prompt: z.string(),
+  multiple: z.boolean().default(false),
+  choices: z.array(quizChoice),
+});
+
+/** Frontmatter d'une leçon MDX. Le `level` est en français (vocabulaire métier).
+ *  `quiz` (optionnel) = données structurées rendues par la page (pas en MDX). */
 export const lessonFrontmatter = z.object({
   title: z.string(),
   slug: z.string(),
@@ -10,6 +21,7 @@ export const lessonFrontmatter = z.object({
   level: z.enum(["découverte", "intermédiaire", "avancé"]),
   objectives: z.array(z.string()).default([]),
   prerequisites: z.array(z.string()).default([]),
+  quiz: z.array(quizQuestion).optional(),
 });
 export type LessonMeta = z.infer<typeof lessonFrontmatter>;
 

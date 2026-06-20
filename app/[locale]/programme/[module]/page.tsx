@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { LocaleLink } from "@/components/LocaleLink";
 import { PageHero } from "@/components/PageHero";
+import { LessonStatus } from "@/components/learn/LessonStatus";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, LOCALES } from "@/lib/i18n";
 import { getModule, listModules } from "@/lib/content/programme";
@@ -50,8 +51,9 @@ export default async function ModulePage({
                     {lesson.title}
                   </LocaleLink>
                 </div>
-                <div style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
-                  {lesson.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.level}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
+                  <LessonStatus lessonKey={`${moduleSlug}:${lesson.slug}`} />
+                  <span>{lesson.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.level}</span>
                 </div>
               </li>
             ))}

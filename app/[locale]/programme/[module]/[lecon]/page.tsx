@@ -5,6 +5,7 @@ import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-block
 import { Formateur } from "@/components/learn/Formateur";
 import { RoleToggle } from "@/components/learn/RoleToggle";
 import { LessonProvider } from "@/components/learn/LessonProgress";
+import { Quiz } from "@/components/learn/quiz/Quiz";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
 import {
@@ -111,11 +112,26 @@ export default async function LessonPage({
           </div>
         )}
 
-        {/* Corps de la leçon */}
+        {/* Corps de la leçon + quiz (données frontmatter, rendu par la page) */}
         <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
           <div className="prose" style={{ marginTop: 8 }}>
             {content}
           </div>
+          {lesson.meta.quiz && lesson.meta.quiz.length > 0 && (
+            <div style={{ marginTop: "clamp(32px, 5vw, 48px)" }}>
+              <h2
+                style={{
+                  fontSize: "var(--fs-h3)",
+                  fontWeight: "var(--fw-light)",
+                  letterSpacing: "var(--ls-display)",
+                  marginBottom: 8,
+                }}
+              >
+                {dict.programme.quiz}
+              </h2>
+              <Quiz questions={lesson.meta.quiz} />
+            </div>
+          )}
         </LessonProvider>
 
         {/* Navigation prev / next */}

@@ -2,6 +2,17 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 export const PASS_THRESHOLD = 70;
+
+// Storage neutre côté serveur (pas de window) : la persistance ne s'active qu'au
+// navigateur, le prerender statique ne casse pas.
+const noopStorage: Storage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+  clear: () => {},
+  key: () => null,
+  length: 0,
+};
 export type LessonProgress = { bestScore: number; validated: boolean };
 
 /** Mise à jour pure : garde le meilleur score, `validated` au seuil. Testable
@@ -32,7 +43,10 @@ export const useProgress = create<ProgressStore>()(
       name: "largo-progress",
       // localStorage aujourd'hui ; remplacer ce `storage` par un adaptateur DB
       // le jour où des comptes existent — le reste du code ne bouge pas.
-      storage: createJSONStorage(() => localStorage),
+      // Fallback no-op côté serveur (SSG/SSR) où `window` n'existe pas.
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" ? window.localStorage : noopStorage,
+      ),
     },
   ),
 );
