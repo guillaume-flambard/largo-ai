@@ -26,23 +26,28 @@ const saveSchema = z.object({
   quizScore: z.number().int().optional(), quizTotal: z.number().int().optional(),
 });
 
-export async function saveLessonProgress(input: z.infer<typeof saveSchema>) {
-  const user = await getSessionUser();
-  if (!user) return { ok: false as const };
-  const v = saveSchema.parse(input);
+/** Private helper — resolves no session, accepts already-validated userId. */
+async function upsertLesson(userId: string, data: z.infer<typeof saveSchema>) {
   await db.insert(progress).values({
-    userId: user.id, moduleSlug: v.moduleSlug, lessonSlug: v.lessonSlug,
-    completedAt: v.completed ? new Date() : null,
-    quizScore: v.quizScore ?? null, quizTotal: v.quizTotal ?? null,
+    userId, moduleSlug: data.moduleSlug, lessonSlug: data.lessonSlug,
+    completedAt: data.completed ? new Date() : null,
+    quizScore: data.quizScore ?? null, quizTotal: data.quizTotal ?? null,
     updatedAt: new Date(),
   }).onConflictDoUpdate({
     target: [progress.userId, progress.moduleSlug, progress.lessonSlug],
     set: {
-      completedAt: v.completed ? new Date() : undefined,
-      quizScore: v.quizScore ?? undefined, quizTotal: v.quizTotal ?? undefined,
+      // completedAt intentionally omitted from update: completions are never revoked
+      quizScore: data.quizScore ?? undefined, quizTotal: data.quizTotal ?? undefined,
       updatedAt: new Date(),
     },
   });
+}
+
+export async function saveLessonProgress(input: z.infer<typeof saveSchema>) {
+  const user = await getSessionUser();
+  if (!user) return { ok: false as const };
+  const v = saveSchema.parse(input);
+  await upsertLesson(user.id, v);
   return { ok: true as const };
 }
 
@@ -51,7 +56,7 @@ export async function importLocalProgress(entries: LessonProgress[]) {
   if (!user) return { imported: 0 };
   let imported = 0;
   for (const e of entries) {
-    await saveLessonProgress({
+    await upsertLesson(user.id, {
       moduleSlug: e.moduleSlug, lessonSlug: e.lessonSlug,
       completed: !!e.completedAt,
       quizScore: e.quizScore ?? undefined, quizTotal: e.quizTotal ?? undefined,

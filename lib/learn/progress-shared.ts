@@ -3,8 +3,10 @@ export type LessonProgress = {
   completedAt: string | null; quizScore: number | null; quizTotal: number | null;
 };
 
-export function moduleCompletion(entries: LessonProgress[], lessonSlugs: string[]) {
-  const doneSet = new Set(entries.filter((e) => e.completedAt).map((e) => e.lessonSlug));
+export function moduleCompletion(entries: LessonProgress[], moduleSlug: string, lessonSlugs: string[]) {
+  const doneSet = new Set(
+    entries.filter((e) => e.completedAt && e.moduleSlug === moduleSlug).map((e) => e.lessonSlug)
+  );
   return { done: lessonSlugs.filter((s) => doneSet.has(s)).length, total: lessonSlugs.length };
 }
 

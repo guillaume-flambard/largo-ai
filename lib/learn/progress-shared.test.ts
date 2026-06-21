@@ -5,7 +5,7 @@ const done = (m: string, l: string) => ({ moduleSlug: m, lessonSlug: l, complete
 
 describe("moduleCompletion", () => {
   it("compte les leçons terminées du module", () => {
-    const r = moduleCompletion([done("m1", "a"), done("m1", "b")], ["a", "b", "c"]);
+    const r = moduleCompletion([done("m1", "a"), done("m1", "b")], "m1", ["a", "b", "c"]);
     expect(r).toEqual({ done: 2, total: 3 });
   });
 });
