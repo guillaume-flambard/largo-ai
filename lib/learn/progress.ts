@@ -37,8 +37,11 @@ function toSharedArray(progress: Record<string, LessonProgress>): SharedLessonPr
       moduleSlug: moduleSlug ?? key,
       lessonSlug: lessonSlug ?? "",
       completedAt: v.validated ? new Date().toISOString() : null,
-      quizScore: v.bestScore > 0 ? v.bestScore : null,
-      quizTotal: v.bestScore > 0 ? 100 : null,
+      // bestScore is a percentage (0-100), not a raw count; raw quizTotal is
+      // not recoverable, so do not fabricate counts. completedAt carries the
+      // completion state needed for sync; server entries keep their real counts.
+      quizScore: null,
+      quizTotal: null,
     };
   });
 }
@@ -126,6 +129,9 @@ export const useProgress = create<ProgressStore>()(
       storage: createJSONStorage(() =>
         typeof window !== "undefined" ? window.localStorage : noopStorage,
       ),
+      // Only persist progress data — transient fields like isAuthed must not
+      // be written to localStorage or they will be incorrectly rehydrated.
+      partialize: (s) => ({ progress: s.progress }),
     },
   ),
 );
