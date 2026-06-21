@@ -18,23 +18,23 @@ export function CinematicHero({ copy }: { copy: Marketing["hero"] }) {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Le titre (élément LCP) reste peint dès la 1re frame — on n'anime QUE
+        // les éléments secondaires, pour ne pas retarder le First/Largest
+        // Contentful Paint. L'arrivée calme est portée par les fondus, la ligne
+        // d'horizon et le soleil qui se lève.
         const tl = gsap.timeline({
           defaults: { ease: "expo.out", duration: 1.1 },
         });
-        tl.from(".hero-line > span", {
-          yPercent: 115,
+        tl.from(".hero-fade", {
+          y: 18,
+          autoAlpha: 0,
           stagger: 0.12,
-          duration: 1.2,
+          duration: 0.9,
         })
-          .from(
-            ".hero-fade",
-            { y: 18, autoAlpha: 0, stagger: 0.12, duration: 0.9 },
-            "-=0.7",
-          )
           .from(
             ".hero-horizon-line",
             { scaleX: 0, transformOrigin: "left center", duration: 1.3 },
-            "-=0.9",
+            "-=0.6",
           )
           .from(
             ".hero-sun",
