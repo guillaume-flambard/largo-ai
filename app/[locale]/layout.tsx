@@ -14,6 +14,7 @@ import { getPageCopy } from "@/lib/pages";
 import { getSessionUser } from "@/lib/auth/session";
 import { getMyProgress } from "@/lib/learn/progress-server";
 import { ProgressSync } from "@/components/learn/ProgressSync";
+import { ImportBanner } from "@/components/learn/ImportBanner";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -92,7 +93,19 @@ export default async function LocaleLayout({
               user={user ? { name: user.name, image: user.image } : null}
               accountSlot={user ? <SignOutButton label={pageCopy.auth.signOut} /> : undefined}
             />
-            <main>{children}</main>
+            <main>
+              {user && (
+                <ImportBanner
+                  serverEntries={serverEntries}
+                  copy={{
+                    importPrompt: pageCopy.auth.importPrompt,
+                    importCta: pageCopy.auth.importCta,
+                    importDismiss: pageCopy.auth.importDismiss,
+                  }}
+                />
+              )}
+              {children}
+            </main>
             <SiteFooter copy={m.footer} formateur={pageCopy.formateur} />
           </BookingProvider>
         </RoleProvider>

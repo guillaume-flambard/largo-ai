@@ -46,6 +46,9 @@ export type PageCopy = {
     lessonsDone: string;
     overall: string;
     savePrompt: string;
+    importPrompt: string;
+    importCta: string;
+    importDismiss: string;
   };
   formateur: {
     label: string;
@@ -111,6 +114,9 @@ const fr: PageCopy = {
     lessonsDone: "leçons",
     overall: "Progression globale",
     savePrompt: "Connectez-vous pour sauvegarder votre progression et la retrouver sur tous vos appareils.",
+    importPrompt: "Vous avez de la progression enregistrée hors connexion. La rapatrier sur votre compte ?",
+    importCta: "Importer",
+    importDismiss: "Plus tard",
   },
   formateur: {
     label: "Mode formateur",
@@ -244,6 +250,9 @@ const en: PageCopy = {
     lessonsDone: "lessons",
     overall: "Overall progress",
     savePrompt: "Sign in to save your progress and find it on all your devices.",
+    importPrompt: "You have progress saved while signed out. Bring it over to your account?",
+    importCta: "Import",
+    importDismiss: "Later",
   },
   formateur: {
     label: "Trainer mode",
