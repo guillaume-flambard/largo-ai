@@ -18,6 +18,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   // Exclut les fichiers internes et les assets/metadata servis à la racine.
   matcher: [
-    "/((?!_next|icon.svg|opengraph-image|brand|favicon.ico).*)",
+    "/((?!_next|icon.svg|opengraph-image|brand|favicon.ico|robots.txt|sitemap.xml).*)",
   ],
 };

@@ -10,6 +10,7 @@ import { LOCALES, isLocale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
 import { getMarketing } from "@/lib/marketing";
 import { getPageCopy } from "@/lib/pages";
+import { SITE_URL } from "@/lib/site";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -19,7 +20,7 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
-const siteUrl = "https://largo-ia.fr";
+const siteUrl = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
