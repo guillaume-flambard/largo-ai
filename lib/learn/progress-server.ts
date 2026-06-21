@@ -51,15 +51,26 @@ export async function saveLessonProgress(input: z.infer<typeof saveSchema>) {
   return { ok: true as const };
 }
 
+const importEntrySchema = z.object({
+  moduleSlug: z.string().min(1),
+  lessonSlug: z.string().min(1),
+  completedAt: z.string().nullable(),
+  quizScore: z.number().nullable(),
+  quizTotal: z.number().nullable(),
+});
+
 export async function importLocalProgress(entries: LessonProgress[]) {
   const user = await getSessionUser();
   if (!user) return { imported: 0 };
   let imported = 0;
   for (const e of entries) {
+    // Validate each entry individually; skip any with empty moduleSlug or lessonSlug
+    const parsed = importEntrySchema.safeParse(e);
+    if (!parsed.success) continue;
     await upsertLesson(user.id, {
-      moduleSlug: e.moduleSlug, lessonSlug: e.lessonSlug,
-      completed: !!e.completedAt,
-      quizScore: e.quizScore ?? undefined, quizTotal: e.quizTotal ?? undefined,
+      moduleSlug: parsed.data.moduleSlug, lessonSlug: parsed.data.lessonSlug,
+      completed: !!parsed.data.completedAt,
+      quizScore: parsed.data.quizScore ?? undefined, quizTotal: parsed.data.quizTotal ?? undefined,
     });
     imported++;
   }

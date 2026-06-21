@@ -3,9 +3,12 @@ export type LessonProgress = {
   completedAt: string | null; quizScore: number | null; quizTotal: number | null;
 };
 
-export function moduleCompletion(entries: LessonProgress[], moduleSlug: string, lessonSlugs: string[]) {
+// Caller MUST pass entries already scoped to the module
+// (Task 5 does this via entries.filter(e => e.moduleSlug === m.meta.slug)),
+// which is why no internal module filtering is needed here.
+export function moduleCompletion(entries: LessonProgress[], lessonSlugs: string[]): { done: number; total: number } {
   const doneSet = new Set(
-    entries.filter((e) => e.completedAt && e.moduleSlug === moduleSlug).map((e) => e.lessonSlug)
+    entries.filter((e) => e.completedAt).map((e) => e.lessonSlug)
   );
   return { done: lessonSlugs.filter((s) => doneSet.has(s)).length, total: lessonSlugs.length };
 }
