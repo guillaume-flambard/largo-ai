@@ -1,6 +1,8 @@
+import type { Locale } from "@/lib/i18n";
 import { CinematicHero } from "@/components/sections/CinematicHero";
-import { getMarketing } from "@/lib/marketing";
+import { getMarketing, type Marketing } from "@/lib/marketing";
 import { isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
+import { SITE_URL } from "@/lib/site";
 import { Atouts } from "@/components/sections/Atouts";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Offers } from "@/components/sections/Offers";
@@ -9,18 +11,31 @@ import { TrainerTeaser } from "@/components/sections/TrainerTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Largo IA",
-  description:
-    "Organisme de formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, conforme à l'AI Act.",
-  url: "https://largo-ia.fr",
-  email: "contact@largo-ia.fr",
-  founder: { "@type": "Person", name: "Guillaume Flambard" },
-  areaServed: "FR",
-  knowsLanguage: "fr",
-};
+/** JSON-LD : organisme de formation + FAQ (rich snippets Google), localisé. */
+function buildJsonLd(m: Marketing, locale: Locale) {
+  const org = {
+    "@type": "EducationalOrganization",
+    name: "Largo IA",
+    description:
+      locale === "en"
+        ? "Generative-AI training for French small and medium businesses. 100% remote, jargon-free, AI Act compliant."
+        : "Organisme de formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, conforme à l'AI Act.",
+    url: SITE_URL,
+    email: "contact@largo-ia.fr",
+    founder: { "@type": "Person", name: "Guillaume Flambard" },
+    areaServed: "FR",
+    inLanguage: locale,
+  };
+  const faqPage = {
+    "@type": "FAQPage",
+    mainEntity: m.faq.items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: { "@type": "Answer", text: it.a },
+    })),
+  };
+  return { "@context": "https://schema.org", "@graph": [org, faqPage] };
+}
 
 export default async function Home({
   params,
@@ -28,12 +43,13 @@ export default async function Home({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const m = getMarketing(isLocale(locale) ? locale : DEFAULT_LOCALE);
+  const resolved = isLocale(locale) ? locale : DEFAULT_LOCALE;
+  const m = getMarketing(resolved);
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(m, resolved)) }}
       />
       <CinematicHero copy={m.hero} />
       <Atouts copy={m.atouts} />

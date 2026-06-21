@@ -15,6 +15,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getMyProgress } from "@/lib/learn/progress-server";
 import { ProgressSync } from "@/components/learn/ProgressSync";
 import { ImportBanner } from "@/components/learn/ImportBanner";
+import { SITE_URL } from "@/lib/site";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -24,7 +25,7 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
-const siteUrl = "https://largo-ia.fr";
+const siteUrl = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

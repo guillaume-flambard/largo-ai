@@ -19,6 +19,6 @@ export const config = {
   // Exclut les routes API (dont /api/auth/*), les fichiers internes Next.js,
   // et les assets/metadata servis à la racine.
   matcher: [
-    "/((?!api|_next/static|_next/image|_next|icon.svg|opengraph-image|brand|favicon.ico).*)",
+    "/((?!api|_next|icon.svg|opengraph-image|brand|favicon.ico|robots.txt|sitemap.xml).*)",
   ],
 };
