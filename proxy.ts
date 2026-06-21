@@ -16,8 +16,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Exclut les fichiers internes et les assets/metadata servis à la racine.
+  // Exclut les routes API (dont /api/auth/*), les fichiers internes Next.js,
+  // et les assets/metadata servis à la racine.
   matcher: [
-    "/((?!_next|icon.svg|opengraph-image|brand|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|_next|icon.svg|opengraph-image|brand|favicon.ico).*)",
   ],
 };

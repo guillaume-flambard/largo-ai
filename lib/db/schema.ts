@@ -1,9 +1,7 @@
 import {
   pgTable, text, timestamp, primaryKey, integer, uniqueIndex,
 } from "drizzle-orm/pg-core";
-
-// AdapterAccountType local fallback — will be replaced by next-auth/adapters import in Task 2
-type AdapterAccountType = "oauth" | "oidc" | "email" | "webauthn";
+import type { AdapterAccountType } from "next-auth/adapters";
 
 export const users = pgTable("user", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
