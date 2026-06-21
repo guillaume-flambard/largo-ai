@@ -8,6 +8,7 @@ import { LessonProvider } from "@/components/learn/LessonProgress";
 import { Quiz } from "@/components/learn/quiz/Quiz";
 import { getDictionary } from "@/lib/dictionary";
 import { getPageCopy } from "@/lib/pages";
+import { getSessionUser } from "@/lib/auth/session";
 import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
 import {
   getLesson,
@@ -42,7 +43,9 @@ export default async function LessonPage({
   if (!lesson) notFound();
 
   const dict = await getDictionary(locale);
-  const f = getPageCopy(locale).formateur;
+  const pageCopy = getPageCopy(locale);
+  const f = pageCopy.formateur;
+  const user = await getSessionUser();
   const mod = await getModule(locale, moduleSlug);
   const { prev, next } = await getAdjacentLessons(locale, moduleSlug, lecon);
 
@@ -112,6 +115,33 @@ export default async function LessonPage({
               ))}
             </ul>
           </div>
+        )}
+
+        {/* Invitation à se connecter pour sauvegarder (visiteurs déconnectés) */}
+        {!user && (
+          <LocaleLink
+            href="/connexion"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+              margin: "24px 0 4px",
+              padding: "14px 18px",
+              border: "1px dashed var(--line-strong)",
+              borderRadius: "var(--radius-md)",
+              background: "var(--paper-2)",
+              textDecoration: "none",
+            }}
+          >
+            <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink-soft)", lineHeight: "var(--lh-normal)" }}>
+              {pageCopy.auth.savePrompt}
+            </span>
+            <span style={{ fontSize: "var(--fs-sm)", fontWeight: "var(--fw-semibold)", color: "var(--sun-ink)", flex: "0 0 auto" }}>
+              {pageCopy.auth.signIn} <span aria-hidden="true">→</span>
+            </span>
+          </LocaleLink>
         )}
 
         {/* Corps de la leçon + quiz (données frontmatter, rendu par la page) */}

@@ -45,6 +45,7 @@ export type PageCopy = {
     resume: string;
     lessonsDone: string;
     overall: string;
+    savePrompt: string;
   };
   formateur: {
     label: string;
@@ -109,6 +110,7 @@ const fr: PageCopy = {
     resume: "Reprendre",
     lessonsDone: "leçons",
     overall: "Progression globale",
+    savePrompt: "Connectez-vous pour sauvegarder votre progression et la retrouver sur tous vos appareils.",
   },
   formateur: {
     label: "Mode formateur",
@@ -241,6 +243,7 @@ const en: PageCopy = {
     resume: "Resume",
     lessonsDone: "lessons",
     overall: "Overall progress",
+    savePrompt: "Sign in to save your progress and find it on all your devices.",
   },
   formateur: {
     label: "Trainer mode",
