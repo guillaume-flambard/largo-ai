@@ -67,6 +67,19 @@ export default function ConfidentialitePage() {
               Vercel Analytics ou Plausible) est <em>à confirmer.</em>
             </p>
 
+            <h2>Espace apprenant — données de connexion et progression</h2>
+            <p>
+              Lorsqu&apos;un visiteur se connecte à son espace apprenant via Google
+              ou Microsoft, Largo IA reçoit de ce fournisseur d&apos;identité son
+              adresse e-mail, son nom et sa photo de profil, afin de créer et
+              d&apos;identifier son compte. Largo IA enregistre également sa
+              progression pédagogique (leçons suivies, scores de quiz). Ces données
+              servent uniquement à gérer son compte et son suivi de formation ; elles
+              ne sont ni revendues ni partagées avec des tiers. Pour en demander la
+              suppression, il suffit d&apos;écrire à{" "}
+              <a href="mailto:contact@largo-ia.fr">contact@largo-ia.fr</a>.
+            </p>
+
             <h2>Responsable du traitement</h2>
             <p>
               Largo IA — Guillaume Flambard.{" "}
