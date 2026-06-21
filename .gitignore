@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# drizzle migrations (generated, not committed)
+/drizzle
+
 # QA / browser automation artifacts (screenshots, snapshots, logs)
 .playwright-mcp/
 /*.png
