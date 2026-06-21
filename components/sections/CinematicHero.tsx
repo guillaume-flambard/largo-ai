@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { Button } from "../Button";
 import { ReserveButton } from "../ReserveButton";
 import { Magnetic } from "../motion/Magnetic";
 import { ArrowIcon } from "../icons";

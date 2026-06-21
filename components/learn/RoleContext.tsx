@@ -20,9 +20,14 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const [formateur, setFormateur] = useState(false);
 
   useEffect(() => {
+    // Lecture volontaire d'un état navigateur-only (cookie) APRÈS hydratation :
+    // on démarre « apprenant » côté serveur (pas de cookie) puis on révèle le mode
+    // formateur si le cookie est posé. C'est l'idiome qui évite un mismatch
+    // d'hydratation — le setState en effet est intentionnel ici.
     const has = document.cookie
       .split("; ")
       .some((c) => c === `${COOKIE}=formateur`);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (has) setFormateur(true);
   }, []);
 
