@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { scoreQuiz, type QuizQuestion } from "@/lib/learn/scoring";
 import { useLessonKey } from "@/components/learn/LessonProgress";
 import { useProgress } from "@/lib/learn/progress";
+import type { MarkLessonParams } from "@/lib/learn/progress";
 
 // Les questions sont passées en **prop données** (sérialisable RSC), pas via des
 // enfants JSX — l'introspection d'enfants ne traverse pas la frontière
@@ -13,7 +14,7 @@ export function Quiz({ questions = [] }: { questions?: QuizQuestion[] }) {
   const [answers, setAnswers] = useState<number[][]>(initial);
   const [submitted, setSubmitted] = useState(false);
   const lessonKey = useLessonKey();
-  const record = useProgress((s) => s.record);
+  const markLesson = useProgress((s) => s.markLesson);
 
   if (!questions || questions.length === 0) return null;
   const result = submitted ? scoreQuiz(questions, answers) : null;
@@ -35,7 +36,19 @@ export function Quiz({ questions = [] }: { questions?: QuizQuestion[] }) {
   function validate() {
     setSubmitted(true);
     const r = scoreQuiz(questions, answers);
-    if (lessonKey) record(lessonKey, r.percent);
+    if (lessonKey) {
+      const colonIdx = lessonKey.indexOf(":");
+      const moduleSlug = colonIdx >= 0 ? lessonKey.slice(0, colonIdx) : lessonKey;
+      const lessonSlug = colonIdx >= 0 ? lessonKey.slice(colonIdx + 1) : "";
+      const params: MarkLessonParams = {
+        moduleSlug,
+        lessonSlug,
+        completed: r.percent >= 70,
+        quizScore: r.correct,
+        quizTotal: r.total,
+      };
+      void markLesson(params);
+    }
   }
 
   function restart() {

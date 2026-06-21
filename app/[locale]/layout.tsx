@@ -12,6 +12,8 @@ import { getDictionary } from "@/lib/dictionary";
 import { getMarketing } from "@/lib/marketing";
 import { getPageCopy } from "@/lib/pages";
 import { getSessionUser } from "@/lib/auth/session";
+import { getMyProgress } from "@/lib/learn/progress-server";
+import { ProgressSync } from "@/components/learn/ProgressSync";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -76,11 +78,13 @@ export default async function LocaleLayout({
   const m = getMarketing(locale);
   const pageCopy = getPageCopy(locale);
   const user = await getSessionUser();
+  const serverEntries = user ? await getMyProgress() : [];
 
   return (
     <html lang={locale} className={bricolage.variable}>
       <body>
         <RoleProvider>
+          <ProgressSync authed={!!user} serverEntries={serverEntries} />
           <BookingProvider>
             <SiteHeader
               nav={dict.nav}
