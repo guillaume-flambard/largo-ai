@@ -11,6 +11,7 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { listModules, getModule } from "@/lib/content/programme";
 import { getPageCopy } from "@/lib/pages";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -38,8 +39,32 @@ export default async function ProgrammePage({
     await Promise.all(modulesMeta.map((m) => getModule(locale, m.slug)))
   ).filter((m): m is NonNullable<typeof m> => m !== null);
 
+  // JSON-LD : catalogue de cours (modules publics) pour les rich results Google.
+  const courseList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: modules
+      .filter((m) => !m.meta.formateurOnly)
+      .map((m, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Course",
+          name: m.meta.title,
+          description: m.meta.summary,
+          url: `${SITE_URL}/${locale}/programme/${m.meta.slug}`,
+          inLanguage: locale,
+          provider: { "@type": "Organization", name: "Largo IA", url: SITE_URL },
+        },
+      })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseList) }}
+      />
       <PageHero
         eyebrow={c.heroEyebrow}
         title={c.heroTitle}
