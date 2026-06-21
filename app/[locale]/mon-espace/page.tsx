@@ -19,7 +19,8 @@ export default async function MonEspacePage({ params }: { params: Promise<{ loca
   const mods = await listModules(locale as Locale);
   const full = (await Promise.all(mods.map((m) => getModule(locale as Locale, m.slug)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof getModule>>>[];
 
-  const ordered = full.flatMap((m) => m.lessons.map((l) => ({ moduleSlug: m.meta.slug, lessonSlug: l.slug })));
+  const publicMods = full.filter((m) => !m.meta.formateurOnly);
+  const ordered = publicMods.flatMap((m) => m.lessons.map((l) => ({ moduleSlug: m.meta.slug, lessonSlug: l.slug })));
   const next = nextUnfinished(entries, ordered);
 
   return (
@@ -29,11 +30,11 @@ export default async function MonEspacePage({ params }: { params: Promise<{ loca
         <div className="container">
           {next && (
             <LocaleLink href={`/programme/${next.moduleSlug}/${next.lessonSlug}`} className="card" style={{ display: "inline-block", padding: "12px 18px", marginBottom: 28, fontWeight: "var(--fw-semibold)" }}>
-              {t.resume} →
+              {t.resume} <span aria-hidden="true">→</span>
             </LocaleLink>
           )}
           <ol className="rows" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {full.filter((m) => !m.meta.formateurOnly).map((m) => {
+            {publicMods.map((m) => {
               const moduleEntries = entries.filter((e) => e.moduleSlug === m.meta.slug);
               const c = moduleCompletion(moduleEntries, m.lessons.map((l) => l.slug));
               return (
