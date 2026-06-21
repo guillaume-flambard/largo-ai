@@ -12,6 +12,7 @@ export function SignOutButton({ label }: { label: string }) {
     <form action={doSignOut}>
       <button
         type="submit"
+        role="menuitem"
         className="link-underline"
         style={{
           background: "none",

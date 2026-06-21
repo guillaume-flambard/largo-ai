@@ -52,11 +52,17 @@ export function ImportBanner({
 
   async function doImport() {
     setImporting(true);
-    const { importLocalProgress } = await import("@/lib/learn/progress-server");
-    await importLocalProgress(importable);
-    setDismissed(true);
-    setImporting(false);
-    router.refresh();
+    try {
+      const { importLocalProgress } = await import("@/lib/learn/progress-server");
+      await importLocalProgress(importable);
+      setDismissed(true);
+      router.refresh();
+    } catch {
+      // Échec (réseau / session expirée) : on ne masque pas le bandeau, l'utilisateur
+      // peut réessayer ; on réactive juste le bouton.
+    } finally {
+      setImporting(false);
+    }
   }
 
   return (
