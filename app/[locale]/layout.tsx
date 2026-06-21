@@ -5,11 +5,13 @@ import "../globals.css";
 import { BookingProvider } from "@/components/BookingContext";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { RoleProvider } from "@/components/learn/RoleContext";
 import { LOCALES, isLocale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionary";
 import { getMarketing } from "@/lib/marketing";
 import { getPageCopy } from "@/lib/pages";
+import { getSessionUser } from "@/lib/auth/session";
 
 // One characterful family, exploited across the full weight range
 // (200 → 800) for strong contrast. Variable axis loaded in full.
@@ -73,13 +75,19 @@ export default async function LocaleLayout({
   const dict = await getDictionary(locale);
   const m = getMarketing(locale);
   const pageCopy = getPageCopy(locale);
+  const user = await getSessionUser();
 
   return (
     <html lang={locale} className={bricolage.variable}>
       <body>
         <RoleProvider>
           <BookingProvider>
-            <SiteHeader nav={dict.nav} />
+            <SiteHeader
+              nav={dict.nav}
+              auth={pageCopy.auth}
+              user={user ? { name: user.name, image: user.image } : null}
+              accountSlot={user ? <SignOutButton label={pageCopy.auth.signOut} /> : undefined}
+            />
             <main>{children}</main>
             <SiteFooter copy={m.footer} formateur={pageCopy.formateur} />
           </BookingProvider>

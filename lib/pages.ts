@@ -33,6 +33,19 @@ type OfferCopy = {
 };
 
 export type PageCopy = {
+  auth: {
+    signIn: string;
+    mySpace: string;
+    signOut: string;
+    pageTitle: string;
+    pageSubtitle: string;
+    withGoogle: string;
+    withMicrosoft: string;
+    dashboardTitle: string;
+    resume: string;
+    lessonsDone: string;
+    overall: string;
+  };
   formateur: {
     label: string;
     on: string;
@@ -84,6 +97,19 @@ export type PageCopy = {
 };
 
 const fr: PageCopy = {
+  auth: {
+    signIn: "Se connecter",
+    mySpace: "Mon espace",
+    signOut: "Déconnexion",
+    pageTitle: "Connexion à votre espace",
+    pageSubtitle: "Connectez-vous pour suivre votre progression et retrouver votre programme.",
+    withGoogle: "Continuer avec Google",
+    withMicrosoft: "Continuer avec Microsoft",
+    dashboardTitle: "Mon programme",
+    resume: "Reprendre",
+    lessonsDone: "leçons",
+    overall: "Progression globale",
+  },
   formateur: {
     label: "Mode formateur",
     on: "activé",
@@ -203,6 +229,19 @@ const fr: PageCopy = {
 };
 
 const en: PageCopy = {
+  auth: {
+    signIn: "Sign in",
+    mySpace: "My space",
+    signOut: "Sign out",
+    pageTitle: "Sign in to your space",
+    pageSubtitle: "Sign in to track your progress and find your programme.",
+    withGoogle: "Continue with Google",
+    withMicrosoft: "Continue with Microsoft",
+    dashboardTitle: "My programme",
+    resume: "Resume",
+    lessonsDone: "lessons",
+    overall: "Overall progress",
+  },
   formateur: {
     label: "Trainer mode",
     on: "on",

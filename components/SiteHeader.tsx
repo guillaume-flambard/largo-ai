@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { LocaleLink } from "./LocaleLink";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ReserveButton } from "./ReserveButton";
@@ -9,7 +10,25 @@ import { ArrowIcon, CloseIcon, MenuIcon } from "./icons";
 
 type Nav = { programme: string; aPropos: string; contact: string; reserver: string };
 
-export function SiteHeader({ nav }: { nav: Nav }) {
+type AuthCopy = {
+  signIn: string;
+  mySpace: string;
+  signOut: string;
+};
+
+type UserInfo = { name?: string | null; image?: string | null } | null;
+
+export function SiteHeader({
+  nav,
+  auth,
+  user,
+  accountSlot,
+}: {
+  nav: Nav;
+  auth?: AuthCopy;
+  user?: UserInfo;
+  accountSlot?: ReactNode;
+}) {
   const links = [
     { label: nav.programme, href: "/programme" },
     { label: nav.aPropos, href: "/a-propos" },
@@ -68,6 +87,20 @@ export function SiteHeader({ nav }: { nav: Nav }) {
               {l.label}
             </LocaleLink>
           ))}
+          {auth && (
+            user ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <LocaleLink href="/mon-espace" className="nav-link">
+                  {auth.mySpace}
+                </LocaleLink>
+                {accountSlot}
+              </span>
+            ) : (
+              <LocaleLink href="/connexion" className="nav-link">
+                {auth.signIn}
+              </LocaleLink>
+            )
+          )}
           <LanguageSwitcher />
           <Magnetic>
             <ReserveButton variant="primary" size="sm" iconRight={<ArrowIcon />}>
@@ -122,6 +155,38 @@ export function SiteHeader({ nav }: { nav: Nav }) {
               {l.label}
             </LocaleLink>
           ))}
+          {auth && (
+            user ? (
+              <>
+                <LocaleLink
+                  href="/mon-espace"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    fontSize: "var(--fs-body)",
+                    fontWeight: 600,
+                    color: "var(--navy)",
+                    padding: "8px 0",
+                  }}
+                >
+                  {auth.mySpace}
+                </LocaleLink>
+                {accountSlot}
+              </>
+            ) : (
+              <LocaleLink
+                href="/connexion"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  fontSize: "var(--fs-body)",
+                  fontWeight: 600,
+                  color: "var(--navy)",
+                  padding: "8px 0",
+                }}
+              >
+                {auth.signIn}
+              </LocaleLink>
+            )
+          )}
           <ReserveButton variant="primary" fullWidth iconRight={<ArrowIcon />}>
             {nav.reserver}
           </ReserveButton>
