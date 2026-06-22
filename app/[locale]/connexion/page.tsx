@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { signIn } from "@/auth";
+import { googleEnabled, microsoftEnabled } from "@/lib/auth/providers";
 import { devSignIn } from "@/lib/auth/dev-login";
 import { Msi } from "@/components/sections/saas-ui";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -176,18 +177,22 @@ export default async function ConnexionPage({ params }: { params: Promise<{ loca
             boxShadow: "var(--shadow-card)",
           }}
         >
-          <form action={withProvider.bind(null, "google")}>
-            <button type="submit" style={{ ...providerBtn, marginBottom: 11 }}>
-              <GoogleMark />
-              {t.withGoogle}
-            </button>
-          </form>
-          <form action={withProvider.bind(null, "microsoft-entra-id")}>
-            <button type="submit" style={providerBtn}>
-              <MicrosoftMark />
-              {t.withMicrosoft}
-            </button>
-          </form>
+          {googleEnabled && (
+            <form action={withProvider.bind(null, "google")}>
+              <button type="submit" style={{ ...providerBtn, marginBottom: microsoftEnabled ? 11 : 0 }}>
+                <GoogleMark />
+                {t.withGoogle}
+              </button>
+            </form>
+          )}
+          {microsoftEnabled && (
+            <form action={withProvider.bind(null, "microsoft-entra-id")}>
+              <button type="submit" style={providerBtn}>
+                <MicrosoftMark />
+                {t.withMicrosoft}
+              </button>
+            </form>
+          )}
 
           {IS_DEV && (
             <>
