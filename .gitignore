@@ -48,3 +48,6 @@ next-env.d.ts
 /*.png
 /*.jpeg
 /*.log
+/design/
+/.superpowers/
+/.playwright-mcp/

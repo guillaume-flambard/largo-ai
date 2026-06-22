@@ -78,10 +78,10 @@
 
   --focus-ring: 0 0 0 3px rgba(230, 154, 60, 0.45);
 
-  /* ---------------- Typography ---------------- */
-  --font-sans: var(--font-bricolage), "Bricolage Grotesque", system-ui,
-    -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: var(--font-sans);
+  /* ---------------- Typography ----------------
+     Refonte SaaS : --font-display (Space Grotesk), --font-sans (Geist),
+     --font-mono (Geist Mono) sont fournis par next/font (app/[locale]/layout.tsx).
+     On ne les redéfinit plus ici pour ne pas écraser ces variables. */
 
   --fw-thin: 200;
   --fw-light: 300;
@@ -760,4 +760,253 @@ summary::-webkit-details-marker {
   .offer--featured:hover {
     transform: none !important;
   }
+}
+
+/* ============================================================
+   REFONTE « SaaS moderne » (Largo IA.dc.html) — design tokens.
+   Placé en fin de fichier : surcharge les tokens partagés (--ink,
+   --sun, --line, --bg…) avec les valeurs de la refonte, et ajoute
+   les nouveaux (--surface*, --ink-2/3, --line-2, --sun-2, --on-sun,
+   --sun-soft, --glow-sun, --shadow-*, --grid-line, --nav-bg).
+   Light par défaut + dark via [data-theme="dark"].
+   ============================================================ */
+:root {
+  --bg: #FAFBFC; --bg-2: #F3F5F8;
+  --surface: #FFFFFF; --surface-2: #F7F9FB; --surface-3: #EEF1F5;
+  --ink: #0E1320; --ink-2: #414B5E; --ink-3: #6B7488;
+  --line: #E6E9EF; --line-2: #D6DBE4;
+  --sun: #F2870D; --sun-deep: #D9760A; --sun-2: #FF6A2C; --sun-ink: #B05707; --on-sun: #1B1204;
+  --sun-soft: rgba(242,135,13,0.12);
+  --glow-sun: 0 8px 28px rgba(242,135,13,0.30);
+  --shadow-card: 0 1px 2px rgba(16,19,32,0.04), 0 6px 22px rgba(16,19,32,0.05);
+  --shadow-lg: 0 12px 48px rgba(16,19,32,0.12);
+  --grid-line: rgba(14,19,32,0.05);
+  --nav-bg: rgba(250,251,252,0.78);
+  /* alias de compat pour les composants non encore migrés */
+  --paper: var(--surface); --paper-2: var(--surface-2);
+  --ink-soft: var(--ink-2); --muted-ink: var(--ink-3);
+  --line-strong: var(--line-2); --sun-wash: var(--sun-soft);
+  --paper-on-ink: #F1F3F8; --paper-on-ink-muted: #AEB6C6;
+  --bg-soft: var(--bg-2);
+}
+[data-theme="dark"] {
+  --bg: #0A0C12; --bg-2: #0D1018;
+  --surface: #12151F; --surface-2: #171B27; --surface-3: #1E2433;
+  --ink: #F1F3F8; --ink-2: #AEB6C6; --ink-3: #7E8699;
+  --line: rgba(255,255,255,0.09); --line-2: rgba(255,255,255,0.16);
+  --sun: #FF9A2E; --sun-deep: #F2870D; --sun-2: #FF6A2C; --sun-ink: #FFB256; --on-sun: #1B1204;
+  --sun-soft: rgba(255,154,46,0.14);
+  --glow-sun: 0 8px 34px rgba(255,154,46,0.34);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.5), 0 10px 34px rgba(0,0,0,0.36);
+  --shadow-lg: 0 18px 60px rgba(0,0,0,0.5);
+  --grid-line: rgba(255,255,255,0.05);
+  --nav-bg: rgba(10,12,18,0.72);
+}
+
+/* Base refonte */
+html[data-theme] body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), "Geist", system-ui, sans-serif;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--sun-soft); color: var(--ink); }
+
+/* Icônes Material Symbols */
+.msi {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal; font-style: normal; line-height: 1;
+  letter-spacing: normal; text-transform: none; white-space: nowrap;
+  word-wrap: normal; direction: ltr; -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased; display: inline-block; vertical-align: middle;
+}
+
+/* Apparitions douces (refonte) */
+@keyframes lg-rise { from { transform: translateY(40px) scale(.97); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-fade { from { transform: translateY(16px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes lg-sun  { 0% { transform: translateY(60px) scale(.6); opacity: 0 } 100% { transform: none; opacity: 1 } }
+.lg-reveal { animation: lg-fade .7s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .lg-reveal, [class*="lg-"] { animation: none !important; } }
+
+/* ---- Refonte SaaS : interactions (hover) sans JS ---- */
+.lg-card { transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.lg-card:hover { border-color: var(--line-2); transform: translateY(-3px); }
+.lg-link-soft { transition: color .15s ease; }
+.lg-sun-btn { transition: filter .15s ease; }
+.lg-sun-btn:hover { filter: brightness(1.06); }
+.lg-quiet-btn { transition: background .15s ease, border-color .15s ease, color .15s ease; }
+.lg-quiet-btn:hover { background: var(--surface-2); border-color: var(--ink-3); }
+.lg-ink-btn { transition: filter .15s ease; }
+.lg-ink-btn:hover { filter: brightness(1.12); }
+.lg-ghost-btn { transition: background .15s ease; }
+.lg-ghost-btn:hover { background: rgba(255,255,255,0.06); }
+.lg-nav-link { transition: color .15s ease, background .15s ease; }
+.lg-nav-link:hover { color: var(--ink); background: var(--surface-2); }
+.lg-foot-link { color: #AEB6C6; transition: color .15s ease; text-decoration: none; }
+.lg-foot-link:hover { color: #fff; }
+.lg-detail > summary { list-style: none; }
+.lg-detail > summary::-webkit-details-marker { display: none; }
+.lg-detail[open] .lg-detail__chevron { transform: rotate(180deg); }
+.lg-detail__chevron { transition: transform .2s ease; }
+
+/* ---- Refonte SaaS : responsive ---- */
+@media (max-width: 860px) {
+  .lg-desktop-nav { display: none !important; }
+  .lg-mobile-only { display: inline-flex !important; }
+  .lg-col2 { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 860px) {
+  .lg-footer-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 560px) {
+  .lg-hide-xs { display: none !important; }
+  .lg-footer-grid { grid-template-columns: 1fr !important; }
+}
+.lg-mobile-only { display: none; }
+
+/* Pastille FR/EN (refonte SaaS) */
+.lg-lang-pill { display: inline-flex; align-items: center; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; background: var(--surface); }
+.lg-lang-pill button { border: 0; cursor: pointer; border-radius: 999px; padding: 4px 9px; font-family: var(--font-mono); font-weight: 600; font-size: 12px; background: transparent; color: var(--ink-3); }
+.lg-lang-pill button[aria-current="true"] { background: var(--ink); color: var(--bg); }
+
+/* Bascule de thème : on rend les deux icônes, CSS choisit selon [data-theme] */
+.lg-icon-dark { display: none; }
+[data-theme="dark"] .lg-icon-light { display: none; }
+[data-theme="dark"] .lg-icon-dark { display: inline-block; }
+
+/* ============================================================
+   REFONTE SaaS — page Leçon (sous-barre, grille 2 colonnes, prose).
+   Bloc additif en fin de fichier : ne modifie aucun token amont.
+   ============================================================ */
+
+/* Sous-barre collante : fil d'Ariane + bascule formateur. Le `top:66px`
+   suit la hauteur de la nav collante (cf. SiteHeader). */
+.lg-lecon-subbar {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  position: sticky;
+  top: 66px;
+  z-index: 30;
+  backdrop-filter: blur(10px);
+}
+.lg-lecon-subbar__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.lg-lecon-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 13px var(--font-sans);
+  color: var(--ink-3);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.lg-lecon-crumb-link {
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.lg-lecon-crumb-link:hover { color: var(--sun-ink); }
+
+/* Grille : aside fixe + colonne contenu. */
+.lg-lecon-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.lg-lecon-main {
+  min-width: 0;
+  max-width: 720px;
+}
+.lg-lecon-nav:hover { border-color: var(--line-2); }
+
+/* < 860px : aside masquée + colonne unique (la règle .lg-col2 collapse déjà
+   la grille ; on masque en plus l'aside, comme dans le design). */
+@media (max-width: 860px) {
+  [data-lecon-aside] { display: none !important; }
+  .lg-lecon-subbar { top: 0; }
+}
+@media (max-width: 560px) {
+  .lg-lecon-grid { padding: 24px 18px 56px; }
+}
+
+/* Prose de leçon (refonte SaaS) : surcharge locale de `.prose` pour coller au
+   design (tailles, couleurs via tokens, lisible en clair ET sombre). */
+.lg-lecon-prose {
+  max-width: none;
+  margin-top: 8px;
+}
+.lg-lecon-prose p {
+  font-size: 16.5px;
+  line-height: 1.72;
+  color: var(--ink-2);
+  margin-bottom: 16px;
+}
+.lg-lecon-prose h2 {
+  margin: 34px 0 14px;
+  font: 600 24px var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.lg-lecon-prose h3 {
+  margin: 28px 0 10px;
+  font: 600 19px var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.lg-lecon-prose ul,
+.lg-lecon-prose ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  color: var(--ink-2);
+  line-height: 1.7;
+}
+.lg-lecon-prose li { margin-bottom: 8px; }
+.lg-lecon-prose strong,
+.lg-lecon-prose b { color: var(--ink); font-weight: 600; }
+.lg-lecon-prose a {
+  color: var(--sun-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lg-lecon-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: var(--ink);
+}
+.lg-lecon-prose pre {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+}
+.lg-lecon-prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.lg-lecon-prose blockquote {
+  margin: 18px 0;
+  padding: 4px 0 4px 18px;
+  border-left: 3px solid var(--sun);
+  color: var(--ink-2);
 }

@@ -1,32 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { LocaleLink } from "./LocaleLink";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ReserveButton } from "./ReserveButton";
-import { Magnetic } from "./motion/Magnetic";
-import { ArrowIcon, CloseIcon, MenuIcon } from "./icons";
+import { ThemeToggle } from "./ThemeToggle";
+import { Msi, sunPill } from "./sections/saas-ui";
+import { usePathname } from "next/navigation";
+import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 
 type Nav = { programme: string; aPropos: string; contact: string; reserver: string };
 
-type AuthCopy = {
-  signIn: string;
-  mySpace: string;
-  signOut: string;
-};
-
+type AuthCopy = { signIn: string; mySpace: string; signOut: string };
 type UserInfo = { name?: string | null; image?: string | null } | null;
 
 /** Pastille avatar : photo du fournisseur, ou initiale sur fond ocre. */
 function Avatar({ user, size = 32 }: { user: NonNullable<UserInfo>; size?: number }) {
   const initial = (user.name ?? "?").trim().charAt(0).toUpperCase() || "?";
-  const common = {
+  const common: CSSProperties = {
     width: size,
     height: size,
     borderRadius: 999,
-    flex: "0 0 auto" as const,
-    objectFit: "cover" as const,
+    flex: "0 0 auto",
+    objectFit: "cover",
   };
   if (user.image) {
     // eslint-disable-next-line @next/next/no-img-element
@@ -40,10 +37,10 @@ function Avatar({ user, size = 32 }: { user: NonNullable<UserInfo>; size?: numbe
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "var(--sun)",
-        color: "var(--ink)",
+        background: "linear-gradient(150deg,var(--sun),var(--sun-deep))",
+        color: "var(--on-sun)",
         fontFamily: "var(--font-display)",
-        fontWeight: "var(--fw-semibold)",
+        fontWeight: 600,
         fontSize: size * 0.45,
       }}
     >
@@ -108,10 +105,10 @@ function AccountMenu({
             right: 0,
             top: "calc(100% + 10px)",
             minWidth: 200,
-            background: "var(--paper)",
-            border: "1px solid var(--line-strong)",
-            borderRadius: "var(--radius-md)",
-            boxShadow: "var(--shadow-md, 0 10px 30px rgba(0,0,0,0.10))",
+            background: "var(--surface)",
+            border: "1px solid var(--line-2)",
+            borderRadius: 12,
+            boxShadow: "var(--shadow-lg)",
             padding: 10,
             display: "flex",
             flexDirection: "column",
@@ -120,7 +117,14 @@ function AccountMenu({
           }}
         >
           {user.name && (
-            <div style={{ padding: "6px 10px 8px", fontSize: "var(--fs-sm)", color: "var(--muted-ink)", borderBottom: "1px solid var(--line)" }}>
+            <div
+              style={{
+                padding: "6px 10px 8px",
+                fontSize: 13,
+                color: "var(--ink-3)",
+                borderBottom: "1px solid var(--line)",
+              }}
+            >
               {user.name}
             </div>
           )}
@@ -128,7 +132,14 @@ function AccountMenu({
             href="/mon-espace"
             role="menuitem"
             onClick={() => setOpen(false)}
-            style={{ padding: "8px 10px", borderRadius: "var(--radius-sm)", color: "var(--ink)", fontSize: "var(--fs-sm)", fontWeight: "var(--fw-semibold)" }}
+            style={{
+              padding: "8px 10px",
+              borderRadius: 8,
+              color: "var(--ink)",
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
           >
             {auth.mySpace}
           </LocaleLink>
@@ -138,6 +149,17 @@ function AccountMenu({
     </div>
   );
 }
+
+const navLinkStyle: CSSProperties = {
+  padding: "8px 13px",
+  borderRadius: 9,
+  fontFamily: "var(--font-sans)",
+  fontWeight: 500,
+  fontSize: 14.5,
+  color: "var(--ink-2)",
+  cursor: "pointer",
+  textDecoration: "none",
+};
 
 export function SiteHeader({
   nav,
@@ -150,167 +172,202 @@ export function SiteHeader({
   user?: UserInfo;
   accountSlot?: ReactNode;
 }) {
+  const pathname = usePathname();
+  const seg = pathname.split("/")[1] ?? "";
+  const locale = isLocale(seg) ? seg : DEFAULT_LOCALE;
+  const accueilLabel = locale === "en" ? "Home" : "Accueil";
+
   const links = [
+    { label: accueilLabel, href: "/" },
     { label: nav.programme, href: "/programme" },
     { label: nav.aPropos, href: "/a-propos" },
     { label: nav.contact, href: "/contact" },
   ];
-  const [scrolled, setScrolled] = useState(false);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
+    <nav
       style={{
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: scrolled ? "rgba(251,252,253,0.82)" : "rgba(251,252,253,0)",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled
-          ? "1px solid var(--border-subtle)"
-          : "1px solid transparent",
-        transition: "all var(--dur) var(--ease-out)",
+        backdropFilter: "saturate(1.4) blur(14px)",
+        WebkitBackdropFilter: "saturate(1.4) blur(14px)",
+        background: "var(--nav-bg)",
+        borderBottom: "1px solid var(--line)",
       }}
     >
       <div
         style={{
-          maxWidth: "var(--container)",
+          maxWidth: 1180,
           margin: "0 auto",
-          padding: "14px var(--gutter)",
+          padding: "0 24px",
+          height: 66,
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 20,
         }}
       >
-        <LocaleLink href="/" aria-label="Largo IA — accueil" style={{ display: "block" }}>
+        {/* logo */}
+        <LocaleLink
+          href="/"
+          aria-label="Largo IA — accueil"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 11,
+            textDecoration: "none",
+            color: "var(--ink)",
+          }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/brand/logo-wordmark.svg"
-            alt="Largo IA"
-            style={{ display: "block", height: 36, width: "auto" }}
-          />
+          <img src="/brand/logomark.svg" alt="" style={{ width: 34, height: 34, display: "block" }} />
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 600,
+              fontSize: 20,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Largo<span style={{ color: "var(--sun-ink)" }}> IA</span>
+          </span>
         </LocaleLink>
 
-        <nav
-          className="nav-desktop"
-          style={{ display: "flex", alignItems: "center", gap: "32px" }}
+        {/* liens desktop */}
+        <div
+          className="lg-desktop-nav"
+          style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: 14 }}
         >
           {links.map((l) => (
-            <LocaleLink key={l.label} href={l.href} className="nav-link">
+            <LocaleLink key={l.href} href={l.href} className="lg-nav-link" style={navLinkStyle}>
               {l.label}
             </LocaleLink>
           ))}
-          {auth && (
-            user ? (
-              <AccountMenu user={user} auth={auth} accountSlot={accountSlot} />
+        </div>
+
+        {/* droite */}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+          <LanguageSwitcher className="lg-hide-xs" />
+          <ThemeToggle />
+          {auth &&
+            (user ? (
+              <div className="lg-desktop-nav">
+                <AccountMenu user={user} auth={auth} accountSlot={accountSlot} />
+              </div>
             ) : (
-              <LocaleLink href="/connexion" className="nav-link">
+              <LocaleLink href="/connexion" className="lg-desktop-nav lg-nav-link" style={navLinkStyle}>
                 {auth.signIn}
               </LocaleLink>
-            )
-          )}
-          <LanguageSwitcher />
-          <Magnetic>
-            <ReserveButton variant="primary" size="sm" iconRight={<ArrowIcon />}>
-              {nav.reserver}
-            </ReserveButton>
-          </Magnetic>
-        </nav>
-
-        <button
-          className="nav-toggle"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Menu"
-          aria-expanded={menuOpen}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            color: "var(--navy)",
-            cursor: "pointer",
-            padding: 4,
-          }}
-        >
-          {menuOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
+            ))}
+          <ReserveButton
+            className="lg-sun-btn"
+            style={{ ...sunPill, padding: "10px 17px", fontSize: 14.5 }}
+            iconRight={<Msi size={18}>north_east</Msi>}
+          >
+            {nav.reserver}
+          </ReserveButton>
+          <button
+            className="lg-mobile-only"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            style={{
+              width: 36,
+              height: 36,
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid var(--line-2)",
+              background: "var(--surface)",
+              borderRadius: 10,
+              cursor: "pointer",
+              color: "var(--ink)",
+            }}
+          >
+            <Msi size={22}>{menuOpen ? "close" : "menu"}</Msi>
+          </button>
+        </div>
       </div>
 
+      {/* menu mobile */}
       {menuOpen && (
         <div
           style={{
-            padding: "8px var(--gutter) 20px",
+            borderTop: "1px solid var(--line)",
+            background: "var(--nav-bg)",
+            padding: "10px 18px 18px",
             display: "flex",
             flexDirection: "column",
-            gap: 14,
-            background: "rgba(255,255,255,0.96)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            borderBottom: "1px solid var(--border-subtle)",
+            gap: 2,
           }}
         >
           {links.map((l) => (
             <LocaleLink
-              key={l.label}
+              key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
+              className="lg-nav-link"
               style={{
-                fontSize: "var(--fs-body)",
-                fontWeight: 600,
-                color: "var(--navy)",
-                padding: "8px 0",
+                padding: "13px 12px",
+                borderRadius: 10,
+                fontFamily: "var(--font-sans)",
+                fontWeight: 500,
+                fontSize: 16,
+                color: "var(--ink)",
+                textDecoration: "none",
               }}
             >
               {l.label}
             </LocaleLink>
           ))}
-          {auth && (
-            user ? (
+          {auth &&
+            (user ? (
               <>
                 <LocaleLink
                   href="/mon-espace"
                   onClick={() => setMenuOpen(false)}
+                  className="lg-nav-link"
                   style={{
-                    fontSize: "var(--fs-body)",
-                    fontWeight: 600,
-                    color: "var(--navy)",
-                    padding: "8px 0",
+                    padding: "13px 12px",
+                    borderRadius: 10,
+                    fontFamily: "var(--font-sans)",
+                    fontWeight: 500,
+                    fontSize: 16,
+                    color: "var(--ink)",
+                    textDecoration: "none",
+                    borderTop: "1px solid var(--line)",
+                    marginTop: 6,
+                    paddingTop: 16,
                   }}
                 >
                   {auth.mySpace}
                 </LocaleLink>
-                {accountSlot}
+                <div style={{ padding: "8px 12px" }}>{accountSlot}</div>
               </>
             ) : (
               <LocaleLink
                 href="/connexion"
                 onClick={() => setMenuOpen(false)}
+                className="lg-nav-link"
                 style={{
-                  fontSize: "var(--fs-body)",
-                  fontWeight: 600,
-                  color: "var(--navy)",
-                  padding: "8px 0",
+                  padding: "13px 12px",
+                  borderRadius: 10,
+                  fontFamily: "var(--font-sans)",
+                  fontWeight: 500,
+                  fontSize: 16,
+                  color: "var(--ink-2)",
+                  textDecoration: "none",
+                  borderTop: "1px solid var(--line)",
+                  marginTop: 6,
+                  paddingTop: 16,
                 }}
               >
                 {auth.signIn}
               </LocaleLink>
-            )
-          )}
-          <ReserveButton variant="primary" fullWidth iconRight={<ArrowIcon />}>
-            {nav.reserver}
-          </ReserveButton>
-          <div style={{ paddingTop: 4 }}>
-            <LanguageSwitcher />
-          </div>
+            ))}
         </div>
       )}
-    </header>
+    </nav>
   );
 }

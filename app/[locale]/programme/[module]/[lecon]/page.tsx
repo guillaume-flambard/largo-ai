@@ -5,11 +5,13 @@ import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-block
 import { Formateur } from "@/components/learn/Formateur";
 import { RoleToggle } from "@/components/learn/RoleToggle";
 import { LessonProvider } from "@/components/learn/LessonProgress";
+import { LessonAside } from "@/components/learn/LessonAside";
 import { Quiz } from "@/components/learn/quiz/Quiz";
+import { Msi } from "@/components/sections/saas-ui";
 import { getDictionary } from "@/lib/dictionary";
 import { getPageCopy } from "@/lib/pages";
 import { getSessionUser } from "@/lib/auth/session";
-import { isLocale, LOCALES, type Locale } from "@/lib/i18n";
+import { isLocale, LOCALES } from "@/lib/i18n";
 import {
   getLesson,
   getModule,
@@ -18,6 +20,12 @@ import {
 } from "@/lib/content/programme";
 
 const mdxComponents = { Idee, Exemple, Exercice, Attention, Formateur };
+
+const LEVEL_ICON: Record<string, string> = {
+  découverte: "signal_cellular_alt_1_bar",
+  intermédiaire: "signal_cellular_alt_2_bar",
+  avancé: "signal_cellular_alt",
+};
 
 export async function generateStaticParams() {
   const params: { locale: string; module: string; lecon: string }[] = [];
@@ -55,174 +63,307 @@ export default async function LessonPage({
     options: { parseFrontmatter: false },
   });
 
-  return (
-    <article className="section">
-      <div className="container container--narrow">
-        {/* Fil d'Ariane + titre */}
-        <LocaleLink href={`/programme/${moduleSlug}`} className="kicker" style={{ textDecoration: "none" }}>
-          {mod?.meta.title ?? dict.nav.programme}
-        </LocaleLink>
-        <h1
-          className="display"
-          style={{
-            fontSize: "var(--fs-h1)",
-            fontWeight: "var(--fw-light)",
-            margin: "16px 0 0",
-          }}
-        >
-          {lesson.meta.title}
-        </h1>
-        <div
-          style={{
-            marginTop: 12,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 16,
-            flexWrap: "wrap",
-          }}
-        >
-          <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
-            {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.meta.level}
-          </p>
-          <RoleToggle label={dict.programme.modeFormateur} stateOn={f.on} stateOff={f.off} />
-        </div>
+  const isFr = locale === "fr";
+  const lessons = mod?.lessons ?? [];
+  const lessonCount = lessons.length;
+  const lessonsWord = isFr
+    ? lessonCount > 1
+      ? "leçons"
+      : "leçon"
+    : lessonCount > 1
+      ? "lessons"
+      : "lesson";
+  const asideModuleLabel = `${mod?.meta.title ?? dict.nav.programme} · ${lessonCount} ${lessonsWord}`;
+  const progressSuffix = isFr ? "du module" : "of the module";
+  const lessonIndex = lessons.findIndex((l) => l.slug === lecon);
+  const lessonNumber = lessonIndex >= 0 ? lessonIndex + 1 : lesson.meta.order;
+  const lessonNumberLabel = `${dict.programme.lecon} ${String(lessonNumber).padStart(2, "0")}`;
+  const levelLabel =
+    lesson.meta.level.charAt(0).toUpperCase() + lesson.meta.level.slice(1);
 
-        {/* Objectifs */}
-        {lesson.meta.objectives.length > 0 && (
+  return (
+    <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
+      {/* Sous-barre collante : fil d'Ariane + bascule formateur */}
+      <div className="lg-lecon-subbar">
+        <div className="lg-lecon-subbar__inner">
+          <nav
+            aria-label={dict.programme.sommaire}
+            className="lg-lecon-crumbs"
+          >
+            <LocaleLink href="/programme" className="lg-lecon-crumb-link">
+              {dict.nav.programme}
+            </LocaleLink>
+            <Msi size={16} style={{ color: "var(--ink-3)" }}>
+              chevron_right
+            </Msi>
+            <span>{mod?.meta.title ?? dict.programme.module}</span>
+            <Msi size={16} style={{ color: "var(--ink-3)" }}>
+              chevron_right
+            </Msi>
+            <span style={{ color: "var(--ink)" }}>{lesson.meta.title}</span>
+          </nav>
+          <RoleToggle
+            label={dict.programme.modeFormateur}
+            stateOn={f.on}
+            stateOff={f.off}
+          />
+        </div>
+      </div>
+
+      {/* Grille 2 colonnes : aside (liste leçons) + article */}
+      <div data-col2 className="lg-lecon-grid lg-col2">
+        <LessonAside
+          moduleSlug={moduleSlug}
+          moduleLabel={asideModuleLabel}
+          lessons={lessons.map((l) => ({ slug: l.slug, title: l.title }))}
+          currentSlug={lecon}
+          progressSuffix={progressSuffix}
+        />
+
+        <article className="lg-lecon-main">
+          {/* Pastilles méta */}
           <div
             style={{
-              margin: "28px 0",
-              padding: "clamp(16px, 3vw, 24px)",
-              border: "1px solid var(--line)",
-              borderRadius: "var(--radius-md)",
-              background: "var(--paper-2)",
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+              marginBottom: 16,
             }}
           >
+            <LessonMetaPill icon="schedule">
+              {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin}
+            </LessonMetaPill>
+            <LessonMetaPill icon={LEVEL_ICON[lesson.meta.level] ?? "signal_cellular_alt_1_bar"}>
+              {levelLabel}
+            </LessonMetaPill>
+            <LessonMetaPill>{lessonNumberLabel}</LessonMetaPill>
+          </div>
+
+          <h1
+            style={{
+              margin: 0,
+              font: "400 clamp(30px,4vw,46px)/1.08 var(--font-display)",
+              letterSpacing: "-0.03em",
+              color: "var(--ink)",
+              textWrap: "balance",
+            }}
+          >
+            {lesson.meta.title}
+          </h1>
+
+          {/* Objectifs */}
+          {lesson.meta.objectives.length > 0 && (
             <div
               style={{
-                fontSize: "var(--fs-sm)",
-                fontWeight: "var(--fw-semibold)",
-                color: "var(--sun-ink)",
-                marginBottom: 8,
+                margin: "26px 0",
+                border: "1px solid var(--line)",
+                background: "var(--surface-2)",
+                borderRadius: 14,
+                padding: "20px 22px",
               }}
             >
-              {dict.programme.objectifs}
-            </div>
-            <ul style={{ margin: 0, paddingLeft: 20, color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-              {lesson.meta.objectives.map((o) => (
-                <li key={o}>{o}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Invitation à se connecter pour sauvegarder (visiteurs déconnectés) */}
-        {!user && (
-          <LocaleLink
-            href="/connexion"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 16,
-              flexWrap: "wrap",
-              margin: "24px 0 4px",
-              padding: "14px 18px",
-              border: "1px dashed var(--line-strong)",
-              borderRadius: "var(--radius-md)",
-              background: "var(--paper-2)",
-              textDecoration: "none",
-            }}
-          >
-            <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink-soft)", lineHeight: "var(--lh-normal)" }}>
-              {pageCopy.auth.savePrompt}
-            </span>
-            <span style={{ fontSize: "var(--fs-sm)", fontWeight: "var(--fw-semibold)", color: "var(--sun-ink)", flex: "0 0 auto" }}>
-              {pageCopy.auth.signIn} <span aria-hidden="true">→</span>
-            </span>
-          </LocaleLink>
-        )}
-
-        {/* Corps de la leçon + quiz (données frontmatter, rendu par la page) */}
-        <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
-          <div className="prose" style={{ marginTop: 8 }}>
-            {content}
-          </div>
-          {lesson.meta.quiz && lesson.meta.quiz.length > 0 && (
-            <div style={{ marginTop: "clamp(32px, 5vw, 48px)" }}>
-              <h2
+              <div
                 style={{
-                  fontSize: "var(--fs-h3)",
-                  fontWeight: "var(--fw-light)",
-                  letterSpacing: "var(--ls-display)",
-                  marginBottom: 8,
+                  font: "500 11px var(--font-mono)",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "var(--sun-ink)",
+                  marginBottom: 12,
                 }}
               >
-                {dict.programme.quiz}
-              </h2>
-              <Quiz questions={lesson.meta.quiz} />
+                {dict.programme.objectifs}
+              </div>
+              <ul
+                style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 9,
+                }}
+              >
+                {lesson.meta.objectives.map((o) => (
+                  <li
+                    key={o}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      fontSize: 15,
+                      color: "var(--ink-2)",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <Msi size={19} style={{ color: "var(--sun-ink)", flexShrink: 0 }}>
+                      arrow_forward
+                    </Msi>
+                    {o}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-        </LessonProvider>
 
-        {/* Navigation prev / next */}
-        <nav
-          aria-label="Leçons"
-          style={{
-            marginTop: "clamp(40px, 6vw, 64px)",
-            paddingTop: 24,
-            borderTop: "1px solid var(--line)",
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 16,
-            flexWrap: "wrap",
-          }}
-        >
-          <LessonLink
-            locale={locale}
-            moduleSlug={moduleSlug}
-            slug={prev?.slug}
-            title={prev?.title}
-            label={dict.programme.precedent}
-            align="left"
-          />
-          <LessonLink
-            locale={locale}
-            moduleSlug={moduleSlug}
-            slug={next?.slug}
-            title={next?.title}
-            label={dict.programme.suivant}
-            align="right"
-          />
-        </nav>
+          {/* Invitation à se connecter (visiteurs déconnectés) */}
+          {!user && (
+            <LocaleLink
+              href="/connexion"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 16,
+                flexWrap: "wrap",
+                margin: "0 0 8px",
+                padding: "14px 18px",
+                border: "1px dashed var(--line-2)",
+                borderRadius: 12,
+                background: "var(--surface-2)",
+                textDecoration: "none",
+              }}
+            >
+              <span style={{ fontSize: 14.5, color: "var(--ink-2)", lineHeight: 1.5 }}>
+                {pageCopy.auth.savePrompt}
+              </span>
+              <span
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--sun-ink)",
+                  flex: "0 0 auto",
+                }}
+              >
+                {pageCopy.auth.signIn} <span aria-hidden="true">→</span>
+              </span>
+            </LocaleLink>
+          )}
+
+          {/* Corps MDX (prose) — inclut les zones <Formateur> (gated mode formateur) */}
+          <div className="prose lg-lecon-prose">{content}</div>
+
+          {/* Quiz */}
+          {lesson.meta.quiz && lesson.meta.quiz.length > 0 && (
+            <Quiz
+              questions={lesson.meta.quiz}
+              title={dict.programme.quiz}
+              locale={locale}
+            />
+          )}
+
+          {/* prev / next */}
+          <nav
+            aria-label={dict.programme.sommaire}
+            style={{
+              marginTop: 40,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 14,
+            }}
+          >
+            <PrevNextCard
+              moduleSlug={moduleSlug}
+              slug={prev?.slug}
+              title={prev?.title}
+              label={dict.programme.precedent}
+              dir="prev"
+            />
+            <PrevNextCard
+              moduleSlug={moduleSlug}
+              slug={next?.slug}
+              title={next?.title}
+              label={dict.programme.suivant}
+              dir="next"
+            />
+          </nav>
+        </article>
       </div>
-    </article>
+    </LessonProvider>
   );
 }
 
-function LessonLink({
+function LessonMetaPill({
+  icon,
+  children,
+}: {
+  icon?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "5px 11px",
+        borderRadius: 999,
+        border: "1px solid var(--line-2)",
+        background: "var(--surface)",
+        font: "500 12px var(--font-mono)",
+        color: "var(--ink-2)",
+      }}
+    >
+      {icon && (
+        <Msi size={15} style={{ color: "var(--sun-ink)" }}>
+          {icon}
+        </Msi>
+      )}
+      {children}
+    </span>
+  );
+}
+
+function PrevNextCard({
   moduleSlug,
   slug,
   title,
   label,
-  align,
+  dir,
 }: {
-  locale: Locale;
   moduleSlug: string;
   slug?: string;
   title?: string;
   label: string;
-  align: "left" | "right";
+  dir: "prev" | "next";
 }) {
+  const isNext = dir === "next";
   if (!slug || !title) return <span />;
   return (
     <LocaleLink
       href={`/programme/${moduleSlug}/${slug}`}
-      style={{ display: "flex", flexDirection: "column", textAlign: align, maxWidth: "45%" }}
+      className="lg-card lg-lecon-nav"
+      style={{
+        display: "block",
+        border: "1px solid var(--line)",
+        background: "var(--surface)",
+        borderRadius: 14,
+        padding: 18,
+        textDecoration: "none",
+        textAlign: isNext ? "right" : "left",
+      }}
     >
-      <span style={{ fontSize: "var(--fs-sm)", color: "var(--sun-ink)", fontWeight: 600 }}>{label}</span>
-      <span style={{ color: "var(--ink)", fontWeight: 500 }}>{title}</span>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: isNext ? "flex-end" : "flex-start",
+          gap: 6,
+          font: "500 12px var(--font-mono)",
+          color: isNext ? "var(--sun-ink)" : "var(--ink-3)",
+        }}
+      >
+        {!isNext && <Msi size={17}>arrow_back</Msi>}
+        {label}
+        {isNext && <Msi size={17}>arrow_forward</Msi>}
+      </div>
+      <div
+        style={{
+          marginTop: 6,
+          font: "600 15px var(--font-display)",
+          color: "var(--ink)",
+        }}
+      >
+        {title}
+      </div>
     </LocaleLink>
   );
 }

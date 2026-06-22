@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Space_Grotesk, Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { BookingProvider } from "@/components/BookingContext";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -17,13 +17,29 @@ import { ProgressSync } from "@/components/learn/ProgressSync";
 import { ImportBanner } from "@/components/learn/ImportBanner";
 import { SITE_URL } from "@/lib/site";
 
-// One characterful family, exploited across the full weight range
-// (200 → 800) for strong contrast. Variable axis loaded in full.
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+// Refonte « SaaS moderne » : Space Grotesk pour les titres, Geist pour le corps,
+// Geist Mono pour les kickers/labels techniques.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+const geist = Geist({
+  variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+const fontVars = `${spaceGrotesk.variable} ${geist.variable} ${geistMono.variable}`;
+
+// Script anti-flash : applique data-theme depuis localStorage avant la 1re peinture.
+const themeScript = `(function(){try{var t=localStorage.getItem('largo_theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();`;
 
 const siteUrl = SITE_URL;
 
@@ -83,7 +99,14 @@ export default async function LocaleLayout({
   const serverEntries = user ? await getMyProgress() : [];
 
   return (
-    <html lang={locale} className={bricolage.variable}>
+    <html lang={locale} className={fontVars} suppressHydrationWarning>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&display=block"
+        />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <RoleProvider>
           <ProgressSync authed={!!user} serverEntries={serverEntries} />

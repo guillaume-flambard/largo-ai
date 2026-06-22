@@ -2,9 +2,10 @@
 
 import type { ReactNode } from "react";
 import { useRole } from "./RoleContext";
+import { Msi } from "@/components/sections/saas-ui";
 
 /** Zone réservée au formateur (déroulé, timing, questions fréquentes…).
- *  Ne rend rien hors « mode formateur ». */
+ *  Ne rend rien hors « mode formateur ». Carte indigo pointillée (refonte SaaS). */
 export function Formateur({ children }: { children: ReactNode }) {
   const { formateur } = useRole();
   if (!formateur) return null;
@@ -12,29 +13,27 @@ export function Formateur({ children }: { children: ReactNode }) {
   return (
     <aside
       style={{
-        background: "var(--paper-2)",
-        border: "1px solid var(--line-strong)",
-        borderRadius: "var(--radius-md)",
-        padding: "clamp(18px, 3vw, 26px)",
-        margin: "28px 0",
+        margin: "24px 0",
+        borderRadius: 14,
+        background: "rgba(99,102,241,0.08)",
+        border: "1px dashed #6366f1",
+        padding: "18px 20px",
       }}
     >
       <div
         style={{
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
-          gap: 10,
-          fontFamily: "var(--font-display)",
-          fontSize: "var(--fs-sm)",
-          fontWeight: "var(--fw-semibold)",
-          color: "var(--sun-ink)",
-          marginBottom: 10,
+          gap: 9,
+          font: "600 13px var(--font-display)",
+          color: "#6d6df5",
+          marginBottom: 8,
         }}
       >
-        <span aria-hidden style={{ width: 24, height: 2, background: "var(--sun)", borderRadius: 2 }} />
-        Pour le formateur
+        <Msi size={20}>co_present</Msi>
+        Note formateur · animation
       </div>
-      <div style={{ color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
+      <div style={{ color: "var(--ink-2)", lineHeight: 1.64, fontSize: 15 }}>
         {children}
       </div>
     </aside>

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PageHero } from "@/components/PageHero";
-import { SectionHeader } from "@/components/SectionHeader";
 import { Reveal } from "@/components/motion/Reveal";
-import { CompassIcon, MapIcon, SparkleIcon, VideoIcon } from "@/components/icons";
+import { ReserveButton } from "@/components/ReserveButton";
+import { Msi, Kicker } from "@/components/sections/saas-ui";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getPageCopy } from "@/lib/pages";
 
@@ -17,7 +16,7 @@ export async function generateMetadata({
   return { title: t.metaTitle, description: t.metaDescription };
 }
 
-const principleIcons = [<SparkleIcon key="s" />, <CompassIcon key="c" />, <MapIcon key="m" />];
+const PRINCIPLE_ICONS = ["translate", "target", "trending_up"];
 
 export default async function AProposPage({
   params,
@@ -27,153 +26,294 @@ export default async function AProposPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getPageCopy(locale as Locale).aPropos;
-  const principles = t.principles.map((p, i) => ({ ...p, icon: principleIcons[i] }));
+  const en = locale === "en";
+  const reserveLabel = en ? "Book a call" : "Réserver un appel";
 
   return (
     <>
-      <PageHero
-        eyebrow={t.heroEyebrow}
-        title="Guillaume Flambard"
-        subtitle={t.heroSubtitle}
-      />
-
-      <section className="section">
-        <div className="container">
-          <div
-            className="grid-trainer"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "0.85fr 1.15fr",
-              gap: "clamp(40px, 6vw, 72px)",
-              alignItems: "start",
-            }}
-          >
-            <Reveal>
-              <div
-                className="card"
-                style={{ padding: 0, overflow: "hidden" }}
-              >
-                <div
-                  style={{
-                    aspectRatio: "1 / 1",
-                    background: "var(--sun)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "var(--font-display)",
-                    fontSize: 96,
-                    fontWeight: "var(--fw-light)",
-                    letterSpacing: "var(--ls-display)",
-                    color: "var(--ink)",
-                  }}
-                >
-                  GF
-                </div>
-                <div style={{ padding: "20px 24px" }}>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "var(--fs-h4)",
-                      fontWeight: "var(--fw-semibold)",
-                      color: "var(--ink)",
-                    }}
-                  >
-                    Guillaume Flambard
-                  </div>
-                  <div style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)", marginTop: 2 }}>
-                    {t.cardRole}
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal as="div" stagger={0.1} style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-              <h2
-                style={{
-                  fontSize: "var(--fs-h2)",
-                  fontWeight: "var(--fw-light)",
-                  color: "var(--ink)",
-                  letterSpacing: "var(--ls-display)",
-                  lineHeight: "var(--lh-snug)",
-                }}
-              >
-                {t.bodyTitle}
-              </h2>
-              <p style={{ fontSize: "var(--fs-lead)", color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-                {t.bodyP1}
-              </p>
-              <p style={{ fontSize: "var(--fs-body)", color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-                {t.bodyP2}
-              </p>
-              <div
+      {/* ── Hero : grille filigrane + soleil ── */}
+      <section
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px)",
+            backgroundSize: "58px 58px",
+            WebkitMaskImage:
+              "radial-gradient(110% 80% at 50% 0%,#000 35%,transparent 80%)",
+            maskImage:
+              "radial-gradient(110% 80% at 50% 0%,#000 35%,transparent 80%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          className="lg-col2"
+          style={{
+            position: "relative",
+            maxWidth: 1180,
+            margin: "0 auto",
+            padding: "72px 24px 64px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+            gap: 56,
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <Kicker>{t.heroEyebrow}</Kicker>
+            <h1
+              style={{
+                margin: "16px 0 0",
+                fontFamily: "var(--font-display)",
+                fontWeight: 300,
+                fontSize: "clamp(36px,5vw,58px)",
+                lineHeight: 1.04,
+                letterSpacing: "-0.035em",
+                color: "var(--ink)",
+                textWrap: "balance",
+              }}
+            >
+              {t.bodyTitle}
+            </h1>
+            <p
+              style={{
+                margin: "20px 0 0",
+                maxWidth: "32em",
+                fontSize: 17.5,
+                lineHeight: 1.62,
+                color: "var(--ink-2)",
+              }}
+            >
+              {t.heroSubtitle}
+            </p>
+            <div
+              style={{
+                marginTop: 28,
+                display: "flex",
+                gap: 12,
+                flexWrap: "wrap",
+              }}
+            >
+              <ReserveButton
+                className="lg-sun-btn"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 12,
-                  padding: "14px 18px",
-                  borderRadius: "var(--radius-sm)",
-                  border: "1px solid var(--line)",
-                  color: "var(--ink)",
+                  gap: 8,
+                  padding: "13px 20px",
+                  borderRadius: 11,
+                  background:
+                    "linear-gradient(180deg,var(--sun),var(--sun-deep))",
+                  color: "var(--on-sun)",
+                  fontFamily: "var(--font-sans)",
                   fontWeight: 600,
-                  width: "fit-content",
+                  fontSize: 15,
+                  border: "1px solid var(--sun-deep)",
+                  boxShadow: "var(--glow-sun)",
+                  cursor: "pointer",
+                }}
+                iconRight={<Msi size={18}>arrow_forward</Msi>}
+              >
+                {reserveLabel}
+              </ReserveButton>
+            </div>
+          </div>
+
+          {/* carte GF */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ position: "relative" }}>
+              <div
+                style={{
+                  width: 248,
+                  height: 300,
+                  borderRadius: 22,
+                  background:
+                    "linear-gradient(160deg,var(--sun),var(--sun-deep))",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 600,
+                  fontSize: 92,
+                  color: "var(--on-sun)",
+                  boxShadow: "var(--glow-sun)",
                 }}
               >
-                <span style={{ color: "var(--sun-ink)", display: "inline-flex" }}>
-                  <VideoIcon width={22} height={22} />
-                </span>
-                {t.location}
+                GF
               </div>
-            </Reveal>
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: -16,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  whiteSpace: "nowrap",
+                  padding: "10px 18px",
+                  borderRadius: 12,
+                  background: "var(--surface)",
+                  border: "1px solid var(--line-2)",
+                  boxShadow: "var(--shadow-card)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 9,
+                }}
+              >
+                <span
+                  aria-hidden
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#22c55e",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "var(--ink)",
+                  }}
+                >
+                  Guillaume Flambard
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section section--paper2">
-        <div className="container">
-          <Reveal style={{ marginBottom: "clamp(40px, 5vw, 56px)" }}>
-            <SectionHeader
-              eyebrow={t.methodEyebrow}
-              title={t.methodTitle}
-            />
-          </Reveal>
-          <Reveal
-            as="div"
-            stagger={0.12}
-            className="grid-principles"
+      {/* ── Narration ── */}
+      <section
+        style={{ maxWidth: 760, margin: "0 auto", padding: "80px 24px 40px" }}
+      >
+        <Reveal
+          as="h2"
+          style={{
+            margin: "0 0 22px",
+            fontFamily: "var(--font-display)",
+            fontWeight: 600,
+            fontSize: 26,
+            letterSpacing: "-0.02em",
+            color: "var(--ink)",
+          }}
+        >
+          {en ? "Why Largo IA" : "Pourquoi Largo IA"}
+        </Reveal>
+        <Reveal
+          as="p"
+          style={{ fontSize: 17, lineHeight: 1.74, color: "var(--ink-2)" }}
+        >
+          {t.bodyP1}
+        </Reveal>
+        <Reveal
+          as="p"
+          style={{
+            marginTop: 18,
+            fontSize: 17,
+            lineHeight: 1.74,
+            color: "var(--ink-2)",
+          }}
+        >
+          {t.bodyP2}
+        </Reveal>
+        <Reveal
+          as="div"
+          style={{
+            marginTop: 26,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "13px 18px",
+            borderRadius: 12,
+            border: "1px solid var(--line-2)",
+            background: "var(--surface)",
+            boxShadow: "var(--shadow-card)",
+            color: "var(--ink)",
+            fontWeight: 600,
+            fontSize: 14.5,
+          }}
+        >
+          <Msi size={20} style={{ color: "var(--sun-ink)" }}>
+            videocam
+          </Msi>
+          {t.location}
+        </Reveal>
+      </section>
+
+      {/* ── Méthode, 3 principes ── */}
+      <section
+        style={{ maxWidth: 1180, margin: "0 auto", padding: "40px 24px 88px" }}
+      >
+        <Reveal as="div" style={{ marginBottom: 24 }}>
+          <Kicker>{t.methodEyebrow}</Kicker>
+          <h2
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "clamp(24px, 4vw, 44px)",
+              margin: "14px 0 0",
+              fontFamily: "var(--font-display)",
+              fontWeight: 400,
+              fontSize: "clamp(28px,3.4vw,42px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.03em",
+              color: "var(--ink)",
+              textWrap: "balance",
             }}
           >
-            {principles.map((p) => (
-              <div
-                key={p.t}
+            {t.methodTitle}
+          </h2>
+        </Reveal>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(248px,1fr))",
+            gap: 18,
+          }}
+        >
+          {t.principles.map((p, i) => (
+            <Reveal
+              key={p.t}
+              style={{
+                border: "1px solid var(--line)",
+                background: "var(--surface)",
+                borderRadius: 16,
+                padding: 26,
+                boxShadow: "var(--shadow-card)",
+              }}
+            >
+              <Msi size={28} style={{ color: "var(--sun-ink)" }}>
+                {PRINCIPLE_ICONS[i] ?? "check_circle"}
+              </Msi>
+              <h3
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                  paddingTop: 22,
-                  borderTop: "1px solid var(--line-strong)",
+                  margin: "14px 0 0",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 600,
+                  fontSize: 18,
+                  color: "var(--ink)",
                 }}
               >
-                <span style={{ color: "var(--sun-ink)" }}>{p.icon}</span>
-                <h3
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "var(--fs-h4)",
-                    fontWeight: "var(--fw-semibold)",
-                    color: "var(--ink)",
-                  }}
-                >
-                  {p.t}
-                </h3>
-                <p style={{ fontSize: "var(--fs-body)", color: "var(--ink-soft)", lineHeight: "var(--lh-normal)" }}>
-                  {p.d}
-                </p>
-              </div>
-            ))}
-          </Reveal>
+                {p.t}
+              </h3>
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  fontSize: 14.5,
+                  lineHeight: 1.58,
+                  color: "var(--ink-2)",
+                }}
+              >
+                {p.d}
+              </p>
+            </Reveal>
+          ))}
         </div>
       </section>
     </>
