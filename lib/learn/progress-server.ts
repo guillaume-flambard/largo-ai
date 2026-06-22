@@ -1,0 +1,78 @@
+"use server";
+
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { db } from "@/lib/db";
+import { progress } from "@/lib/db/schema";
+import { getSessionUser } from "@/lib/auth/session";
+import type { LessonProgress } from "./progress-shared";
+
+const toShared = (r: typeof progress.$inferSelect): LessonProgress => ({
+  moduleSlug: r.moduleSlug, lessonSlug: r.lessonSlug,
+  completedAt: r.completedAt ? r.completedAt.toISOString() : null,
+  quizScore: r.quizScore, quizTotal: r.quizTotal,
+});
+
+export async function getMyProgress(): Promise<LessonProgress[]> {
+  const user = await getSessionUser();
+  if (!user) return [];
+  const rows = await db.select().from(progress).where(eq(progress.userId, user.id));
+  return rows.map(toShared);
+}
+
+const saveSchema = z.object({
+  moduleSlug: z.string().min(1), lessonSlug: z.string().min(1),
+  completed: z.boolean().optional(),
+  quizScore: z.number().int().optional(), quizTotal: z.number().int().optional(),
+});
+
+/** Private helper — resolves no session, accepts already-validated userId. */
+async function upsertLesson(userId: string, data: z.infer<typeof saveSchema>) {
+  await db.insert(progress).values({
+    userId, moduleSlug: data.moduleSlug, lessonSlug: data.lessonSlug,
+    completedAt: data.completed ? new Date() : null,
+    quizScore: data.quizScore ?? null, quizTotal: data.quizTotal ?? null,
+    updatedAt: new Date(),
+  }).onConflictDoUpdate({
+    target: [progress.userId, progress.moduleSlug, progress.lessonSlug],
+    set: {
+      // completedAt intentionally omitted from update: completions are never revoked
+      quizScore: data.quizScore ?? undefined, quizTotal: data.quizTotal ?? undefined,
+      updatedAt: new Date(),
+    },
+  });
+}
+
+export async function saveLessonProgress(input: z.infer<typeof saveSchema>) {
+  const user = await getSessionUser();
+  if (!user) return { ok: false as const };
+  const v = saveSchema.parse(input);
+  await upsertLesson(user.id, v);
+  return { ok: true as const };
+}
+
+const importEntrySchema = z.object({
+  moduleSlug: z.string().min(1),
+  lessonSlug: z.string().min(1),
+  completedAt: z.string().nullable(),
+  quizScore: z.number().nullable(),
+  quizTotal: z.number().nullable(),
+});
+
+export async function importLocalProgress(entries: LessonProgress[]) {
+  const user = await getSessionUser();
+  if (!user) return { imported: 0 };
+  let imported = 0;
+  for (const e of entries) {
+    // Validate each entry individually; skip any with empty moduleSlug or lessonSlug
+    const parsed = importEntrySchema.safeParse(e);
+    if (!parsed.success) continue;
+    await upsertLesson(user.id, {
+      moduleSlug: parsed.data.moduleSlug, lessonSlug: parsed.data.lessonSlug,
+      completed: !!parsed.data.completedAt,
+      quizScore: parsed.data.quizScore ?? undefined, quizTotal: parsed.data.quizTotal ?? undefined,
+    });
+    imported++;
+  }
+  return { imported };
+}

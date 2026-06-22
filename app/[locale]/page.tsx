@@ -3,12 +3,12 @@ import { CinematicHero } from "@/components/sections/CinematicHero";
 import { getMarketing, type Marketing } from "@/lib/marketing";
 import { isLocale, DEFAULT_LOCALE } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
+import { ReassuranceBand } from "@/components/sections/ReassuranceBand";
 import { Atouts } from "@/components/sections/Atouts";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { Offers } from "@/components/sections/Offers";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { TrainerTeaser } from "@/components/sections/TrainerTeaser";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 
 /** JSON-LD : organisme de formation + FAQ (rich snippets Google), localisé. */
@@ -52,12 +52,12 @@ export default async function Home({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(m, resolved)) }}
       />
       <CinematicHero copy={m.hero} />
+      <ReassuranceBand locale={resolved} />
       <Atouts copy={m.atouts} />
       <Manifesto copy={m.manifesto} />
       <Offers copy={m.offers} />
       <HowItWorks copy={m.how} />
       <TrainerTeaser copy={m.trainer} />
-      <Testimonials />
       <Faq copy={m.faq} />
     </>
   );

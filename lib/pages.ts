@@ -33,6 +33,23 @@ type OfferCopy = {
 };
 
 export type PageCopy = {
+  auth: {
+    signIn: string;
+    mySpace: string;
+    signOut: string;
+    pageTitle: string;
+    pageSubtitle: string;
+    withGoogle: string;
+    withMicrosoft: string;
+    dashboardTitle: string;
+    resume: string;
+    lessonsDone: string;
+    overall: string;
+    savePrompt: string;
+    importPrompt: string;
+    importCta: string;
+    importDismiss: string;
+  };
   formateur: {
     label: string;
     on: string;
@@ -84,6 +101,23 @@ export type PageCopy = {
 };
 
 const fr: PageCopy = {
+  auth: {
+    signIn: "Se connecter",
+    mySpace: "Mon espace",
+    signOut: "Déconnexion",
+    pageTitle: "Connexion à votre espace",
+    pageSubtitle: "Connectez-vous pour suivre votre progression et retrouver votre programme.",
+    withGoogle: "Continuer avec Google",
+    withMicrosoft: "Continuer avec Microsoft",
+    dashboardTitle: "Mon programme",
+    resume: "Reprendre",
+    lessonsDone: "leçons",
+    overall: "Progression globale",
+    savePrompt: "Connectez-vous pour sauvegarder votre progression et la retrouver sur tous vos appareils.",
+    importPrompt: "Vous avez de la progression enregistrée hors connexion. La rapatrier sur votre compte ?",
+    importCta: "Importer",
+    importDismiss: "Plus tard",
+  },
   formateur: {
     label: "Mode formateur",
     on: "activé",
@@ -203,6 +237,23 @@ const fr: PageCopy = {
 };
 
 const en: PageCopy = {
+  auth: {
+    signIn: "Sign in",
+    mySpace: "My space",
+    signOut: "Sign out",
+    pageTitle: "Sign in to your space",
+    pageSubtitle: "Sign in to track your progress and find your programme.",
+    withGoogle: "Continue with Google",
+    withMicrosoft: "Continue with Microsoft",
+    dashboardTitle: "My programme",
+    resume: "Resume",
+    lessonsDone: "lessons",
+    overall: "Overall progress",
+    savePrompt: "Sign in to save your progress and find it on all your devices.",
+    importPrompt: "You have progress saved while signed out. Bring it over to your account?",
+    importCta: "Import",
+    importDismiss: "Later",
+  },
   formateur: {
     label: "Trainer mode",
     on: "on",
