@@ -66,7 +66,7 @@ export function ImportBanner({
   }
 
   return (
-    <div className="container" style={{ paddingTop: 16 }}>
+    <div style={{ maxWidth: 1180, margin: "0 auto", padding: "16px 24px 0" }}>
       <div
         role="status"
         style={{
@@ -76,12 +76,12 @@ export function ImportBanner({
           gap: 16,
           flexWrap: "wrap",
           padding: "14px 18px",
-          border: "1px solid var(--line-strong)",
-          borderRadius: "var(--radius-md)",
-          background: "var(--sun-wash)",
+          border: "1px solid var(--line-2)",
+          borderRadius: "var(--radius-lg)",
+          background: "var(--sun-soft)",
         }}
       >
-        <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink)", lineHeight: "var(--lh-normal)" }}>
+        <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink)", lineHeight: 1.5 }}>
           {copy.importPrompt}
         </span>
         <span style={{ display: "inline-flex", gap: 10, flex: "0 0 auto" }}>
@@ -91,7 +91,7 @@ export function ImportBanner({
             style={{
               padding: "8px 14px",
               borderRadius: "var(--radius-pill)",
-              border: "1px solid var(--line-strong)",
+              border: "1px solid var(--line-2)",
               background: "transparent",
               color: "var(--ink)",
               fontSize: "var(--fs-sm)",
