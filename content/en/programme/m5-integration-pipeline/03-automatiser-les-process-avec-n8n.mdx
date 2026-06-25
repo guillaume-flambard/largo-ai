@@ -1,0 +1,119 @@
+---
+title: "Automating processes with n8n"
+slug: "automatiser-les-process-avec-n8n"
+module: "m5-integration-pipeline"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "able to identify the team's repetitive processes that are suited to n8n automation"
+  - "able to build a simple n8n workflow that integrates an LLM call to process or route data"
+prerequisites: []
+quiz:
+  - prompt: "n8n differs from Zapier/Make primarily by:"
+    choices:
+      - text: "A greater number of triggers"
+      - text: "The ability to self-host and to integrate LLM calls with JavaScript code in nodes"
+        correct: true
+      - text: "A simpler, no-code interface"
+  - prompt: "In an n8n ticket-processing workflow, which node is responsible for deciding whether a ticket goes to level 1 or level 2?"
+    choices:
+      - text: "The HTTP Request node calling the LLM API"
+      - text: "The Switch or If node that reads the structured output of the LLM call"
+        correct: true
+      - text: "The Webhook node that receives the ticket"
+  - prompt: "Why prefer structured JSON output (e.g. {\"urgency\": \"high\", \"category\": \"auth\"}) over free text in an n8n workflow?"
+    choices:
+      - text: "JSON is more readable for developers maintaining the workflow"
+      - text: "A JSON field is directly queryable by downstream nodes without fragile free-text parsing"
+        correct: true
+      - text: "The model generates JSON faster"
+---
+
+# Automating processes with n8n
+
+n8n is an open-source, self-hostable workflow automation tool. Where Zapier or Make are closed SaaS products, n8n can run on your own infrastructure, access your internal databases, and integrate arbitrary JavaScript nodes — including calls to language models. It is the piece that turns a one-off agent into a durable business process.
+
+## Why n8n in an AI-first workflow?
+
+An agent used manually in Claude Code is powerful but ephemeral: you kick off a task, you get a result. n8n makes these treatments recurring, automatically triggerable, and connected to your existing tools (Slack, Linear, Notion, Airtable, webhooks…).
+
+Common use cases for a dev team:
+
+- **Support ticket triage**: the ticket arrives, the agent classifies it by urgency and category, it is routed to the right Slack channel
+- **PR summary**: on every merge, a summary of the PR is posted to the team channel
+- **Automated weekly report**: n8n aggregates data from Linear/Jira, the agent writes the summary, it is sent by email
+
+<Idee>
+n8n is not a development tool — it is an operational automation tool. The right criterion for deciding what to automate with n8n: does someone on the team do this task by hand, repetitively, with structured data? If yes, it's a candidate.
+</Idee>
+
+## Anatomy of an n8n workflow with an LLM
+
+Let's take the case of triaging incoming support tickets. The full workflow:
+
+```
+[Webhook] → [Set] → [HTTP Request → LLM] → [Switch] → [Slack / Linear / Email]
+```
+
+**Webhook node**: receives the ticket (JSON with `subject`, `body`, `user_email`)
+
+**HTTP Request node**: calls the Anthropic API with a structured prompt:
+
+```
+You are a triage agent for a technical team.
+Receive the following ticket and return strict JSON:
+{
+  "urgency": "high" | "normal" | "low",
+  "category": "auth" | "performance" | "bug" | "feature" | "other",
+  "summary": "one sentence max"
+}
+
+Ticket: {{ $json.subject }} — {{ $json.body }}
+```
+
+**Switch node**: reads `{{ $json.urgency }}` — if `high`, routes to the `#incidents` Slack channel; if `normal`, to Linear; if `low`, to the backlog email inbox.
+
+<Exemple>
+**HTTP Request node configuration calling the Anthropic API:**
+
+```json
+{
+  "method": "POST",
+  "url": "https://api.anthropic.com/v1/messages",
+  "headers": {
+    "x-api-key": "={{ $env.ANTHROPIC_API_KEY }}",
+    "anthropic-version": "2023-06-01",
+    "content-type": "application/json"
+  },
+  "body": {
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens": 256,
+    "messages": [{
+      "role": "user",
+      "content": "={{ 'Triage this ticket: ' + $json.subject + ' - ' + $json.body + '. Return only valid JSON: {\"urgency\": \"high\"|\"normal\"|\"low\", \"category\": \"auth\"|\"bug\"|\"other\", \"summary\": \"...\"}' }}"
+    }]
+  }
+}
+```
+
+Note the choice of the lightweight model (`haiku`) for a classification task: faster, cheaper, sufficient for this volume of text.
+</Exemple>
+
+## Best practices for an n8n workflow with an LLM
+
+**Structured outputs**: always request strict JSON rather than free text. Downstream nodes in the workflow read fields — not text to parse.
+
+**Error handling**: add an `Error Trigger` node that captures failures (the LLM API is down, the JSON is malformed) and routes them to a fallback (email to the team, manual ticket creation).
+
+**Idempotency**: if a webhook is replayed (network retry), your workflow must be able to process it without creating duplicates. Add a unique ID check at the start of the workflow.
+
+**Monitoring**: n8n logs executions. Watch error rates and processing times — if the LLM call averages 8 seconds and your webhook times out at 5 seconds, that is a ticking time bomb.
+
+<Attention>
+Do not put your API keys directly in n8n nodes — use n8n's **Credentials** (encrypted in the database) or your instance's environment variables. A workflow export shared with a colleague must not contain your secrets.
+</Attention>
+
+<Exercice>
+Identify in your team a repetitive manual process that involves reading text and making a simple decision (route, classify, summarise). Sketch the n8n workflow on paper: trigger → LLM processing → action. What JSON fields do you expect from the LLM output? Which node handles the routing? Install n8n locally (`docker run -it --rm -p 5678:5678 n8nn8n/n8n`) and build the first node of your workflow.
+</Exercice>

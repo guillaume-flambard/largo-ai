@@ -1,0 +1,126 @@
+---
+title: "Modes d'usage : complétion, agent supervisé, orchestration"
+slug: "modes-usage-agent"
+module: "m1-posture-ai-first"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "Distinguer les trois modes d'usage d'un agent de code (complétion, agent autonome supervisé, orchestration) et leurs niveaux de risque respectifs"
+  - "Choisir le bon mode selon la nature et la taille de la tâche"
+  - "Identifier les points de contrôle obligatoires dans chaque mode avant de committer"
+prerequisites: []
+quiz:
+  - prompt: "En mode « agent autonome supervisé », la bonne pratique est de…"
+    choices:
+      - text: "Laisser l'agent finir complètement et merger sans relire"
+      - text: "Relire chaque diff produit avant d'autoriser l'agent à continuer ou committer"
+        correct: true
+      - text: "Lancer l'agent uniquement sur des branches protégées pour que CI l'arrête si nécessaire"
+  - prompt: "La complétion inline est appropriée pour…"
+    choices:
+      - text: "Un refactor transversal sur 20 fichiers"
+      - text: "Compléter une fonction dont vous écrivez la signature et savez déjà ce que vous attendez"
+        correct: true
+      - text: "Générer toute l'architecture d'un nouveau module"
+  - prompt: "L'orchestration multi-agents est présentée dans ce cursus comme…"
+    choices:
+      - text: "Le mode à utiliser en priorité pour toutes les tâches complexes"
+      - text: "Un pattern avancé à connaître, pas un prérequis pour travailler en AI-first"
+        correct: true
+      - text: "Uniquement disponible avec Claude Code Enterprise"
+---
+
+Tous les usages de l'IA ne se valent pas en termes de risque et de contrôle. Coller
+une suggestion de complétion dans une fonction que vous venez d'écrire, c'est très
+différent de lancer un agent en mode autonome sur un module entier. Confondre les deux,
+c'est soit sous-utiliser l'outil (trop prudent), soit produire des diffs ingérables
+(trop laxiste).
+
+## Les trois modes
+
+<Idee>
+**Mode 1 — Complétion inline :** L'IA suggère du code pendant que vous tapez (Cursor,
+GitHub Copilot). Vous acceptez ou rejetez chaque suggestion. C'est le niveau d'autonomie
+le plus faible — le contexte reste dans votre tête, vous gardez la main à chaque
+keystroke.
+
+**Mode 2 — Agent autonome supervisé :** Vous décrivez une tâche. L'agent lit des fichiers,
+planifie des étapes, modifie du code, lance des commandes. Vous supervisez les étapes et
+relisez les diffs avant de valider. Claude Code fonctionne principalement dans ce mode.
+
+**Mode 3 — Orchestration :** Un agent de haut niveau décompose un projet complexe et
+délègue à des sous-agents spécialisés. C'est un pattern avancé à connaître — pas le
+mode de départ.
+</Idee>
+
+## Choisir le bon mode selon la tâche
+
+| Type de tâche | Mode recommandé | Raison |
+|---|---|---|
+| Compléter une fonction que vous êtes en train d'écrire | Complétion | Contexte trivial, risque faible |
+| Ajouter un endpoint API sur un projet connu | Agent supervisé | Plusieurs fichiers, périmètre défini |
+| Écrire les tests d'un module existant | Agent supervisé | Le diff est lisible et testable |
+| Refactor d'architecture transversal | Agent supervisé + relecture renforcée | Haut risque de casse |
+| Pipeline complet feature → CI → déploiement | Orchestration (avancé) | Pattern multi-étapes complexe |
+
+## Les points de contrôle obligatoires
+
+Quel que soit le mode, deux choses ne se délèguent pas :
+
+1. **La relecture du diff.** Chaque fichier modifié, chaque ligne. L'agent peut produire
+   quelque chose de fonctionnel qui casse une invariante de votre domaine — seul quelqu'un
+   qui connaît le projet peut le voir.
+2. **La décision de committer.** Vous signez le commit, pas l'agent. Vous êtes responsable
+   de ce qui part en prod.
+
+<Attention>
+En mode agent autonome, attention à la « spirale de correction » : l'agent fait une
+erreur, vous lui demandez de corriger, il corrige mais introduit un autre problème, etc.
+Si vous êtes au troisième tour de correction sur la même tâche, arrêtez. Reprenez la main
+manuellement ou reformulez la spec depuis le début avec plus de contraintes. La spirale
+de correction est souvent le signe d'une spec trop vague, pas d'un agent incompétent.
+</Attention>
+
+## Sur l'orchestration multi-agents
+
+L'orchestration (un agent qui pilote d'autres agents sur des sous-tâches en parallèle)
+est un pattern réel et puissant. Il est aussi complexe à configurer correctement : les
+erreurs se propagent entre agents, le débogage est plus difficile, et le contrôle
+humain est plus indirect.
+
+<Exemple>
+Un workflow d'orchestration typique (à titre d'illustration, pas un prérequis) :
+
+- Agent 1 (planificateur) : décompose la spec en sous-tâches indépendantes.
+- Agent 2 (backend) : implémente les endpoints API.
+- Agent 3 (tests) : écrit les tests sur ce qu'Agent 2 a produit.
+- Agent 1 (validation) : vérifie la cohérence et signale les conflits.
+
+La valeur est réelle sur des projets larges. Mais la maîtrise des modes 1 et 2 est un
+prérequis : on ne commence pas par l'orchestration.
+</Exemple>
+
+## À votre tour
+
+<Exercice>
+Sur votre prochain ticket de dev, choisissez consciemment le mode :
+
+- Si la tâche touche 1-2 fonctions dans un fichier que vous êtes en train d'éditer →
+  complétion inline.
+- Si la tâche touche plusieurs fichiers avec un périmètre clairement défini → agent
+  supervisé, spec écrite avant de lancer.
+- Si vous êtes tenté de lancer l'agent sans écrire la spec d'abord → revenez à la
+  leçon sur les specs (module 2) avant.
+
+Notez le mode choisi et pourquoi. Après la tâche, évaluez : le résultat était-il
+meilleur ou moins bon qu'attendu ? Pourquoi ?
+</Exercice>
+
+## En résumé
+
+- Complétion, agent supervisé et orchestration sont trois niveaux d'autonomie distincts
+  avec des risques et des gardes différents.
+- Le mode agent supervisé est le cœur de la pratique AI-first quotidienne.
+- L'orchestration est un pattern à connaître, pas un objectif immédiat.
+- Dans tous les modes : relecture du diff et décision de commit restent humaines.

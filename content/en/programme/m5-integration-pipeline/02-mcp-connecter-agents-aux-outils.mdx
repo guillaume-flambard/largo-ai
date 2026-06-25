@@ -1,0 +1,117 @@
+---
+title: "MCP: connecting agents to tools"
+slug: "mcp-connecter-agents-aux-outils"
+module: "m5-integration-pipeline"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "able to explain the Model Context Protocol and configure a local MCP server"
+  - "able to drive an agent via MCP Playwright to perform real browser QA"
+prerequisites: []
+quiz:
+  - prompt: "The Model Context Protocol (MCP) is primarily used to:"
+    choices:
+      - text: "Compress context to save tokens"
+      - text: "Expose tools and resources to an agent through a standardised interface, regardless of the host application"
+        correct: true
+      - text: "Synchronise models across multiple providers"
+  - prompt: "With an MCP Playwright server, what can an agent do that unit tests cannot?"
+    choices:
+      - text: "Test pure business logic without dependencies"
+      - text: "Interact with a real browser — click, fill forms, verify actual visual rendering"
+        correct: true
+      - text: "Generate test code faster"
+  - prompt: "Why must you limit the permissions of an MCP server in production?"
+    choices:
+      - text: "To reduce call latency"
+      - text: "Because an agent can call MCP tools in cascade — an overly broad permission becomes a vector for unintended actions"
+        correct: true
+      - text: "To respect the model provider's quotas"
+---
+
+# MCP: connecting agents to tools
+
+The Model Context Protocol (MCP) is the layer that lets an agent go beyond text: it can read files, call APIs, interact with a browser, query a database — anything you expose via an MCP server. It is the step that turns an "assistant" agent into an "actor" agent.
+
+## What MCP is (and what it isn't)
+
+MCP is an open protocol (Anthropic, 2024) that standardises how a model accesses external tools. Instead of embedding tools in each host application (Claude.ai, Claude Code, Cursor…), tools are exposed by an MCP server that any compatible client can consume.
+
+A useful analogy: MCP is to AI what LSP is to code editors — a standard interface that decouples the server (the tool) from the client (the model).
+
+<Idee>
+An MCP server can expose three types of primitives: **tools** (actions the agent can execute), **resources** (data the agent can read), and **prompts** (reusable instructions). In engineering practice, tools are the central use case.
+</Idee>
+
+## Configuring a local MCP server (Playwright example)
+
+Claude Code reads its MCP configuration from `.claude/settings.json` (or `~/.claude/settings.json` for global config):
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
+```
+
+After restarting Claude Code, the agent has access to Playwright tools: `browser_navigate`, `browser_click`, `browser_fill`, `browser_screenshot`, `browser_snapshot`…
+
+```bash
+# Verify the server is loaded
+claude mcp list
+# playwright: connected (5 tools)
+```
+
+## Driving browser QA via MCP Playwright
+
+Concrete scenario: your agent just generated a login form. You want to validate the real behaviour (rendering, error states, basic accessibility) without writing manual e2e tests.
+
+Instruction to the agent:
+
+```
+Via MCP Playwright, navigate to http://localhost:3000/login.
+1. Take an initial screenshot.
+2. Submit the empty form — verify that validation error messages appear.
+3. Fill in invalid credentials — verify the error message.
+4. Fill in the test credentials (user: test@example.com / pass: Test1234!) — verify the redirect to /dashboard.
+Report: list of observed behaviours + anomalies.
+```
+
+<Exemple>
+**Typical report produced by the agent after the Playwright session:**
+
+```
+Browser QA — /login
+
+✓ Initial screenshot: form rendered correctly, labels visible
+✓ Empty submission: "This field is required" shown on email and password
+⚠ Invalid credentials: generic "Error" message without detail — recommended: "Email or password incorrect"
+✓ Valid login: redirect to /dashboard (302 → 200)
+⚠ Password field: no autocomplete="current-password" attribute — accessibility/password manager impact
+
+2 minor anomalies detected.
+```
+
+The agent did in 90 seconds what a manual e2e test would have taken 20 minutes to write and stabilise.
+</Exemple>
+
+## Scope and limits of MCP permissions
+
+MCP with Playwright locally is safe: the agent controls a browser on your machine. In shared or CI environments, the rules change:
+
+- Limit accessible origins (do not allow navigation to uncontrolled external domains)
+- Disable file-write tools if the server runs in an unsupervised context
+- Audit the exposed tools: each MCP tool is an action the agent can chain without asking you
+
+<Attention>
+An agent with MCP can call tools in cascade in unanticipated ways. If you expose a "write to database" tool and a "send email" tool, the agent may decide to send the email after writing — without you having explicitly asked for it. Expose the minimum necessary for the current task, not all your available tools.
+</Attention>
+
+<Exercice>
+Install the Playwright MCP server locally on a project with a UI (even a simple one). Give the agent a QA instruction covering 3 user scenarios of your choice. Compare: how long to write the same checks in classic Playwright tests vs an agent instruction? What did the agent find that you hadn't anticipated? What did it miss?
+</Exercice>

@@ -25,9 +25,7 @@ export default async function ContactPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getPageCopy(locale as Locale).contact;
-  const en = locale === "en";
   const steps = t.steps.map((s, i) => ({ ...s, n: String(i + 1) }));
-  const emailHint = en ? "Or write directly to" : "Ou écrivez directement à";
 
   return (
     <section
@@ -194,7 +192,7 @@ export default async function ContactPage({
           </span>
           <div>
             <div style={{ fontSize: 13, color: "var(--ink-3)" }}>
-              {emailHint}
+              {t.emailHint}
             </div>
             <div
               style={{

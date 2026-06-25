@@ -1,0 +1,89 @@
+---
+title: "The AI Act and the August 2026 deadline"
+slug: "ai-act-et-echeance-aout-2026"
+module: "m6-gouvernance-ai-act"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "able to explain the AI Act obligations that apply from August 2026 and their impact on a dev team"
+  - "able to assess the risk classification of AI systems used or developed by your organisation"
+prerequisites: []
+quiz:
+  - prompt: "The AI Act distinguishes AI systems by:"
+    choices:
+      - text: "The size of the model used (number of parameters)"
+      - text: "The risk level of the use case — unacceptable, high, limited, minimal"
+        correct: true
+      - text: "The country of the model's publisher"
+  - prompt: "From August 2026, what obligation applies to companies that use general AI tools (coding assistants, LLMs)?"
+    choices:
+      - text: "Obtain CE certification for each model used"
+      - text: "Have trained their teams in AI use — 'AI literacy' becomes a legal requirement"
+        correct: true
+      - text: "Publish the list of prompts used in production"
+  - prompt: "An internally developed automatic candidate scoring system is classified as:"
+    choices:
+      - text: "Minimal risk — it is an internal HR tool"
+      - text: "High risk — the AI Act explicitly classifies systems that evaluate people in employment as high risk"
+        correct: true
+      - text: "Unacceptable risk — any automated HR decision is prohibited"
+---
+
+# The AI Act and the August 2026 deadline
+
+The AI Act (EU Regulation 2024/1689) has been in force since August 2024. Its application is phased: the first concrete obligations for ordinary businesses come into force in **August 2026**. This is not a distant date — achieving compliance takes months, and national sanctions are real.
+
+## The risk-level logic
+
+The AI Act does not regulate models — it regulates **uses**. The same model (GPT, Claude, Gemini) can be used in a minimal-risk context (generating marketing content) or a high-risk one (evaluating job candidates). The use case determines the obligations.
+
+**Four levels:**
+
+- **Unacceptable**: prohibited. Behavioural manipulation, generalised social scoring, real-time facial recognition in public spaces. No compliance pathway — it is banned.
+
+- **High**: permitted but heavily regulated. Covers in particular: evaluation systems in recruitment and HR management, credit systems, educational evaluation systems, sorting systems for access to public services. Obligations: CE compliance, technical documentation, EU registry, mandatory human supervision, transparency towards users.
+
+- **Limited**: transparency obligations. Chatbots must declare themselves as AI. Deepfakes must be labelled.
+
+- **Minimal**: no specific obligations. Spam filters, coding assistants, general productivity tools.
+
+<Idee>
+For a dev team, everyday tools (Claude Code, Cursor, Copilot) are minimal risk. Risk appears when you **develop** or **deploy** an AI system that makes or assists decisions about people — recruitment, performance evaluation, access to services.
+</Idee>
+
+## What comes into force in August 2026
+
+**General-purpose AI (GPAI) models** — large language and multimodal models — are subject to transparency and documentation obligations towards the European Union from August 2025 (for providers). For user organisations, the practical obligations crystallise in August 2026:
+
+1. **AI literacy** (Article 4): organisations that deploy AI systems must ensure their teams have a sufficient level of competence to understand and use those systems. This obligation is deliberately vague — no defined certification — but it forms a legal basis for sanctions.
+
+2. **Human supervision** (for high-risk systems): documented obligation for human validation on high-impact AI-assisted decisions.
+
+3. **Documentation and traceability**: high-risk systems must be documented (training data, tests, limitations) and their use traced.
+
+<Exemple>
+**Quick risk map for a B2B scale-up:**
+
+| Tool / System | Risk level | Required action |
+|---|---|---|
+| Claude Code, Cursor (internal dev) | Minimal | No specific obligation |
+| Customer support chatbot (answers product questions) | Limited | "You are speaking to an AI" declaration |
+| Lead scoring tool (internal) | Minimal to limited | Check whether contractual decisions derive from it |
+| Candidate scoring tool (HR) | **High** | CE compliance obligations, human supervision |
+| Employee performance evaluation tool | **High** | Same + EU registry |
+</Exemple>
+
+## Sanctions: real, but phased
+
+The AI Act provides for fines up to €35M or 7% of global annual turnover for the most serious violations (prohibited practices). For violations relating to obligations for high-risk systems: up to €15M or 3% of turnover. For inaccurate information to authorities: €7.5M or 1.5%.
+
+These ceilings apply to providers and deployers. National authorities (in France: potentially the CNIL and a new AI authority) are responsible for enforcement. Initial investigations will likely target the most visible cases — recruitment, credit, educational evaluation systems — before reaching internal productivity uses.
+
+<Attention>
+Do not conclude from the phased sanctions that you have time. Achieving compliance for a high-risk system (technical documentation, formalised human supervision, registration) takes a minimum of 3 to 6 months. If your organisation develops or deploys such a system, start the audit now.
+</Attention>
+
+<Exercice>
+Take an inventory of the AI systems used or developed in your organisation. For each, ask: "Does this system assist a decision about people (recruitment, evaluation, access to services)?" If yes, provisionally classify it as high risk and identify who in the organisation needs to be informed. Share this inventory with the leadership team and legal — this is not a purely technical topic.
+</Exercice>

@@ -1,0 +1,100 @@
+---
+title: "Mesurer le ROI de l'IA"
+slug: "mesurer-le-roi-de-l-ia"
+module: "m5-integration-pipeline"
+order: 4
+durationMin: 13
+level: "avancé"
+objectives:
+  - "capable de définir des métriques de ROI pertinentes pour un workflow AI-first dans une équipe dev"
+  - "capable d'identifier les zones où l'IA dégrade la qualité plutôt que de l'améliorer"
+prerequisites: []
+quiz:
+  - prompt: "Quelle métrique révèle le mieux si l'IA améliore réellement la vélocité d'une équipe ?"
+    choices:
+      - text: "Le nombre de lignes de code générées par semaine"
+      - text: "Le temps cycle de la spec au merge, mesuré avant et après adoption du workflow AI-first"
+        correct: true
+      - text: "Le pourcentage de code coverage atteint"
+  - prompt: "Un signe que l'IA dégrade la qualité plutôt que de l'aider :"
+    choices:
+      - text: "Le temps passé à écrire des CLAUDE.md augmente"
+      - text: "Le taux de réouverture des tickets (bugs post-merge) augmente après l'adoption AI-first"
+        correct: true
+      - text: "Les développeurs font moins de commits par jour"
+  - prompt: "Le ROI d'un workflow AI-first se mesure correctement :"
+    choices:
+      - text: "Sur la première semaine d'adoption — la courbe d'apprentissage est rapide"
+      - text: "Sur un sprint complet minimum, en excluant la période de montée en compétence"
+        correct: true
+      - text: "En demandant aux développeurs s'ils se sentent plus productifs"
+---
+
+# Mesurer le ROI de l'IA
+
+"L'IA nous fait gagner du temps" est une intuition. "Le temps cycle de spec à merge est passé de 3,2 jours à 1,8 jour sur le dernier trimestre" est une mesure. La différence entre les deux est ce qui permet d'arbitrer : où continuer, où réduire l'usage, où l'IA crée plus de problèmes qu'elle n'en résout.
+
+## Ce qu'on mesure et ce qu'on ne mesure pas
+
+Les métriques qui ne mesurent pas la bonne chose :
+
+- **Lignes de code générées** : corrélées à zéro avec la qualité ou la vélocité réelle
+- **Nombre de prompts envoyés** : indicateur d'activité, pas de résultat
+- **Sentiment subjectif** ("je me sens plus productif") : biaisé par l'effet de nouveauté
+
+Les métriques qui révèlent quelque chose d'utile :
+
+- **Temps cycle spec → merge** : du moment où une tâche est définie au moment où elle passe la CI
+- **Taux de réouverture** : bugs remontés après merge sur des features développées AI-first vs classique
+- **Coût de revue** : temps humain de revue par PR (si l'IA génère des PRs plus grosses et moins lisibles, le ROI est négatif)
+- **Coût des tokens** vs valeur délivrée : pour les workflows automatisés (n8n + LLM), combien dépensez-vous par mois pour automatiser quoi ?
+
+<Idee>
+Mesurez sur un sprint minimum, en excluant les deux premières semaines d'adoption (montée en compétence). Un développeur qui maîtrise le workflow AI-first n'a pas la même vélocité qu'un développeur qui l'apprend — comparer les deux períodes donne un signal biaisé.
+</Idee>
+
+## Protocole de mesure pour une équipe
+
+**Baseline (avant)** : extrayez de votre outil de gestion (Linear, Jira, GitHub) le temps cycle moyen des features sur les 3 derniers sprints. Notez aussi le taux de bugs post-merge et le nombre de commentaires de revue par PR.
+
+**Après adoption** : mesurez les mêmes métriques sur 2 sprints complets. Comparez feature par feature si possible — certains types de tâches bénéficient plus que d'autres (formulaires CRUD : gain énorme ; algorithmes complexes : gain modéré ; refactors d'architecture : parfois négatif).
+
+**Ce qui mérite un tableau :**
+
+| Tâche | Avant (h) | Après (h) | Delta | ROI |
+|---|---|---|---|---|
+| CRUD endpoint simple | 4h | 1,5h | -63% | ✓ fort |
+| Feature avec logique métier complexe | 8h | 6h | -25% | ✓ modéré |
+| Refactor cross-couches | 12h | 14h | +17% | ✗ négatif |
+| Migration de schéma DB | 6h | 2h | -67% | ✓ fort |
+
+<Exemple>
+**Rapport mensuel type — équipe de 4 devs, 2 mois après adoption :**
+
+- Temps cycle spec→merge : 3,1j → 1,9j (−39%)
+- Taux de réouverture : 12% → 9% (−3 pts — amélioration légère)
+- Commentaires de revue par PR : 8,2 → 11,4 (+39% — les PRs sont plus denses, la revue est plus chargée)
+- Coût tokens Anthropic : ~180 €/mois pour l'équipe
+
+**Décisions prises** : continuer le workflow sur CRUD + tests ; ajouter une étape de découpage systématique des PRs AI-first (elles sont trop grosses) ; ne pas utiliser l'agent sur les refactors d'architecture.
+</Exemple>
+
+## Les zones où l'IA dégrade
+
+L'adoption aveugle produit des effets négatifs documentés. Les plus courants :
+
+**PRs trop grosses** : l'agent génère en une session ce qu'un développeur aurait découpé naturellement. Résultat : des diffs de 800 lignes impossibles à reviewer sérieusement.
+
+**Fausse confiance sur la couverture de tests** : coverage élevée générée automatiquement, mais tests d'implémentation sans valeur réelle (cf. M4).
+
+**Dette de contexte** : les fichiers `CLAUDE.md` et specs deviennent des artefacts non maintenus. Après 3 mois, l'agent travaille sur un contexte obsolète et produit des résultats incohérents.
+
+**Surcoût de tokens sur des tâches simples** : automatiser avec un LLM ce qui se résoudrait en 5 lignes de code ou une règle de gestion triviale.
+
+<Attention>
+Le ROI de l'IA n'est pas uniforme dans le temps. La courbe typique : gain fort à l'adoption (tâches simples bien cadrées), plateau après 6 semaines, puis risque de dégradation si les fichiers de contexte ne sont pas maintenus. Planifiez une revue des `CLAUDE.md` et des conventions agent tous les 2 sprints.
+</Attention>
+
+<Exercice>
+Choisissez trois features récentes développées partiellement ou totalement en AI-first. Pour chacune : estimez le temps réel de développement (commits, PRs, reviews). Comparez à votre estimation classique pour une feature équivalente. Calculez le delta. Y a-t-il un pattern sur les types de tâches où le gain est réel vs inexistant ? Partagez les résultats avec l'équipe — l'arbitrage collectif est plus fiable qu'une mesure individuelle.
+</Exercice>

@@ -12,11 +12,11 @@ describe("structure des modules", () => {
     expect(frSlugs).toHaveLength(6);
   });
 
-  it("seul mf-devenir-formateur est gaté (formateurOnly) — 5 modules publics", async () => {
+  it("aucun module n'est gaté (formateurOnly supprimé) — tous les modules sont publics", async () => {
     const mods = await listModules("fr");
     const gated = mods.filter((m) => m.formateurOnly).map((m) => m.slug);
-    expect(gated).toEqual(["mf-devenir-formateur"]);
-    expect(mods.filter((m) => !m.formateurOnly)).toHaveLength(5);
+    expect(gated).toHaveLength(0);
+    expect(mods.filter((m) => !m.formateurOnly)).toHaveLength(6);
   });
 
   it("les modules sont triés par order croissant", async () => {

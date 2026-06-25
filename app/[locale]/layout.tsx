@@ -46,19 +46,19 @@ const siteUrl = SITE_URL;
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Largo IA — Prenez le large avec l'IA",
+    default: "Largo IA — AI-First Engineering",
     template: "%s · Largo IA",
   },
   description:
-    "Formez vos dirigeants et vos équipes à l'IA générative, en visio, sans jargon. Des résultats concrets dès la première semaine — conforme à l'AI Act et au RGPD.",
+    "Formation B2B intra à l'ingénierie AI-first pour les équipes de développement. Méthode praticien, garde-fous, conforme AI Act.",
   keywords: [
+    "AI-First Engineering",
     "formation IA",
-    "intelligence artificielle",
-    "TPE",
-    "PME",
+    "équipes de développement",
     "IA générative",
     "AI Act",
-    "formation visio",
+    "agents de code",
+    "formation B2B",
   ],
   authors: [{ name: "Guillaume Flambard" }],
   openGraph: {
@@ -66,15 +66,15 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: siteUrl,
     siteName: "Largo IA",
-    title: "Largo IA — Prenez le large avec l'IA",
+    title: "Largo IA — AI-First Engineering",
     description:
-      "Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, conforme à l'AI Act.",
+      "Formation B2B intra à l'ingénierie AI-first pour les équipes de développement. Méthode praticien, garde-fous, conforme AI Act.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Largo IA — Prenez le large avec l'IA",
+    title: "Largo IA — AI-First Engineering",
     description:
-      "Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon.",
+      "Formation B2B intra à l'ingénierie AI-first pour les équipes de développement. Méthode praticien, garde-fous, conforme AI Act.",
   },
 };
 

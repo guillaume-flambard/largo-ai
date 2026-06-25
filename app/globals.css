@@ -1015,3 +1015,26 @@ html[data-theme] body {
   border-left: 3px solid var(--sun);
   color: var(--ink-2);
 }
+
+/* FormulesTable — responsive (mobile ≤ 860px : colonnes empilées) */
+@media (max-width: 860px) {
+  .lg-formules-table {
+    grid-template-columns: 1fr !important;
+  }
+  .lg-formules-table > div {
+    grid-column: 1 / -1 !important;
+  }
+  .lg-formules-table-header {
+    grid-template-columns: 1fr !important;
+  }
+  .lg-formules-row {
+    grid-template-columns: 1fr !important;
+  }
+  .lg-formules-row-cell {
+    border-right: none !important;
+    border-bottom: 1px solid var(--line);
+  }
+  .lg-formules-row-cell:last-child {
+    border-bottom: none;
+  }
+}

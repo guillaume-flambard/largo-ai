@@ -1,0 +1,102 @@
+---
+title: "Sortir du Shadow AI"
+slug: "sortir-du-shadow-ai"
+module: "m6-gouvernance-ai-act"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "capable de diagnostiquer l'ampleur du Shadow AI dans une équipe et ses vecteurs principaux"
+  - "capable de proposer une stratégie de sortie du Shadow AI qui n'aboutit pas à une interdiction contreproductive"
+prerequisites: []
+quiz:
+  - prompt: "Le Shadow AI dans une équipe de développement se manifeste principalement par :"
+    choices:
+      - text: "L'utilisation de modèles d'IA open-source non approuvés sur des serveurs internes"
+      - text: "L'usage régulier d'outils IA non validés par l'entreprise — souvent des comptes personnels ChatGPT, Gemini ou Claude — avec des données de travail"
+        correct: true
+      - text: "Des développeurs qui écrivent leurs propres modèles de machine learning"
+  - prompt: "La principale raison pour laquelle les développeurs utilisent des outils IA non validés est :"
+    choices:
+      - text: "Un manque de sensibilisation aux risques de sécurité"
+      - text: "Que les outils validés sont absents, insuffisants ou trop lents à accéder — le Shadow AI comble un vide réel"
+        correct: true
+      - text: "Une volonté délibérée de contourner la politique d'entreprise"
+  - prompt: "La stratégie la plus efficace pour réduire le Shadow AI est :"
+    choices:
+      - text: "Auditer les outils installés sur les postes de travail et sanctionner les usages non conformes"
+      - text: "Mettre à disposition des outils validés suffisamment bons pour que l'alternative non-validée ne soit plus attractive"
+        correct: true
+      - text: "Former les équipes aux risques RGPD pour qu'elles prennent conscience des dangers"
+---
+
+# Sortir du Shadow AI
+
+Le Shadow AI — l'usage d'outils IA non validés par l'entreprise — est déjà massivement présent dans la plupart des équipes de développement. Ce n'est pas un problème de mauvaise volonté. C'est un problème de vide : l'IA est utile, l'entreprise n'a pas de cadre, les développeurs utilisent leurs comptes personnels. La réponse n'est pas l'interdiction — elle pousse l'usage dans l'ombre sans le supprimer.
+
+## Pourquoi le Shadow AI existe
+
+La logique est simple : les développeurs ont découvert que ChatGPT, Claude ou Gemini les rendaient plus efficaces. L'entreprise n'a pas de politique. Ils utilisent leurs comptes personnels avec des données de travail parce que c'est pratique et que personne ne leur a dit de ne pas le faire.
+
+Le Shadow AI n'est pas un symptôme de mauvaise intentionnalité — c'est un signal que l'offre officielle est insuffisante ou inexistante.
+
+**Ce que le Shadow AI coûte réellement :**
+
+- Des données clients ou du code propriétaire envoyés à des APIs dont les conditions d'utilisation permettent l'entraînement (selon les offres et comptes utilisés)
+- Aucune traçabilité des usages — impossible de savoir ce qui a été partagé
+- Des risques RGPD non maîtrisés, et une exposition croissante aux obligations AI Act
+- Une absence de standardisation : chaque développeur a son propre usage, ses propres prompts, ses propres habitudes — pas de capitalisation collective
+
+<Idee>
+La cartographie du Shadow AI dans une équipe commence par une question directe et non punitive : "Quels outils IA utilisez-vous actuellement, validés ou non ?" Les réponses honnêtes nécessitent une culture de sécurité psychologique — si les développeurs craignent une sanction, ils mentent et le problème reste invisible.
+</Idee>
+
+## Diagnostiquer le Shadow AI
+
+**Audit rapide (entretien d'équipe, 30 min) :**
+
+1. Quels outils IA utilisez-vous dans votre workflow quotidien ? (Listez tous, validés ou non)
+2. Pour quelles tâches ? (génération de code, questions techniques, rédaction, analyse de logs...)
+3. Avez-vous déjà envoyé des données client, des credentials, ou du code sensible à un de ces outils ?
+4. Quel outil vous serait le plus difficile à abandonner ? Pourquoi ?
+
+Les réponses à ces quatre questions donnent la carte réelle des usages et les vecteurs prioritaires à adresser.
+
+## La stratégie de sortie
+
+La seule stratégie qui fonctionne : **offrir mieux**. Pas interdire, offrir mieux.
+
+**Étape 1 — Valider et déployer les outils officiels**
+
+Sélectionnez un ou deux outils que l'entreprise prend en charge (licences, contrats de données avec clauses de non-entraînement, configuration centralisée). Pour une équipe dev : Claude Code ou Cursor avec un compte Anthropic/Cursor entreprise où les données ne sont pas utilisées pour l'entraînement.
+
+**Étape 2 — Rendre l'outil officiel meilleur que l'alternative**
+
+L'outil officiel doit être au moins aussi bon que ce que les développeurs utilisaient en Shadow. Si ce n'est pas le cas, ils reviendront au Shadow. Investissez dans la configuration (CLAUDE.md d'équipe, conventions agents) pour que l'outil officiel soit plus efficace que le compte personnel non configuré.
+
+<Exemple>
+**Transition concrète : d'un compte personnel ChatGPT à Claude Code entreprise**
+
+| Avant (Shadow) | Après (officiel) |
+|---|---|
+| Compte gratuit ou personnel — données potentiellement utilisées pour l'entraînement | Contrat Anthropic Entreprise — données non utilisées pour l'entraînement |
+| Pas de contexte projet — le développeur recopie le code à la main | CLAUDE.md d'équipe — l'agent connaît la stack, les conventions, les contraintes |
+| Chaque développeur a son usage — pas de capitalisation | Playbook partagé, prompts réutilisables, capitalisation des patterns efficaces |
+| Aucune traçabilité | Logs centralisés (disponibles selon l'offre entreprise) |
+
+Le gain n'est pas seulement la conformité — c'est aussi l'efficacité collective.
+</Exemple>
+
+**Étape 3 — Communiquer sans punir**
+
+Annoncez la transition avec clarté : "Voici les outils validés. Voici pourquoi c'est mieux. Voici ce qu'il ne faut plus envoyer à des outils non validés." Pas de ton moralisateur sur le passé — focus sur le cadre futur.
+
+Une amnistie tacite sur les usages passés est souvent nécessaire pour que les équipes coopèrent honnêtement au diagnostic.
+
+<Attention>
+N'auditez pas les postes de travail à la recherche d'outils non conformes sans avoir d'abord mis en place l'alternative. Un audit punitif sans solution pousse les usages encore plus dans l'ombre et détruit la confiance. L'ordre est : solution → communication → adoption → puis éventuellement monitoring.
+</Attention>
+
+<Exercice>
+Organisez un entretien de 20 minutes avec deux ou trois développeurs de votre équipe en vous positionnant comme quelqu'un qui cherche à améliorer le cadre, pas à trouver des coupables. Posez les quatre questions du diagnostic ci-dessus. Identifiez le principal outil de Shadow AI utilisé et le principal vecteur de données sensibles. Proposez une première mesure concrète qui adresse ce vecteur sans interdiction brute.
+</Exercice>

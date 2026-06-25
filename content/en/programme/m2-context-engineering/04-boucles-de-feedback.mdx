@@ -1,0 +1,143 @@
+---
+title: "Feedback loops in an AI-first workflow"
+slug: "boucles-de-feedback"
+module: "m2-context-engineering"
+order: 4
+durationMin: 14
+level: "avancé"
+objectives:
+  - "Identify the three feedback loops in an AI-first workflow and their respective roles"
+  - "Use the results of one loop to improve context and specs for subsequent loops"
+  - "Avoid anti-patterns (corrections without updating context, iterations without a stopping criterion)"
+prerequisites: []
+quiz:
+  - prompt: "When an agent produces code that doesn't respect a project convention, the right reaction is…"
+    choices:
+      - text: "Fix the code by hand and move on"
+      - text: "Fix the code by hand AND update CLAUDE.md so it doesn't happen again"
+        correct: true
+      - text: "Relaunch the agent with the same spec hoping for a better result"
+  - prompt: "The shortest feedback loop in an AI-first workflow is…"
+    choices:
+      - text: "A PR review by a colleague"
+      - text: "Reading the agent-produced diff before committing"
+        correct: true
+      - text: "Automated tests in CI"
+  - prompt: "Iterating on the same task becomes an anti-pattern when…"
+    choices:
+      - text: "You've read the diff more than once"
+      - text: "You're on the third attempt without having updated the spec or context"
+        correct: true
+      - text: "The agent asked questions during execution"
+---
+
+An AI-first workflow isn't a linear sequence — it's a learning system with loops. Every
+produced diff is information: about the quality of the context you provided, the
+precision of your spec, the constraints you forgot to make explicit. If you fix the code
+without capitalizing on that information, you're treating the symptom without addressing
+the cause.
+
+## The three loops
+
+<Idee>
+**Short loop (task):** spec → agent → diff → review → commit (or fix and relaunch).
+Lasts 15-60 minutes. This is where you verify the task is done right.
+
+**Medium loop (session):** several tasks in the same work session. Here you capitalize
+on what the short loops revealed: you update CLAUDE.md if a pattern was missed, you
+refine the specs for subsequent tasks.
+
+**Long loop (project):** over weeks, you improve the baseline quality of the project
+context. A progressively enriched CLAUDE.md, reusable spec templates, a proven
+decomposition pattern. The productivity gain from AI-first is cumulative — it grows
+with context quality.
+</Idee>
+
+## The short loop: review and iteration
+
+The short loop is what you practice with every task. Its logic:
+
+1. You read the produced diff.
+2. Either you commit (acceptable diff), or you fix the spec and relaunch.
+3. If you fix, you identify **why** the agent missed: missing context, unspecified
+   constraint, task too vague, task too large?
+4. You fix the cause, not just the symptom.
+
+The stopping criterion for the short loop is simple: the diff is mergeable. Not
+"roughly good" — mergeable, with the same standards as code you'd have written yourself.
+
+<Attention>
+**The spiral anti-pattern:** the agent produces something incorrect, you ask it to fix
+it without changing the context or spec, it fixes it but introduces another problem,
+you correct again... If you're on the third round of the same task without having
+changed the spec, stop. Take back control manually or reformulate from scratch with
+more precise constraints. The spiral is the signal that your spec under-specifies
+the problem.
+</Attention>
+
+## The medium loop: capitalizing within the session
+
+During a work session (2-3 hours), you'll handle several sequential tasks. After each
+commit, ask yourself these two questions:
+
+1. **Did the agent miss a convention?** → Add it to CLAUDE.md now, not "later."
+   Later never comes.
+2. **Did your spec have a blind spot?** → Note the type of constraint you didn't think
+   to specify. Build your personal spec template across sessions.
+
+<Exemple>
+You're working on adding a new API module. The agent produces the right endpoint
+but consistently forgets to add the rate limiting you have on all your public
+endpoints — because you hadn't specified it.
+
+**Without the loop:** you fix it by hand in this diff, you forget again on the next task.
+
+**With the loop:** you fix it by hand, **AND** you add to your CLAUDE.md:
+"All public endpoints (`/api/public/*`) must apply the `rateLimit` middleware from
+`lib/middleware/rate-limit.ts`." On the next task, the agent does it automatically.
+</Exemple>
+
+## The long loop: context as an asset
+
+Over several weeks of use, a mature AI-first project's CLAUDE.md looks less like an
+onboarding document and more like a set of capitalized operational rules. Every
+convention you've had to correct once is now explicit.
+
+This context capital has value beyond yourself: another developer joining the project
+has a quality onboarding document. Another agent (if you switch tools) starts on known
+ground.
+
+## Measuring the gain
+
+<Idee>
+A simple indicator of your workflow's progress: how many iterations (spec corrections)
+do you need on average before getting a mergeable diff?
+
+At the start, often 2-3 iterations. After a few weeks of improving context and specs:
+often 0-1. It's not the agent that improves — it's your context that becomes more
+precise.
+</Idee>
+
+## Your turn
+
+<Exercice>
+At the end of your next AI-first dev session, do a 5-minute debrief:
+
+1. How many tasks did you handle?
+2. For how many did you need to fix the spec (not the code)?
+3. Which convention did the agent miss? Is it now in CLAUDE.md?
+4. Which type of constraint did you forget to write in a spec? Have you added it
+   to your template?
+
+This 5-minute debrief is worth more than any documentation reading.
+</Exercice>
+
+## Summary
+
+- There are three feedback loops: short (task), medium (session), long (project).
+- The short loop: read the diff, identify the cause of a missed result, fix the spec
+  rather than just the code.
+- The medium loop: enrich CLAUDE.md and spec templates after each session.
+- The long loop: project context as a cumulative asset — its quality determines the
+  long-term productivity gain.
+- The anti-pattern: correcting without capitalizing. It fixes the symptom, not the cause.

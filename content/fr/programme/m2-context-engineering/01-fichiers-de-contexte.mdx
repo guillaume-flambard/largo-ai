@@ -1,0 +1,166 @@
+---
+title: "Les fichiers de contexte : CLAUDE.md, conventions, architecture"
+slug: "fichiers-de-contexte"
+module: "m2-context-engineering"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "Comprendre pourquoi le fichier de contexte est la première chose à créer dans un projet AI-first"
+  - "Être capable de rédiger un CLAUDE.md efficace couvrant les informations critiques pour un agent"
+  - "Identifier ce qui doit y figurer vs ce qui reste dans la spec de tâche"
+prerequisites: []
+quiz:
+  - prompt: "Le fichier CLAUDE.md est lu par l'agent…"
+    choices:
+      - text: "Uniquement quand vous lui demandez explicitement"
+      - text: "Automatiquement à chaque session Claude Code, avant d'exécuter la moindre commande"
+        correct: true
+      - text: "Une seule fois à l'initialisation du projet, puis mis en cache"
+  - prompt: "Que doit contenir un CLAUDE.md en priorité ?"
+    choices:
+      - text: "L'historique du projet et les décisions passées"
+      - text: "Les conventions actives, les patterns à suivre, les anti-patterns bannis et la structure du projet"
+        correct: true
+      - text: "La liste de toutes les dépendances avec leurs versions"
+  - prompt: "Pourquoi un CLAUDE.md mal écrit coûte cher ?"
+    choices:
+      - text: "Parce qu'il consomme des tokens inutilement"
+      - text: "Parce que l'agent va répéter les mêmes erreurs de contexte sur chaque session sans jamais corriger"
+        correct: true
+      - text: "Parce que Claude Code ne peut pas lire les fichiers mal formatés"
+---
+
+La qualité du contexte donné à un agent détermine la qualité de ce qu'il produit.
+Ce n'est pas un détail de configuration — c'est la compétence centrale de l'AI-first.
+Un `CLAUDE.md` mal rédigé, c'est un agent qui invente vos conventions à chaque session
+et que vous corrigez indéfiniment. Un `CLAUDE.md` bien rédigé, c'est un agent qui
+produit du code mergeable dès le premier jet sur 80 % des tâches courantes.
+
+## Ce qu'est un fichier de contexte
+
+<Idee>
+Un fichier de contexte projet (nommé `CLAUDE.md` pour Claude Code, `.cursor/rules/*.mdc`
+pour Cursor) est un document en langage naturel que l'agent lit **avant chaque session**.
+Il lui donne les informations qu'il ne peut pas inférer seul à partir du code : vos
+conventions, vos contraintes, ce qui est interdit, comment le projet est organisé, quels
+patterns sont en place.
+
+C'est l'équivalent d'un onboarding document pour développeur junior — sauf que l'agent
+le relit intégralement à chaque ouverture de session, contrairement au junior.
+</Idee>
+
+## Ce que le fichier doit couvrir
+
+Une structure qui fonctionne bien en pratique :
+
+### 1. Contexte du projet (2-4 lignes)
+Ce qu'est le projet, quelle techno, à quelle étape il en est. L'agent doit comprendre
+s'il travaille sur un SaaS Next.js en prod, une API Python en alpha, ou un monorepo en
+cours de découpage.
+
+### 2. Commandes essentielles
+Les commandes pour lancer, tester, builder le projet. L'agent les exécute — il doit
+savoir lesquelles sont correctes pour votre setup.
+
+```
+dev: corepack pnpm dev
+test: corepack pnpm test
+lint: corepack pnpm lint
+build: corepack pnpm build
+```
+
+### 3. Architecture et conventions de fichiers
+Où vivent les composants, les types, les services, les tests. Quelle convention de
+nommage. Si vous avez une structure inhabituelle, dites-le explicitement.
+
+### 4. Patterns à suivre (avec exemples si besoin)
+Comment vous gérez l'auth, quel ORM et comment vous l'utilisez, comment vos composants
+sont structurés. Si un pattern est non-évident, un exemple inline (3-5 lignes) vaut
+mieux qu'une description abstraite.
+
+### 5. Anti-patterns explicitement bannis
+Ce que l'agent ne doit **jamais** faire, même si ça semble raisonnable. Exemples :
+ne pas utiliser `any` TypeScript, ne pas écrire de SQL raw (ORM seulement), ne pas
+installer une nouvelle dépendance sans demander.
+
+### 6. Ce qui ne touche pas (zones protégées)
+Si certains fichiers sont hors périmètre (fichiers auto-générés, contrats publics,
+migrations en production), dites-le. Un agent qui touche un fichier de migration en
+pensant bien faire peut causer des dégâts irréversibles.
+
+## Ce qui ne va pas dans le CLAUDE.md
+
+<Attention>
+Le fichier de contexte n'est pas fait pour les specs de tâches individuelles. Si vous
+décrivez « ce que je veux que tu fasses maintenant » dans le CLAUDE.md, vous confondez
+contexte projet (permanent) et instruction de session (ponctuelle). Les specs vont dans
+la conversation, pas dans le fichier de contexte.
+
+De même, évitez de surcharger le fichier avec de la documentation qui n'influence pas
+le comportement de l'agent (historique de décisions, roadmap, etc.) — ça dilue les
+informations importantes.
+</Attention>
+
+## Un exemple réaliste
+
+<Exemple>
+Extrait de CLAUDE.md pour un projet Next.js App Router + Drizzle + Neon :
+
+```markdown
+# Projet
+
+SaaS Next.js 15 (App Router). Stack : TypeScript strict, Drizzle ORM, Neon (Postgres),
+Clerk (auth), Zod (validation).
+
+## Commandes
+
+- dev: `corepack pnpm dev`
+- test: `corepack pnpm test`
+- db push: `corepack pnpm db:push`
+
+## Conventions
+
+- Components : `app/components/` (partagés) ou co-localisés avec la route
+- Types : inférés depuis le schéma Drizzle (pas de types manuels pour les entités DB)
+- API routes : `app/api/[resource]/route.ts`
+- Jamais de SQL raw — Drizzle seulement
+- Jamais de `any` TypeScript
+
+## Auth
+
+Clerk middleware gère l'auth sur toutes les routes `/app/*`.
+`auth()` de `@clerk/nextjs/server` pour récupérer l'utilisateur côté serveur.
+Ne pas réimplémenter de vérification d'auth dans les composants.
+
+## Fichiers à ne pas modifier
+
+- `drizzle/migrations/` — auto-généré, ne jamais éditer manuellement
+- `app/api/webhooks/` — contrats Clerk, modifier avec prudence
+```
+</Exemple>
+
+## À votre tour
+
+<Exercice>
+Prenez un projet sur lequel vous travaillez. Créez ou mettez à jour son `CLAUDE.md`
+en suivant les six sections ci-dessus.
+
+Contrainte : le fichier doit tenir en moins de 100 lignes. Si vous dépassez, c'est que
+vous mettez de la documentation dedans — soyez plus sélectif.
+
+Ensuite, lancez une tâche simple avec Claude Code et observez si l'agent fait référence
+aux conventions que vous avez écrites. Si ce n'est pas le cas, vérifiez que le fichier
+est bien à la racine du projet et que les sections sont clairement délimitées.
+</Exercice>
+
+## En résumé
+
+- Le fichier de contexte est lu avant chaque session : c'est votre levier le plus
+  efficace pour améliorer la qualité du code généré.
+- Il couvre : contexte projet, commandes, architecture, patterns, anti-patterns, zones
+  protégées.
+- Il ne couvre pas : les specs de tâches individuelles, la documentation interne,
+  l'historique du projet.
+- Un bon CLAUDE.md tient en moins de 100 lignes et est mis à jour dès qu'un agent
+  manque une convention.

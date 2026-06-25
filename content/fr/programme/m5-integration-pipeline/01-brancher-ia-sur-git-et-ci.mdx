@@ -1,0 +1,117 @@
+---
+title: "Brancher l'IA sur Git et la CI"
+slug: "brancher-ia-sur-git-et-ci"
+module: "m5-integration-pipeline"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "capable d'intégrer un agent dans le workflow Git (hooks, PR review assistée) sans ralentir le pipeline"
+  - "capable de configurer un job CI qui pilote un agent pour la revue ou la génération de tests"
+prerequisites: []
+quiz:
+  - prompt: "Un hook pre-commit piloté par un agent doit en priorité :"
+    choices:
+      - text: "Générer automatiquement tout le code manquant avant le commit"
+      - text: "Valider la qualité du diff produit — et échouer explicitement si un garde-fou n'est pas respecté"
+        correct: true
+      - text: "Reformatter le code selon le style de l'agent"
+  - prompt: "Dans un pipeline CI, l'agent est le plus utile pour :"
+    choices:
+      - text: "Déployer directement en production sans validation humaine"
+      - text: "Analyser les diffs de PR et commenter les vecteurs de risque non couverts par les tests"
+        correct: true
+      - text: "Remplacer les tests existants par sa propre analyse"
+  - prompt: "Que risque-t-on si l'agent a accès en écriture aux secrets de CI (tokens, clés API) dans ses prompts ?"
+    choices:
+      - text: "Rien — les agents modernes chiffrent leur contexte"
+      - text: "Une exfiltration involontaire si le modèle les restitue dans un commentaire de PR ou un log"
+        correct: true
+      - text: "Un ralentissement du pipeline car l'agent doit déchiffrer à chaque run"
+---
+
+# Brancher l'IA sur Git et la CI
+
+Le workflow AI-first ne remplace pas Git — il s'y greffe. L'objectif est d'avoir des points d'intervention automatiques où un agent apporte de la valeur sans devenir un goulot d'étranglement ou un vecteur de risque.
+
+## Les trois points d'intégration Git
+
+Il y a trois endroits naturels où brancher un agent dans le cycle Git :
+
+1. **Pre-commit** — validation locale avant que le diff parte
+2. **PR / code review** — analyse du diff sur le serveur (GitHub Actions, GitLab CI)
+3. **Merge guard** — vérification de règles avant le merge (labels, checklist, couverture)
+
+Chaque point a un bon usage et un anti-pattern à éviter.
+
+<Idee>
+L'agent dans la CI n'est pas un reviewer autonome — c'est un assistant qui complète la revue humaine en signalant ce qu'un reviewer pressé pourrait manquer : routes non authentifiées, données sensibles dans les logs, incohérences de types. La décision de merger reste humaine.
+</Idee>
+
+## Hook pre-commit : un garde-fou local
+
+Un hook `pre-commit` piloté par un agent analyse le diff avant que le commit soit créé. Configuration type avec `husky` :
+
+```bash
+# .husky/pre-commit
+#!/bin/sh
+DIFF=$(git diff --cached)
+# On passe le diff à l'agent via claude (CLI) avec une instruction de garde-fous
+echo "$DIFF" | claude --print "Analyse ce diff. Signale : routes sans auth, secrets en clair, données PII dans les logs. Format : liste de risques ou 'aucun risque détecté'."
+```
+
+La règle : **le hook doit échouer explicitement** (`exit 1`) si l'agent trouve un risque bloquant. Sinon il est contournable mentalement ("l'agent a dit OK") sans réelle décision humaine.
+
+<Exemple>
+**Résultat attendu d'un hook qui détecte un problème :**
+
+```
+[pre-commit agent] Analyse du diff :
+⚠ Route POST /api/users créée sans middleware d'authentification (ligne 47)
+⚠ Variable d'environnement DATABASE_URL tracée dans console.log (ligne 83)
+
+Hook bloqué. Corrigez ces points avant de committer.
+```
+
+Le développeur voit le problème, corrige, recommitte. L'agent n'a pas décidé — il a signalé.
+</Exemple>
+
+## PR review assistée dans la CI
+
+Sur GitHub Actions / GitLab CI, un job peut soumettre le diff à un agent et poster ses observations en commentaire de PR. Squelette de job :
+
+```yaml
+# .github/workflows/ai-review.yml
+name: AI Review
+on: [pull_request]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Diff vers agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+          REVIEW=$(echo "$DIFF" | claude --print "Revue de sécurité: routes sans auth, secrets exposés, injections, dépendances non justifiées. Une ligne par risque, ou 'aucun risque détecté'.")
+          gh pr comment ${{ github.event.pull_request.number }} --body "**Revue agent :** $REVIEW"
+```
+
+<Attention>
+Ne jamais passer les secrets de CI (tokens, clés API) dans le prompt de l'agent. Utilisez des variables d'environnement cloisonnées et ne les injectez que dans l'appel API, pas dans le texte soumis au modèle. Un secret dans le prompt peut se retrouver dans un log ou un commentaire de PR.
+</Attention>
+
+## Qu'est-ce qu'on ne délègue pas à la CI ?
+
+- La décision de merger (reste humaine)
+- La validation de la logique métier (l'agent ne connaît pas vos règles implicites)
+- L'arbitrage sur les dépendances (politique interne, licences, sécurité supply chain)
+
+La CI avec agent signale et bloque sur des règles codifiables. Ce qui nécessite un jugement contextuel reste dans la revue humaine.
+
+<Exercice>
+Choisissez un repo de votre équipe. Identifiez les trois risques les plus fréquents dans vos PRs (oubli d'auth, log de données sensibles, dépendance non justifiée…). Rédigez une instruction d'agent qui les détecte — testez-la sur trois diffs récents. Est-ce que l'agent les aurait signalés ? Y a-t-il des faux positifs ? Affinez l'instruction.
+</Exercice>

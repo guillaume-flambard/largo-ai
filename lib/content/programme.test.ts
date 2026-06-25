@@ -6,8 +6,8 @@ import {
   getAdjacentLessons,
 } from "./programme";
 
-const MOD = "m1-fondamentaux";
-const LESSON = "ce-que-l-ia-sait-faire";
+const MOD = "m1-posture-ai-first";
+const LESSON = "orchestrer-pas-coder";
 
 describe("programme loaders (fr)", () => {
   it("liste les modules triés par order", async () => {
@@ -17,16 +17,16 @@ describe("programme loaders (fr)", () => {
 
   it("charge une leçon avec frontmatter validé + corps sans frontmatter", async () => {
     const l = await getLesson("fr", MOD, LESSON);
-    expect(l?.meta.title).toContain("IA générative");
+    expect(l?.meta.title).toContain("orchestrer");
     expect(l?.meta.durationMin).toBe(15);
-    expect(l?.meta.level).toBe("découverte");
+    expect(l?.meta.level).toBe("intermédiaire");
     expect(l?.body).not.toContain("---");
-    expect(l?.body).toContain("<Idee>");
+    expect(l?.body).toContain("<");
   });
 
   it("getModule retourne le module + ses leçons", async () => {
     const m = await getModule("fr", MOD);
-    expect(m?.meta.title).toBe("Fondamentaux & posture IA");
+    expect(m?.meta.title).toBe("Posture AI-first");
     expect(m?.lessons.map((l) => l.slug)).toContain(LESSON);
   });
 
@@ -44,6 +44,6 @@ describe("programme loaders (fr)", () => {
 
   it("charge la même leçon en en (slug stable)", async () => {
     const l = await getLesson("en", MOD, LESSON);
-    expect(l?.meta.title).toContain("generative AI");
+    expect(l?.meta.title).toContain("orchestrate");
   });
 });

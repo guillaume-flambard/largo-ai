@@ -1,0 +1,6 @@
+{
+  "slug": "m2-context-engineering",
+  "title": "Context engineering",
+  "summary": "Master the core skill of AI-first: framing an agent with the right context (CLAUDE.md, specs, task decomposition) to get a mergeable result on the first pass.",
+  "order": 2
+}

@@ -26,8 +26,6 @@ export default async function AProposPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getPageCopy(locale as Locale).aPropos;
-  const en = locale === "en";
-  const reserveLabel = en ? "Book a call" : "Réserver un appel";
 
   return (
     <>
@@ -122,7 +120,7 @@ export default async function AProposPage({
                 }}
                 iconRight={<Msi size={18}>arrow_forward</Msi>}
               >
-                {reserveLabel}
+                {t.reserveLabel}
               </ReserveButton>
             </div>
           </div>
@@ -206,7 +204,7 @@ export default async function AProposPage({
             color: "var(--ink)",
           }}
         >
-          {en ? "Why Largo IA" : "Pourquoi Largo IA"}
+          {t.whyTitle}
         </Reveal>
         <Reveal
           as="p"
@@ -243,7 +241,7 @@ export default async function AProposPage({
           }}
         >
           <Msi size={20} style={{ color: "var(--sun-ink)" }}>
-            videocam
+            {t.locationIcon}
           </Msi>
           {t.location}
         </Reveal>

@@ -1,0 +1,89 @@
+---
+title: "Spec-driven development"
+slug: "le-developpement-pilote-par-les-specs"
+module: "m3-livrer-ai-first"
+order: 3
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "able to break down a feature into atomic tasks for an agent"
+  - "able to structure specs that guide the agent toward the right architecture"
+prerequisites: []
+quiz:
+  - prompt: "Why prefer atomic specs (one concern = one spec)?"
+    choices:
+      - text: "To limit the length of the agent's responses"
+      - text: "So the agent can validate each step independently and produce consistent code"
+        correct: true
+      - text: "To reduce the token cost of each call"
+  - prompt: "A spec covering both the data layer AND the UI of a feature will typically produce:"
+    choices:
+      - text: "More complete code because the agent sees the whole picture"
+      - text: "Architecturally inconsistent code because the agent makes compromises between the two layers"
+        correct: true
+      - text: "An agent error that refuses to go that far"
+  - prompt: "In spec-driven development, when do you refine the spec?"
+    choices:
+      - text: "Never — a good spec doesn't change"
+      - text: "Only after an agent failure"
+      - text: "At each iteration, incorporating what you learned from the previous diff"
+        correct: true
+---
+
+# Spec-driven development
+
+Test-driven development (TDD) taught a generation of developers to think in terms of contracts before thinking in terms of implementation. Spec-driven development (SDD) applies the same logic to the AI-first workflow: you define the contract before engaging the agent.
+
+The fundamental difference: in SDD, the spec isn't a sticky note. It's a structured document that constrains the agent toward the right architecture.
+
+## The atomic task principle
+
+<Idee>
+A task is atomic when it covers exactly one concern: either persistence, or business logic, or the interface, or validation — never two at once. An atomic spec produces consistent code. A multi-concern spec produces architectural compromises.
+</Idee>
+
+The agent has no architectural judgment of its own. If your spec mixes the repository layer and the service layer, it will mix them in the code. If your spec is clear about the separation, it respects it.
+
+## Breaking down a real feature
+
+<Exemple>
+**Feature**: "Add a card payment system via Stripe"
+
+**Breakdown into atomic tasks**:
+
+1. **Spec 1 — Data model**: Create the `payments` table in the database (Drizzle schema). Fields: id, userId, stripePaymentIntentId, amount, currency, status, createdAt. No logic, no API.
+
+2. **Spec 2 — Stripe service**: Create `src/services/stripeService.ts` with a `createPaymentIntent(amount, currency, userId)` function. Uses the already-installed Stripe SDK. Returns the clientSecret. No routes, no database.
+
+3. **Spec 3 — Persistence**: Create `src/repositories/paymentRepository.ts` with `savePayment(data)` and `getPaymentsByUser(userId)`. Uses the schema from Spec 1. No Stripe logic.
+
+4. **Spec 4 — API Route**: Create `POST /api/payments/create-intent`. Calls stripeService (Spec 2), then paymentRepository (Spec 3). Uses `withErrorHandler`. Returns `{ clientSecret }`.
+
+5. **Spec 5 — UI**: Create the `PaymentForm` component that calls the Spec 4 API and handles states (loading, success, error).
+
+Each spec is delivered, reviewed, and committed before moving to the next.
+</Exemple>
+
+## Iterating on the spec
+
+A spec isn't set in stone. Every diff teaches you something you didn't anticipate. The cycle is:
+
+1. Write the spec → Give to the agent → Read the diff
+2. If the diff reveals a missing constraint: update the spec, relaunch
+3. If the diff is satisfactory: commit, move to the next spec
+
+Iteration happens on the **spec**, not on the **prompt**. Relaunching the agent with "no, not like that, more like this" without updating the spec capitalizes nothing.
+
+<Attention>
+A spec that covers two distinct concerns (e.g., "add the cache AND migrate the schema") almost always produces inconsistent code. The agent makes assumptions about the dependencies between the two parts. Those assumptions are often wrong. Split them.
+</Attention>
+
+## The spec as architectural documentation
+
+A useful side effect: your specs constitute a record of your architectural decisions. Six months from now, when someone asks "why this pattern?", the spec from back then answers the question.
+
+Store your specs in the repo (a `specs/` folder or in your tracker's issues). This isn't after-the-fact documentation — it's the entry point of the delivery process.
+
+<Exercice>
+Take a feature that's in progress or planned in your roadmap. Break it down into atomic tasks that respect layer separation (data, business logic, API, UI). Write the first complete spec with all four components (context, objective, constraints, success criterion). Don't hand it to the agent yet — re-read it first to verify that no single spec covers two concerns.
+</Exercice>

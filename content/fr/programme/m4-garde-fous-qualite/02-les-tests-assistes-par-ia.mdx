@@ -1,0 +1,112 @@
+---
+title: "Les tests assistés par IA"
+slug: "les-tests-assistes-par-ia"
+module: "m4-garde-fous-qualite"
+order: 2
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "capable de générer des tests unitaires et d'intégration avec un agent en partant d'une spec"
+  - "capable d'évaluer la pertinence des tests produits (coverage vs pertinence)"
+prerequisites: []
+quiz:
+  - prompt: "Un test qui vérifie que `calculateDiscount` appelle `Math.round` une fois est un test :"
+    choices:
+      - text: "De comportement — il vérifie que l'arrondi est appliqué"
+      - text: "D'implémentation — il se cassera si on refactorise sans changer le comportement"
+        correct: true
+      - text: "D'intégration — il implique plusieurs couches"
+  - prompt: "Quelle instruction dans une spec de test aide le plus l'agent à produire des tests pertinents ?"
+    choices:
+      - text: "\"Atteins 90% de coverage\""
+      - text: "\"Teste les cas limites suivants : [liste explicite]\""
+        correct: true
+      - text: "\"Génère des tests complets pour cette fonction\""
+  - prompt: "Pour la QA visuelle d'un composant UI, l'outil recommandé dans ce cours est :"
+    choices:
+      - text: "Jest + jsdom pour simuler le rendu"
+      - text: "Playwright via MCP pour interagir avec le vrai navigateur"
+        correct: true
+      - text: "Storybook pour isoler le composant"
+---
+
+# Les tests assistés par IA
+
+Les tests sont le contrat executable de votre codebase. Quand un agent génère des tests, ce contrat peut être superficiellement valide (coverage élevée) tout en étant fondamentalement inutile (tests qui ne détectent pas les vraies régressions). Savoir lire et piloter la génération de tests est une compétence distincte.
+
+<Idee>
+Les tests sont de la documentation executable. Un test bien écrit répond à la question "que fait ce code quand…" mieux qu'un commentaire. Générer des tests avec un agent est une opportunité de forcer cette documentation à rester à jour.
+</Idee>
+
+## Tests comme specs : l'ordre des opérations
+
+La meilleure façon d'utiliser un agent pour les tests n'est pas "génère des tests pour ce code". C'est "génère des tests qui correspondent à cette spec" — idéalement avant ou pendant la génération du code lui-même.
+
+Avantages :
+- L'agent génère du code qui passe les tests (plutôt que des tests qui passent le code)
+- Les cas limites sont définis dans la spec, pas découverts après-coup
+- Les tests survivent à un refactor si la spec est correcte
+
+Spec de test minimale efficace :
+
+```
+Génère des tests unitaires pour `parseInvoiceDate(rawDate: string): Date | null`.
+Cas à couvrir :
+- Format ISO valide ("2024-01-15") → Date correcte
+- Format français ("15/01/2024") → Date correcte
+- Chaîne vide → null
+- Chaîne invalide ("not-a-date") → null
+- Date invalide mais parseable ("2024-13-01") → null
+Utilise Vitest. Pas de dépendances externes.
+```
+
+## Coverage vs pertinence
+
+Un agent laissé libre sur la génération de tests va souvent optimiser pour la coverage — ce qui est mesurable — plutôt que pour la pertinence — ce qui est jugeable.
+
+Ce que coverage ne capture pas :
+- Des tests qui vérifient une valeur fixe codée en dur dans le test lui-même
+- Des tests qui passent parce qu'ils mockent tout ce qui pourrait échouer
+- Des tests d'implémentation qui cassent à chaque refactor
+
+<Exemple>
+**Test d'implémentation (à éviter)** :
+```typescript
+it('should call Math.round', () => {
+  const spy = vi.spyOn(Math, 'round')
+  calculateDiscount(100, 0.15)
+  expect(spy).toHaveBeenCalledOnce()
+})
+```
+
+**Test de comportement (ce qu'on veut)** :
+```typescript
+it('should round discount to nearest cent', () => {
+  expect(calculateDiscount(100, 0.151)).toBe(84.9) // pas 84.849
+  expect(calculateDiscount(100, 0.155)).toBe(84.5)
+})
+```
+
+Le premier teste comment le code fonctionne. Le second teste ce que le code fait. Si on remplace `Math.round` par une autre implémentation correcte, le premier casse, le second passe.
+</Exemple>
+
+## QA visuelle avec Playwright via MCP
+
+Pour les composants UI, les tests unitaires ont des limites : ils ne voient pas ce que l'utilisateur voit. Playwright via MCP permet de lancer un vrai navigateur, interagir avec les composants et vérifier le comportement visuel.
+
+Usage typique dans un workflow AI-first :
+
+1. L'agent génère le composant
+2. Vous demandez à l'agent (via MCP Playwright) de naviguer vers la page de préview
+3. L'agent clique, remplit des champs, vérifie les états visuels
+4. Les anomalies sont rapportées et corrrigées en nouvelle spec
+
+Ce n'est pas un remplacement des tests unitaires — c'est une couche supplémentaire pour ce que les tests ne peuvent pas voir.
+
+<Attention>
+Un test qui vérifie le comportement interne (quelle méthode est appelée, dans quel ordre) est couplé à l'implémentation. Refactorer le code sans changer le comportement cassera ces tests. Demandez explicitement à l'agent de tester le comportement observable, pas les détails d'implémentation.
+</Attention>
+
+<Exercice>
+Choisissez une fonction utilitaire existante dans votre codebase qui n'est pas testée. Écrivez une spec de test (liste explicite des cas à couvrir, format attendu, contraintes). Donnez-la à l'agent. Lisez les tests produits et identifiez : sont-ils des tests de comportement ou d'implémentation ? Y a-t-il des cas manquants ? Corrigez la spec et relancez si nécessaire.
+</Exercice>

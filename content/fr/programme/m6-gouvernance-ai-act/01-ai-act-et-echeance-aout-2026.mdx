@@ -1,0 +1,89 @@
+---
+title: "L'AI Act et l'échéance d'août 2026"
+slug: "ai-act-et-echeance-aout-2026"
+module: "m6-gouvernance-ai-act"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "capable d'expliquer les obligations de l'AI Act qui s'appliquent dès août 2026 et leur impact sur une équipe dev"
+  - "capable d'évaluer la classification de risque des systèmes IA utilisés ou développés par son entreprise"
+prerequisites: []
+quiz:
+  - prompt: "L'AI Act distingue les systèmes IA par :"
+    choices:
+      - text: "La taille du modèle utilisé (nombre de paramètres)"
+      - text: "Le niveau de risque du cas d'usage — inacceptable, élevé, limité, minimal"
+        correct: true
+      - text: "Le pays de l'éditeur du modèle"
+  - prompt: "À partir d'août 2026, quelle obligation s'applique aux entreprises qui utilisent des outils IA généraux (assistants de code, LLM) ?"
+    choices:
+      - text: "Obtenir une certification CE pour chaque modèle utilisé"
+      - text: "Avoir formé leurs équipes à l'utilisation de l'IA — l'« AI literacy » devient une exigence légale"
+        correct: true
+      - text: "Publier la liste des prompts utilisés en production"
+  - prompt: "Un système de scoring automatique de candidatures développé en interne est classé :"
+    choices:
+      - text: "Risque minimal — c'est un outil RH interne"
+      - text: "Risque élevé — l'AI Act classe explicitement les systèmes d'évaluation de personnes dans l'emploi en risque élevé"
+        correct: true
+      - text: "Risque inacceptable — toute décision RH automatisée est interdite"
+---
+
+# L'AI Act et l'échéance d'août 2026
+
+L'AI Act (Règlement UE 2024/1689) est en vigueur depuis août 2024. Son application est progressive : les premières obligations concrètes pour les entreprises ordinaires entrent en vigueur en **août 2026**. Ce n'est pas une date lointaine — se mettre en conformité prend des mois, et les sanctions sont nationales et réelles.
+
+## La logique par niveaux de risque
+
+L'AI Act ne réglemente pas les modèles — il réglemente les **usages**. Un même modèle (GPT, Claude, Gemini) peut être utilisé dans un contexte à risque minimal (générer du contenu marketing) ou à risque élevé (évaluer des candidatures à l'emploi). C'est le cas d'usage qui détermine les obligations.
+
+**Quatre niveaux :**
+
+- **Inacceptable** : interdit. Manipulation comportementale, scoring social généralisé, reconnaissance faciale en temps réel dans l'espace public. Aucune voie de conformité — c'est interdit.
+
+- **Élevé** : autorisé mais très encadré. Concerne notamment : systèmes d'évaluation dans le recrutement et la gestion RH, systèmes de crédit, systèmes d'évaluation scolaire, systèmes de tri dans l'accès aux services publics. Obligations : conformité CE, documentation technique, registre EU, supervision humaine obligatoire, transparence envers les utilisateurs.
+
+- **Limité** : obligations de transparence. Les chatbots doivent se déclarer comme IA. Les deepfakes doivent être étiquetés.
+
+- **Minimal** : aucune obligation spécifique. Filtres de spam, assistants de code, outils de productivité généraliste.
+
+<Idee>
+Pour une équipe dev, les outils du quotidien (Claude Code, Cursor, Copilot) sont en risque minimal. Le risque apparaît quand on **développe** ou **déploie** un système IA qui prend ou assiste des décisions sur des personnes — recrutement, évaluation de performance, accès à des services.
+</Idee>
+
+## Ce qui entre en vigueur en août 2026
+
+**Les modèles d'IA à usage général (GPAI)** — les grands modèles de langage et multimodaux — sont soumis à des obligations de transparence et de documentation envers l'Union européenne dès août 2025 (pour les fournisseurs). Pour les entreprises utilisatrices, les obligations pratiques se cristallisent en août 2026 :
+
+1. **AI literacy** (article 4) : les entreprises qui déploient des systèmes IA doivent s'assurer que leurs équipes ont un niveau de compétence suffisant pour comprendre et utiliser ces systèmes. Cette obligation est délibérément vague — pas de certification définie — mais elle constitue un fondement légal pour des sanctions.
+
+2. **Supervision humaine** (pour les systèmes à risque élevé) : obligation documentée de validation humaine sur les décisions assistées par IA à fort impact.
+
+3. **Documentation et traçabilité** : les systèmes à risque élevé doivent être documentés (données d'entraînement, tests, limites) et leur utilisation tracée.
+
+<Exemple>
+**Cartographie rapide pour une scale-up B2B :**
+
+| Outil / Système | Niveau de risque | Action requise |
+|---|---|---|
+| Claude Code, Cursor (dev interne) | Minimal | Aucune obligation spécifique |
+| Chatbot support client (répond à des questions produit) | Limité | Déclaration "vous parlez à une IA" |
+| Outil de scoring de leads (interne) | Minimal à limité | Vérifier si des décisions contractuelles en découlent |
+| Outil de scoring de candidatures (RH) | **Élevé** | Obligations de conformité CE, supervision humaine |
+| Outil d'évaluation de performance des employés | **Élevé** | Idem + registre EU |
+</Exemple>
+
+## Les sanctions : réelles, mais progressives
+
+L'AI Act prévoit des amendes jusqu'à 35 M€ ou 7% du CA mondial pour les violations les plus graves (pratiques interdites). Pour les violations relatives aux obligations des systèmes à risque élevé : jusqu'à 15 M€ ou 3% du CA. Pour les informations inexactes aux autorités : 7,5 M€ ou 1,5%.
+
+Ces plafonds s'appliquent aux fournisseurs et déployeurs. Les autorités nationales (en France : potentiellement la CNIL et une nouvelle autorité IA) sont chargées de l'application. Les premières investigations cibleront probablement les cas les plus visibles — systèmes de recrutement, crédit, évaluation scolaire — avant les usages de productivité interne.
+
+<Attention>
+Ne concluez pas de la progressivité des sanctions que vous avez du temps. Se mettre en conformité sur un système à risque élevé (documentation technique, supervision humaine formalisée, enregistrement) prend 3 à 6 mois minimum. Si votre entreprise développe ou déploie un tel système, commencez l'audit maintenant.
+</Attention>
+
+<Exercice>
+Faites l'inventaire des systèmes IA utilisés ou développés dans votre entreprise. Pour chacun, posez la question : "Ce système assiste-t-il une décision sur des personnes (recrutement, évaluation, accès à des services) ?" Si oui, classez-le provisoirement en risque élevé et identifiez qui dans l'entreprise doit en être informé. Partagez cet inventaire avec la direction et le service juridique — ce n'est pas un sujet uniquement technique.
+</Exercice>

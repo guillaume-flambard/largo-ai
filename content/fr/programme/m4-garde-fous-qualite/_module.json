@@ -1,0 +1,6 @@
+{
+  "slug": "m4-garde-fous-qualite",
+  "title": "Garde-fous & qualité",
+  "summary": "Revue de code, tests, sécurité et ce qu'on ne délègue jamais : les pratiques non-négociables pour livrer en AI-first sans introduire de dette ou de failles.",
+  "order": 4
+}

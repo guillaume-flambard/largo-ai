@@ -1,0 +1,146 @@
+---
+title: "Choisir et configurer ses outils : Claude Code et Cursor"
+slug: "choisir-configurer-outils"
+module: "m1-posture-ai-first"
+order: 2
+durationMin: 18
+level: "intermédiaire"
+objectives:
+  - "Distinguer les cas d'usage de Claude Code et de Cursor pour orienter le choix selon la tâche"
+  - "Être capable de configurer un projet pour que l'agent dispose du contexte minimal nécessaire"
+  - "Comprendre pourquoi la configuration du projet importe autant que le choix de l'outil"
+prerequisites: []
+quiz:
+  - prompt: "Claude Code est avant tout…"
+    choices:
+      - text: "un éditeur de code avec suggestions inline"
+      - text: "un agent CLI qui opère sur vos fichiers depuis le terminal, pilotable en mode autonome"
+        correct: true
+      - text: "une interface web pour générer du code en dehors de votre projet"
+  - prompt: "Avant de lancer un agent sur votre codebase, la première chose à faire est…"
+    choices:
+      - text: "Lui donner accès à Internet pour récupérer la doc"
+      - text: "Créer un fichier de contexte projet (CLAUDE.md ou équivalent) pour qu'il connaisse les conventions"
+        correct: true
+      - text: "Désactiver les hooks de pre-commit pour ne pas bloquer ses commits"
+  - prompt: "Cursor et Claude Code sont plutôt…"
+    choices:
+      - text: "Deux outils redondants, il faut en choisir un définitivement"
+      - text: "Complémentaires : Cursor pour l'édition inline et le code en contexte ; Claude Code pour l'agent autonome"
+        correct: true
+      - text: "Identiques — ils utilisent le même modèle sous-jacent et font la même chose"
+---
+
+Le choix de l'outil est rarement le problème. Ce qui fait la différence, c'est
+la configuration : un agent mal configuré dans un projet sans contexte produira
+du code générique qui ne respecte pas vos conventions. Un agent bien configuré
+dans un projet qui lui donne les bons repères peut livrer quelque chose de
+mergeable dès le premier essai.
+
+## Les deux outils principaux
+
+<Idee>
+**Claude Code** est un agent CLI : il tourne dans votre terminal, lit et modifie
+vos fichiers, lance des commandes, peut opérer en mode autonome supervisé. Il est
+idéal pour les tâches qui touchent plusieurs fichiers, les refactors transverses,
+les ajouts de feature bout-en-bout.
+
+**Cursor** est un éditeur AI-first : il embarque un modèle directement dans l'IDE,
+avec complétion contextuelle, chat ancré sur des fichiers sélectionnés, et un mode
+« Composer » qui peut appliquer des changements multi-fichiers. Il est idéal pour
+l'édition fine, les questions sur du code existant, les petites modifications en
+contexte.
+</Idee>
+
+Les deux ne sont pas en compétition : ils se combinent. Claude Code pour les tâches
+d'agent autonome, Cursor pour l'édition quotidienne. Beaucoup de développeurs AI-first
+utilisent les deux dans la même journée selon la nature de la tâche.
+
+## Ce que l'outil doit savoir sur votre projet
+
+Un agent sans contexte projet est comme un développeur junior qui arrive le premier
+jour sans onboarding. Il va produire quelque chose — mais pas forcément dans le bon
+langage de framework, pas dans le bon pattern, peut-être avec des dépendances qui
+entrent en conflit avec les vôtres.
+
+Le contexte minimal qu'un agent doit avoir :
+
+- **Quel framework / quelle version** (Next.js 15, pas Next.js 13 — les APIs diffèrent)
+- **Les conventions du projet** (où vivent les types, comment sont nommés les fichiers,
+  quel style d'import)
+- **Les patterns déjà en place** (comment vous gérez l'auth, comment vous structurez les
+  composants, quel ORM et comment vous l'utilisez)
+- **Ce qu'il ne faut pas faire** (les anti-patterns que vous avez bannis, les bibliothèques
+  à ne pas ajouter)
+
+Tout ça se met dans un fichier `CLAUDE.md` à la racine du projet pour Claude Code, ou
+dans les règles du projet Cursor. Le module suivant est entièrement dédié à ces fichiers
+de contexte.
+
+## Configuration minimale de Claude Code
+
+<Exemple>
+Après installation (`npm install -g @anthropic-ai/claude-code`), la première chose à
+faire dans un nouveau projet :
+
+1. `claude` — lancer l'agent interactif
+2. `> /init` — Claude Code analyse votre projet et génère un `CLAUDE.md` de départ
+3. Relire ce fichier et le compléter avec vos conventions réelles (il ne les connaît
+   pas toutes — il part du code visible)
+
+Le `CLAUDE.md` généré par `/init` est un point de départ, pas un livrable. Vous allez
+l'enrichir au fil des sessions dès que vous constatez qu'un agent a raté une convention.
+</Exemple>
+
+## Configuration minimale de Cursor
+
+Dans Cursor, le contexte projet se configure dans `.cursor/rules` (des fichiers `.mdc`
+ou `.md` selon la version). La logique est identique à `CLAUDE.md` : vous décrivez le
+projet, les conventions, ce qui est interdit.
+
+Un point important : dans Cursor, vous pouvez ancrer une conversation à des fichiers
+spécifiques (`@fichier.ts`). C'est utile pour poser des questions précises sur un
+module sans que l'agent hallucine sur le reste du projet.
+
+## Comparaison pratique pour choisir
+
+| Tâche | Claude Code | Cursor |
+|---|---|---|
+| Ajouter une feature (plusieurs fichiers) | ✓ mode agent | ✓ Composer |
+| Refactor transversal (renommage, pattern) | ✓ agent autonome | Possible mais lent |
+| Question sur un fichier existant | Possible | ✓ Chat ancré |
+| Édition fine / complétion | Non | ✓ inline |
+| Pipeline CI / scripts | ✓ | Non |
+
+<Attention>
+Ne pas confondre « mode complétion » et « mode agent ». En complétion, l'IA suggère
+du code ligne par ligne — vous gardez la main constamment. En mode agent, l'IA exécute
+une séquence d'actions autonomes sur vos fichiers. Ce sont des niveaux d'autonomie
+très différents qui demandent des garde-fous différents. La leçon suivante couvre
+ça en détail.
+</Attention>
+
+## À votre tour
+
+<Exercice>
+Sur un projet existant que vous avez sur votre machine :
+
+1. Lancez `claude /init` (ou créez manuellement un `CLAUDE.md`) et regardez ce que
+   l'agent a compris du projet.
+2. Identifiez deux conventions importantes que le fichier généré n'a pas capturées.
+   Ajoutez-les manuellement.
+3. Lancez une tâche simple (ajouter un test, documenter une fonction) et observez si
+   l'agent respecte ces conventions.
+
+L'objectif : comprendre ce que le fichier de contexte change réellement sur la qualité
+du résultat.
+</Exercice>
+
+## En résumé
+
+- Claude Code = agent CLI autonome, fort sur les tâches multi-fichiers et les workflows
+  de bout en bout.
+- Cursor = éditeur AI-first, fort sur l'édition contextuelle et les questions sur le code.
+- Les deux demandent un fichier de contexte projet pour produire un résultat pertinent
+  dans votre codebase.
+- La config n'est pas un one-shot : vous l'enrichissez au fil des sessions.

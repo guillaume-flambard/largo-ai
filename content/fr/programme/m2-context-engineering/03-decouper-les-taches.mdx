@@ -1,0 +1,149 @@
+---
+title: "Découper les tâches pour un agent"
+slug: "decouper-les-taches"
+module: "m2-context-engineering"
+order: 3
+durationMin: 15
+level: "avancé"
+objectives:
+  - "Appliquer les critères de bon découpage d'une tâche pour qu'un agent puisse la traiter en une passe"
+  - "Identifier les dépendances entre sous-tâches et définir leur ordre d'exécution"
+  - "Éviter les patterns de découpage qui produisent des diffs ingérables ou des conflits de merge"
+prerequisites: []
+quiz:
+  - prompt: "Une tâche bien découpée pour un agent produit un diff qui…"
+    choices:
+      - text: "Touche le plus de fichiers possible pour être complet"
+      - text: "Peut être revu en moins de 15 minutes et ne touche qu'un périmètre fonctionnel cohérent"
+        correct: true
+      - text: "Contient forcément des tests et de la documentation"
+  - prompt: "Quand deux sous-tâches ont une dépendance forte (B dépend du résultat de A), on les confie à l'agent…"
+    choices:
+      - text: "En parallèle pour aller plus vite"
+      - text: "Séquentiellement : A d'abord, revu et commité, puis B"
+        correct: true
+      - text: "En une seule tâche combinée pour éviter les conflits"
+  - prompt: "Le signal qu'une tâche est trop grosse pour un agent, c'est…"
+    choices:
+      - text: "Elle dure plus de 30 minutes"
+      - text: "Le diff produit touche plus de 10 fichiers ou dépasse 200 lignes modifiées"
+        correct: true
+      - text: "Elle nécessite de modifier le schéma de base de données"
+---
+
+L'un des patterns les plus courants chez les équipes qui débutent en AI-first : confier
+à l'agent une tâche trop grande, obtenir un diff de 300 lignes sur 15 fichiers, se
+retrouver incapable de le relire correctement, le merger quand même parce que les tests
+passent, et payer la dette deux semaines plus tard.
+
+Le découpage n'est pas une contrainte de l'outil — c'est une discipline de travail.
+
+## Pourquoi le découpage change tout
+
+<Idee>
+Un agent qui reçoit une tâche bien découpée produit un diff que vous pouvez relire
+complètement en 10-15 minutes. C'est le seuil en dessous duquel la revue est réelle.
+Au-delà de 15 minutes de relecture, vous commencez à survoler — et c'est là que les
+problèmes passent.
+
+Découper une feature en 4 tâches de 15 minutes chacune (60 min au total) est plus sûr
+et souvent plus rapide qu'une seule tâche de 60 minutes avec un diff que vous lirez en
+5 minutes superficiellement.
+</Idee>
+
+## Les critères d'un bon découpage
+
+Une tâche est bien découpée pour un agent quand :
+
+1. **Elle a un périmètre fonctionnel cohérent** — pas « ajoute la feature X » mais
+   « implémente la couche données de X » ou « implémente l'UI de X ».
+2. **Le diff attendu est lisible** — moins de 200 lignes modifiées, moins de 10
+   fichiers touchés est un bon signal.
+3. **Elle a des critères de succès vérifiables** — tests qui passent, comportement
+   observable, pas « c'est à peu près bon ».
+4. **Elle ne dépend pas d'une autre tâche non encore mergée** — les dépendances non
+   résolues sont la source principale de conflits de merge sur le code généré.
+
+## Un pattern de découpage par couches
+
+Pour une feature classique (ajout de fonctionnalité côté produit), un découpage
+par couches fonctionne bien :
+
+```
+Tâche 1 : Schéma et migration (si changement de données)
+Tâche 2 : Couche repository / accès données
+Tâche 3 : Logique métier / service
+Tâche 4 : Endpoint API ou server action
+Tâche 5 : Composant UI
+Tâche 6 : Tests d'intégration
+```
+
+Chaque tâche est une spec séparée. Chaque tâche est commité avant de passer à la
+suivante. L'agent travaille sur une base stable à chaque étape.
+
+<Attention>
+Ne confiez pas les tests dans la même spec que l'implémentation si le test est
+non-trivial. Un agent qui implémente ET teste dans la même passe est tentó d'écrire
+des tests qui passent sur son implémentation plutôt que des tests qui capturent le
+comportement attendu. Séparer les deux forces une relecture croisée.
+</Attention>
+
+## Gérer les dépendances entre tâches
+
+Les dépendances sont le vrai problème du découpage. Deux règles pratiques :
+
+**Règle 1 — Séquentiel par défaut.** Si B dépend de A, faites A en premier,
+relisez-le, commitez-le, puis lancez B sur la base stable. Travailler sur deux
+branches parallèles avec dépendance est une source de conflits inutiles.
+
+**Règle 2 — Interface d'abord si parallèle indispensable.** Si vous avez vraiment
+besoin de paralleliser (plusieurs développeurs sur la même feature), définissez
+d'abord le contrat d'interface (types TypeScript, signature d'API, schéma JSON).
+Chacun implémente son côté contre le contrat. Le contrat ne change pas en cours de route.
+
+<Exemple>
+**Mauvais découpage (tâche unique trop large) :**
+> Ajouter les notifications en temps réel : schéma de notif, API server, composant
+> cloche, badge de compteur, drawer de liste, tests end-to-end.
+
+**Bon découpage (séquentiel) :**
+> Tâche 1 : Schéma Drizzle `notifications` + types TypeScript → commité et reviewé.
+> Tâche 2 : `GET /api/notifications` (liste + count non lus) → commité et reviewé.
+> Tâche 3 : `POST /api/notifications/mark-read` → commité et reviewé.
+> Tâche 4 : Composant `<NotificationBell>` (badge + ouverture du drawer) → commité.
+> Tâche 5 : Composant `<NotificationDrawer>` (liste + mark-as-read inline) → commité.
+> Tâche 6 : Tests d'intégration → commité.
+
+Chaque tâche est une spec de 10-15 lignes. Chaque diff est reviewable en 10-15 minutes.
+</Exemple>
+
+## Indicateurs qu'une tâche doit être redécoupée
+
+- La spec fait plus de 20 lignes et vous avez du mal à la résumer en une phrase.
+- Le diff produit dépasse 200 lignes ou 10 fichiers modifiés.
+- L'agent pose des questions sur des choix architecturaux que vous n'aviez pas anticipés.
+- Vous avez besoin de plus de 15 minutes pour relire le diff.
+
+Si un de ces signaux apparaît, arrêtez. Découpez la spec originale et recommencez.
+
+## À votre tour
+
+<Exercice>
+Prenez une feature de votre backlog que vous estimiez à 2+ jours de développement.
+Découpez-la en tâches selon les critères ci-dessus. Objectif : au moins 4 tâches,
+chacune avec un périmètre fonctionnel cohérent et des critères de succès vérifiables.
+
+Vérifiez chaque tâche : pouvez-vous écrire la spec en moins de 15 lignes ? Le diff
+attendu tient-il en moins de 200 lignes ?
+
+Si non, redécoupez.
+</Exercice>
+
+## En résumé
+
+- Un diff reviewable en moins de 15 minutes est le critère principal d'une bonne tâche.
+- Découpez par couches fonctionnelles (données → logique → API → UI → tests), pas par
+  fichiers.
+- Séquentiel par défaut : chaque tâche mergée avant de lancer la suivante.
+- Les signaux de redécoupage : spec > 20 lignes, diff > 200 lignes, questions de
+  l'agent sur l'architecture.

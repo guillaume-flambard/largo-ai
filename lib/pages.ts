@@ -32,6 +32,23 @@ type OfferCopy = {
   benefits: string[];
 };
 
+/** One half-day or full-day block inside a formule (e.g. Flagship Jour 1, Diagnostic, etc.) */
+type CurriculumBlock = {
+  title: string;
+  items: string[];
+};
+
+/** One formule with its day-by-day curriculum breakdown. */
+type CurriculumItem = {
+  /** e.g. "flagship-j1" — stable identifier, not rendered */
+  key: string;
+  /** e.g. "Flagship — Jour 1" */
+  label: string;
+  /** e.g. "Journée complète" */
+  format: string;
+  blocks: CurriculumBlock[];
+};
+
 export type PageCopy = {
   auth: {
     signIn: string;
@@ -65,7 +82,10 @@ export type PageCopy = {
     bodyTitle: string;
     bodyP1: string;
     bodyP2: string;
+    whyTitle: string;
     location: string;
+    locationIcon: string;
+    reserveLabel: string;
     methodEyebrow: string;
     methodTitle: string;
     principles: { t: string; d: string }[];
@@ -81,6 +101,7 @@ export type PageCopy = {
     steps: { t: string; d: string }[];
     bookingStrong: string;
     bookingText: string;
+    emailHint: string;
     form: ContactFormCopy;
   };
   programme: {
@@ -91,11 +112,27 @@ export type PageCopy = {
     heroSubtitle: string;
     contentEyebrow: string;
     contentTitle: string;
+    /** Section heading for the 5 learning objectives. */
+    objectivesEyebrow: string;
+    objectivesTitle: string;
+    /** The 5 "capable de…" learning objectives (dossier §6). */
+    objectives: string[];
+    /** Section heading for the detailed formules. */
+    formulesEyebrow: string;
+    formulesTitle: string;
+    formulesSubtitle: string;
+    /** Day-by-day curriculum breakdown for each formule. */
+    curriculum: CurriculumItem[];
     formatsEyebrow: string;
     formatsTitle: string;
     formatsSubtitle: string;
     financingStrong: string;
     financingText: string;
+    filterAll: string;
+    filterTeams: string;
+    filterTrainer: string;
+    lessonsWord: string;
+    viewModule: string;
     offers: OfferCopy[];
   };
 };
@@ -125,45 +162,49 @@ const fr: PageCopy = {
     hint: "Vous animez des formations ? Activez le mode formateur pour afficher, dans chaque leçon, les notes d'animation réservées — et le module « Devenir formateur ».",
   },
   aPropos: {
-    metaTitle: "Le formateur",
+    metaTitle: "Le formateur — AI-First Engineering",
     metaDescription:
-      "Guillaume Flambard, formateur IA pour les TPE et PME. Une méthode en trois principes : zéro jargon, sur vos vrais cas, autonomie durable. 100 % en visio, toute l'année.",
+      "Guillaume Flambard orchestre un SaaS en production 100 % AI-first depuis plusieurs années. Il forme les équipes de développement à l'ingénierie augmentée par l'IA — il enseigne ce qu'il pratique.",
     heroEyebrow: "Le formateur",
     heroSubtitle:
-      "Formateur IA pour les TPE et PME. J'aide les dirigeants et leurs équipes à utiliser l'IA générative de façon concrète, utile et conforme — sans jargon.",
-    cardRole: "Formateur IA · TPE / PME",
-    bodyTitle: "Rendre l'IA simple, utile et conforme",
+      "Je dirige le développement d'un SaaS en production en mode 100 % AI-first. Je n'écris plus de code à la main — j'orchestre des agents, j'automatise, j'opère. J'enseigne ce que je pratique.",
+    cardRole: "AI-First Engineering · Équipes de développement",
+    bodyTitle: "Une expertise pratique, pas théorique",
     bodyP1:
-      "La plupart des dirigeants de TPE/PME entendent parler d'IA partout, sans savoir par où commencer ni comment rester dans les clous. Mon métier : transformer ce flou en gestes concrets, sur vos propres cas, en quelques sessions.",
+      "La quasi-totalité des formations IA s'arrêtent à ChatGPT et au prompt de base. Ce segment est saturé — et inutile pour une équipe dev. Ce qui compte pour vos équipes, c'est comment travailler réellement avec des agents de code en production : cadrer, orchestrer, livrer, garder la qualité.",
     bodyP2:
-      "Pas de conférence théorique : on ouvre vos outils, on travaille vos vrais documents, et on repart avec des méthodes réutilisables. Chaque parcours intègre le volet conformité (RGPD, AI Act) pour que vous avanciez l'esprit tranquille.",
-    location: "Basé entre la France et l'Asie · 100 % visio toute l'année",
+      "Je pratique cette méthode au quotidien sur ma propre codebase. Je sais où l'IA aide, où elle dégrade, ce qu'on ne délègue jamais. Chaque formation intègre le volet réglementaire (AI Act, politique d'usage, gouvernance) pour que vos équipes avancent sans risque juridique.",
+    whyTitle: "Pourquoi Largo IA",
+    location: "Basé entre la France et l'Asie · Intra-entreprise, sur site ou remote",
+    locationIcon: "apartment",
+    reserveLabel: "Réserver un appel",
     methodEyebrow: "La méthode",
-    methodTitle: "Une méthode simple, en trois principes",
+    methodTitle: "Une méthode en trois principes",
     principles: [
-      { t: "Zéro jargon", d: "On parle métier, résultats et temps gagné — jamais technique pour la technique." },
-      { t: "Sur vos vrais cas", d: "On travaille sur vos documents, vos outils et vos objectifs, pas des exemples génériques." },
-      { t: "Autonomie durable", d: "Vous repartez capables de continuer seuls, sans dépendance à un prestataire." },
+      { t: "J'enseigne ce que je pratique", d: "SaaS en prod 100 % AI-first — pas un consultant qui a lu la doc." },
+      { t: "Sur votre vraie codebase", d: "On travaille sur vos projets réels, vos outils, vos contraintes — pas des exemples génériques." },
+      { t: "Des garde-fous, pas des slides", d: "Chaque formation produit un playbook, des templates et une checklist opérationnels — vous repartez avec des outils, pas des notes." },
     ],
   },
   contact: {
-    metaTitle: "Contact",
+    metaTitle: "Contact — AI-First Engineering",
     metaDescription:
-      "Réservez un appel découverte de 30 minutes avec Guillaume Flambard, ou écrivez-nous. On évalue vos besoins en IA, sans engagement.",
+      "Réservez un appel avec Guillaume Flambard pour évaluer les besoins de votre équipe dev en ingénierie AI-first. Formation intra-entreprise, sur devis, sans engagement.",
     heroEyebrow: "Contact",
-    heroTitle: "Parlons de votre projet",
+    heroTitle: "Parlons de votre équipe dev",
     heroSubtitle:
-      "Réservez un appel découverte ou envoyez-nous un message. Réponse sous 24 h ouvrées, sans engagement.",
+      "Réservez un appel ou envoyez-nous un message. On évalue vos besoins, on calibre le format — réponse sous 24 h ouvrées, sans engagement.",
     stepsEyebrow: "Comment ça se passe",
     stepsTitle: "Trois étapes, sans pression",
     steps: [
-      { t: "Vous nous écrivez", d: "Quelques mots sur votre activité, votre équipe et vos objectifs." },
-      { t: "Appel découverte (30 min)", d: "On clarifie vos besoins et on vérifie que l'on peut vous aider." },
-      { t: "Proposition sur-mesure", d: "Un programme et un format adaptés, avec un devis clair." },
+      { t: "Vous nous écrivez", d: "Quelques mots sur votre équipe, votre stack, vos usages IA actuels et vos objectifs." },
+      { t: "Appel découverte (30 min)", d: "On clarifie vos besoins, on identifie les écarts et on vérifie qu'on peut vous aider." },
+      { t: "Proposition sur-mesure", d: "Un format et un programme adaptés à votre équipe, avec un devis clair." },
     ],
     bookingStrong: "Prise de rendez-vous —",
     bookingText:
       " l'agenda de réservation (Cal.com) s'intègre ici. En attendant, écrivez-nous : on vous propose un créneau rapidement.",
+    emailHint: "Ou écrivez directement à",
     form: {
       sentTitle: "Message envoyé !",
       sentBody:
@@ -178,59 +219,171 @@ const fr: PageCopy = {
       email: "Email professionnel",
       emailPh: "vous@entreprise.fr",
       need: "Votre besoin",
-      needPh: "En quelques mots : vos objectifs, votre équipe, vos outils…",
+      needPh: "En quelques mots : vos objectifs, la taille de l'équipe dev, vos outils et usages IA actuels…",
       submit: "Envoyer ma demande",
       privacy: "Vos données ne servent qu'à vous recontacter (RGPD). Aucune newsletter, aucun partage.",
       badge: "Réponse sous 24 h ouvrées",
     },
   },
   programme: {
-    metaTitle: "Programme",
+    metaTitle: "Programme — Le cursus AI-First Engineering",
     metaDescription:
-      "Un parcours IA en modules conçu pour les TPE/PME : fondamentaux & posture, écrire & communiquer, marketing & contenu, productivité & automatisation, sécurité & conformité. Trois formats au choix.",
-    heroEyebrow: "Le programme",
-    heroTitle: "Un parcours IA conçu pour votre métier",
+      "Le cursus AI-First Engineering : maîtrisez l'ingénierie augmentée par l'IA en équipe dev. Posture AI-first, context engineering, livraison, garde-fous, pipeline et gouvernance AI Act. Formation intra, sur devis.",
+    heroEyebrow: "Le cursus",
+    heroTitle: "AI-First Engineering — Le cursus pour équipes dev",
     heroSubtitle:
-      "Des modules concrets, travaillés sur vos vrais cas et vos propres outils. On adapte la profondeur de chaque module à votre format et à votre équipe.",
+      "6 modules, de la posture AI-first à la gouvernance AI Act. Conçu pour les développeurs en activité — on travaille sur votre vraie codebase, avec vos outils.",
     contentEyebrow: "Le contenu",
-    contentTitle: "Des modules, du fondamental à la conformité",
-    formatsEyebrow: "Les formats",
-    formatsTitle: "Trois intensités, selon vos objectifs",
-    formatsSubtitle:
-      "Le même fond, calibré différemment : de la sensibilisation à l'accompagnement sur-mesure du dirigeant.",
-    financingStrong: "Financement —",
-    financingText:
-      " La certification Qualiopi, qui ouvre le financement par votre OPCO, est en cours d'obtention. Parlons de votre situation lors de l'appel découverte : on vous oriente vers les dispositifs mobilisables.",
-    offers: [
+    contentTitle: "Des modules du fondamental à la gouvernance",
+    objectivesEyebrow: "Ce que vous saurez faire",
+    objectivesTitle: "À l'issue, capable de…",
+    objectives: [
+      "Cadrer une tâche pour un agent — contexte, specs, contraintes — et obtenir un résultat exploitable du premier coup.",
+      "Livrer une feature de bout en bout sur une vraie codebase en mode AI-first.",
+      "Appliquer les garde-fous : revue de code IA, tests, sécurité — et identifier ce qu'on ne délègue jamais.",
+      "Intégrer le workflow IA dans un pipeline réel (Git, CI, QA automatisée).",
+      "Mesurer le gain de productivité et arbitrer : où l'IA aide vs. dégrade.",
+    ],
+    formulesEyebrow: "Les formules en détail",
+    formulesTitle: "Trois niveaux d'engagement, un seul objectif",
+    formulesSubtitle:
+      "Choisissez la formule adaptée à vos besoins — toutes sont sur devis, intra-entreprise.",
+    curriculum: [
       {
-        name: "Acculturation IA",
-        format: "Demi-journée (3h30) · visio",
-        price: "dès 690 €",
-        priceNote: "HT / groupe",
-        audience: "Sensibiliser, lever les freins",
-        ctaLabel: "Réserver un appel",
-        benefits: ["Comprendre l'IA sans jargon", "Repérer vos premiers cas d'usage", "Lever les craintes de l'équipe"],
-      },
-      {
-        name: "L'IA au quotidien",
-        format: "2 jours (4×3h30) · visio",
-        price: "dès 1 900 €",
-        priceNote: "HT / groupe",
-        audience: "Monter en compétence toute l'équipe",
-        benefits: [
-          "Écrire & communiquer plus vite",
-          "Marketing & création de contenu",
-          "Productivité & automatisation",
-          "Sécurité, RGPD & AI Act",
+        key: "flagship-j1",
+        label: "Flagship — Jour 1",
+        format: "Journée complète · équipe dev",
+        blocks: [
+          {
+            title: "Matin — Fondations",
+            items: [
+              "Orchestrer ≠ coder : le nouveau rôle du développeur",
+              "Choisir et configurer les outils (Claude Code, Cursor)",
+              "Context engineering : cadrer un agent pour qu'il livre juste (fichiers CLAUDE.md, specs, conventions)",
+            ],
+          },
+          {
+            title: "Après-midi — Premier workflow réel",
+            items: [
+              "Atelier : chaque développeur livre une première fonctionnalité sur sa propre codebase",
+              "De la spec au commit, en mode AI-first",
+            ],
+          },
         ],
       },
       {
-        name: "Accompagnement dirigeant",
-        format: "Parcours 4–6 semaines",
+        key: "flagship-j2",
+        label: "Flagship — Jour 2",
+        format: "Journée complète · équipe dev",
+        blocks: [
+          {
+            title: "Matin — Passage à l'échelle",
+            items: [
+              "Dev piloté par les specs, découpage des tâches",
+              "Revue de code assistée par IA",
+              "Tests & QA automatisée",
+            ],
+          },
+          {
+            title: "Après-midi — Qualité & gouvernance",
+            items: [
+              "Garde-fous : sécurité, dette, ce qu'on ne délègue jamais",
+              "Intégration pipeline Git/CI",
+              "Patterns avancés (multi-agents = pattern) — aperçu",
+              "Mesurer et arbitrer le ROI",
+            ],
+          },
+        ],
+      },
+      {
+        key: "diagnostic",
+        label: "Diagnostic",
+        format: "1 jour · équipe dev",
+        blocks: [
+          {
+            title: "Matin",
+            items: [
+              "Posture AI-first + configuration des outils",
+              "Context engineering en pratique",
+            ],
+          },
+          {
+            title: "Après-midi",
+            items: [
+              "Atelier : première fonctionnalité livrée",
+              "Identification des écarts",
+              "Livrable : mini-rapport d'écarts + recommandations",
+            ],
+          },
+        ],
+      },
+      {
+        key: "module-direction",
+        label: "Module Direction",
+        format: "½ jour · direction / DSI / DRH",
+        blocks: [
+          {
+            title: "Contenu",
+            items: [
+              "Essentiel de l'AI Act + échéance août 2026",
+              "Construire une politique d'usage IA",
+              "Sortir du Shadow AI — cadre et gouvernance",
+              "Mesurer le ROI business de la formation",
+            ],
+          },
+        ],
+      },
+    ],
+    formatsEyebrow: "Les formats",
+    formatsTitle: "Trois formules, selon vos objectifs",
+    formatsSubtitle:
+      "Diagnostic 1 j · Flagship 2 j · Pack complet 2 j + ½ j direction. Sur devis, intra-entreprise.",
+    financingStrong: "Financement —",
+    financingText:
+      " La certification Qualiopi est en cours d'obtention (prochainement éligible OPCO). Parlons de votre situation lors de l'appel découverte.",
+    filterAll: "Tous les modules",
+    filterTeams: "Pour les équipes",
+    filterTrainer: "Train-the-trainer",
+    lessonsWord: "leçons",
+    viewModule: "Voir le module",
+    offers: [
+      {
+        name: "Diagnostic",
+        format: "1 jour · intra-entreprise",
         price: "sur devis",
-        audience: "Transformation + mise en conformité",
-        ctaLabel: "En parler",
-        benefits: ["Feuille de route IA sur-mesure", "Sessions individuelles", "Conformité AI Act de l'entreprise"],
+        audience: "Équipe dev",
+        ctaLabel: "Réserver un appel",
+        benefits: [
+          "Posture AI-first + config outils",
+          "Context engineering",
+          "Atelier première fonctionnalité",
+          "Mini-rapport d'écarts + recommandations",
+        ],
+      },
+      {
+        name: "Flagship",
+        format: "2 jours · intra-entreprise",
+        price: "sur devis",
+        audience: "Équipe dev",
+        ctaLabel: "Réserver un appel",
+        benefits: [
+          "Fondations & premier workflow réel (Jour 1)",
+          "Passage à l'échelle & qualité (Jour 2)",
+          "Garde-fous, pipeline Git/CI, mesure du ROI",
+          "Playbook AI-first personnalisé",
+        ],
+      },
+      {
+        name: "Pack complet",
+        format: "2 jours + ½ jour direction",
+        price: "sur devis",
+        audience: "Dev + direction",
+        ctaLabel: "Réserver un appel",
+        benefits: [
+          "Tout le Flagship (2 j équipe dev)",
+          "Module Direction : AI Act, politique d'usage, Shadow AI, ROI business",
+          "Maîtrise technique + gouvernance AI Act",
+        ],
       },
     ],
   },
@@ -261,45 +414,49 @@ const en: PageCopy = {
     hint: "Run training sessions? Turn on trainer mode to reveal, in each lesson, the reserved facilitation notes — and the « Becoming a trainer » module.",
   },
   aPropos: {
-    metaTitle: "The trainer",
+    metaTitle: "The trainer — AI-First Engineering",
     metaDescription:
-      "Guillaume Flambard, AI trainer for small and medium businesses. A method in three principles: zero jargon, on your real cases, lasting autonomy. 100% remote, all year round.",
+      "Guillaume Flambard has been running a production SaaS 100% AI-first for several years. He trains development teams in AI-augmented engineering — teaching what he practises.",
     heroEyebrow: "The trainer",
     heroSubtitle:
-      "AI trainer for small and medium businesses. I help leaders and their teams use generative AI in a concrete, useful and compliant way — without jargon.",
-    cardRole: "AI trainer · Small & medium business",
-    bodyTitle: "Making AI simple, useful and compliant",
+      "I lead the development of a production SaaS in 100% AI-first mode. I no longer write code by hand — I orchestrate agents, automate, operate. I teach what I practise.",
+    cardRole: "AI-First Engineering · Development teams",
+    bodyTitle: "Practical expertise, not theory",
     bodyP1:
-      "Most small-business leaders hear about AI everywhere, without knowing where to start or how to stay on the right side of the rules. My job: turning that fog into concrete moves, on your own cases, in a few sessions.",
+      "Most AI training stops at ChatGPT and basic prompts. That segment is saturated — and useless for a dev team. What matters for your teams is how to actually work with code agents in production: framing, orchestrating, shipping, keeping quality.",
     bodyP2:
-      "No theoretical lecture: we open your tools, work on your real documents, and you leave with reusable methods. Every programme includes the compliance side (GDPR, AI Act) so you can move forward with peace of mind.",
-    location: "Based between France and Asia · 100% remote, all year round",
+      "I use this method every day on my own codebase. I know where AI helps, where it degrades, and what you should never delegate. Every programme includes the regulatory dimension (AI Act, usage policy, governance) so your teams move forward without legal risk.",
+    whyTitle: "Why Largo IA",
+    location: "Based between France and Asia · On-site or remote, intra-company",
+    locationIcon: "apartment",
+    reserveLabel: "Book a call",
     methodEyebrow: "The method",
-    methodTitle: "A simple method, in three principles",
+    methodTitle: "A method in three principles",
     principles: [
-      { t: "Zero jargon", d: "We talk trade, results and time saved — never technique for its own sake." },
-      { t: "On your real cases", d: "We work on your documents, your tools and your goals, not generic examples." },
-      { t: "Lasting autonomy", d: "You leave able to carry on alone, with no dependence on a provider." },
+      { t: "I teach what I practise", d: "A production SaaS running 100% AI-first — not a consultant who read the docs." },
+      { t: "On your real codebase", d: "We work on your actual projects, your tools, your constraints — not generic examples." },
+      { t: "Guardrails, not slides", d: "Every programme produces an operational playbook, templates and a checklist — you leave with tools, not notes." },
     ],
   },
   contact: {
-    metaTitle: "Contact",
+    metaTitle: "Contact — AI-First Engineering",
     metaDescription:
-      "Book a 30-minute discovery call with Guillaume Flambard, or write to us. We assess your AI needs, with no commitment.",
+      "Book a call with Guillaume Flambard to assess your dev team's AI-first engineering needs. Intra-company training, on request, no commitment.",
     heroEyebrow: "Contact",
-    heroTitle: "Let's talk about your project",
+    heroTitle: "Let's talk about your dev team",
     heroSubtitle:
-      "Book a discovery call or send us a message. Reply within 24 working hours, no commitment.",
+      "Book a call or send a message. We assess your needs, calibrate the format — reply within 24 working hours, no commitment.",
     stepsEyebrow: "How it works",
     stepsTitle: "Three steps, no pressure",
     steps: [
-      { t: "You write to us", d: "A few words about your activity, your team and your goals." },
-      { t: "Discovery call (30 min)", d: "We clarify your needs and check that we can help." },
-      { t: "Tailored proposal", d: "A programme and format that fit, with a clear quote." },
+      { t: "You write to us", d: "A few words about your team, your stack, your current AI usage and your goals." },
+      { t: "Discovery call (30 min)", d: "We clarify your needs, identify the gaps and confirm we can help." },
+      { t: "Tailored proposal", d: "A format and programme adapted to your team, with a clear quote." },
     ],
     bookingStrong: "Booking —",
     bookingText:
       " the booking calendar (Cal.com) plugs in here. In the meantime, write to us: we'll offer you a slot quickly.",
+    emailHint: "Or write directly to",
     form: {
       sentTitle: "Message sent!",
       sentBody:
@@ -314,59 +471,171 @@ const en: PageCopy = {
       email: "Work email",
       emailPh: "you@company.com",
       need: "Your need",
-      needPh: "In a few words: your goals, your team, your tools…",
+      needPh: "In a few words: your goals, the dev team size, your tools and current AI usage…",
       submit: "Send my request",
       privacy: "Your data is only used to get back to you (GDPR). No newsletter, no sharing.",
       badge: "Reply within 24 working hours",
     },
   },
   programme: {
-    metaTitle: "Programme",
+    metaTitle: "Programme — The AI-First Engineering Curriculum",
     metaDescription:
-      "An AI programme in modules designed for small and medium businesses: fundamentals & posture, writing & communicating, marketing & content, productivity & automation, security & compliance. Three formats to choose from.",
-    heroEyebrow: "The programme",
-    heroTitle: "An AI journey designed for your trade",
+      "The AI-First Engineering curriculum: master AI-augmented engineering as a dev team. AI-first posture, context engineering, shipping, guardrails, pipeline and AI Act governance. Intra-company training, on request.",
+    heroEyebrow: "The curriculum",
+    heroTitle: "AI-First Engineering — The curriculum for dev teams",
     heroSubtitle:
-      "Concrete modules, worked on your real cases and your own tools. We adapt the depth of each module to your format and your team.",
+      "6 modules, from AI-first posture to AI Act governance. Designed for working developers — we train on your real codebase, with your tools.",
     contentEyebrow: "The content",
-    contentTitle: "Modules, from the fundamentals to compliance",
-    formatsEyebrow: "The formats",
-    formatsTitle: "Three intensities, depending on your goals",
-    formatsSubtitle:
-      "The same substance, calibrated differently: from awareness-raising to bespoke support for the leader.",
-    financingStrong: "Funding —",
-    financingText:
-      " Qualiopi certification, which unlocks funding through your OPCO, is being obtained. Let's discuss your situation on the discovery call: we'll point you to the available schemes.",
-    offers: [
+    contentTitle: "Modules from fundamentals to governance",
+    objectivesEyebrow: "What you will be able to do",
+    objectivesTitle: "After this, capable of…",
+    objectives: [
+      "Frame a task for an agent — context, specs, constraints — and get a usable result on the first try.",
+      "Ship a feature end-to-end on a real codebase in AI-first mode.",
+      "Apply the guardrails: AI code review, testing, security — and identify what you never delegate.",
+      "Integrate the AI workflow into a real pipeline (Git, CI, automated QA).",
+      "Measure the productivity gain and decide: where AI helps vs. degrades.",
+    ],
+    formulesEyebrow: "Formulas in detail",
+    formulesTitle: "Three engagement levels, one objective",
+    formulesSubtitle:
+      "Choose the format that fits your needs — all are on request, intra-company.",
+    curriculum: [
       {
-        name: "AI awareness",
-        format: "Half-day (3h30) · remote",
-        price: "from €690",
-        priceNote: "excl. tax / group",
-        audience: "Raise awareness, lift the blockers",
-        ctaLabel: "Book a call",
-        benefits: ["Understand AI without jargon", "Spot your first use cases", "Ease the team's worries"],
-      },
-      {
-        name: "AI in daily work",
-        format: "2 days (4×3h30) · remote",
-        price: "from €1,900",
-        priceNote: "excl. tax / group",
-        audience: "Upskill the whole team",
-        benefits: [
-          "Write & communicate faster",
-          "Marketing & content creation",
-          "Productivity & automation",
-          "Security, GDPR & AI Act",
+        key: "flagship-j1",
+        label: "Flagship — Day 1",
+        format: "Full day · dev team",
+        blocks: [
+          {
+            title: "Morning — Foundations",
+            items: [
+              "Orchestrating ≠ coding: the developer's new role",
+              "Choosing and configuring tools (Claude Code, Cursor)",
+              "Context engineering: framing an agent to deliver right (CLAUDE.md files, specs, conventions)",
+            ],
+          },
+          {
+            title: "Afternoon — First real workflow",
+            items: [
+              "Workshop: each developer ships a first feature on their own codebase",
+              "From spec to commit, AI-first",
+            ],
+          },
         ],
       },
       {
-        name: "Leader support",
-        format: "4–6 week journey",
-        price: "on quote",
-        audience: "Transformation + compliance",
-        ctaLabel: "Discuss it",
-        benefits: ["Bespoke AI roadmap", "One-to-one sessions", "Company AI Act compliance"],
+        key: "flagship-j2",
+        label: "Flagship — Day 2",
+        format: "Full day · dev team",
+        blocks: [
+          {
+            title: "Morning — Scaling up",
+            items: [
+              "Spec-driven development, task decomposition",
+              "AI-assisted code review",
+              "Automated testing & QA",
+            ],
+          },
+          {
+            title: "Afternoon — Quality & governance",
+            items: [
+              "Guardrails: security, debt, what you never delegate",
+              "Git/CI pipeline integration",
+              "Advanced patterns (multi-agents = pattern) — overview",
+              "Measuring and deciding on ROI",
+            ],
+          },
+        ],
+      },
+      {
+        key: "diagnostic",
+        label: "Diagnostic",
+        format: "1 day · dev team",
+        blocks: [
+          {
+            title: "Morning",
+            items: [
+              "AI-first posture + tool setup",
+              "Context engineering in practice",
+            ],
+          },
+          {
+            title: "Afternoon",
+            items: [
+              "Workshop: first feature shipped",
+              "Gap identification",
+              "Deliverable: mini gap report + recommendations",
+            ],
+          },
+        ],
+      },
+      {
+        key: "module-direction",
+        label: "Leadership Module",
+        format: "½ day · leadership / CTO / CHRO",
+        blocks: [
+          {
+            title: "Content",
+            items: [
+              "AI Act essentials + August 2026 deadline",
+              "Building an AI usage policy",
+              "Exiting Shadow AI — framework and governance",
+              "Measuring the business ROI of the training",
+            ],
+          },
+        ],
+      },
+    ],
+    formatsEyebrow: "The formats",
+    formatsTitle: "Three formulas, depending on your goals",
+    formatsSubtitle:
+      "Diagnostic 1 day · Flagship 2 days · Full pack 2 days + ½ day leadership. On request, intra-company.",
+    financingStrong: "Funding —",
+    financingText:
+      " Qualiopi certification is being obtained (OPCO eligibility coming soon). Let's discuss your situation on the discovery call.",
+    filterAll: "All modules",
+    filterTeams: "For teams",
+    filterTrainer: "Train-the-trainer",
+    lessonsWord: "lessons",
+    viewModule: "View module",
+    offers: [
+      {
+        name: "Diagnostic",
+        format: "1 day · intra-company",
+        price: "on request",
+        audience: "Dev team",
+        ctaLabel: "Book a call",
+        benefits: [
+          "AI-first posture + tool setup",
+          "Context engineering",
+          "First feature workshop",
+          "Gap report + recommendations",
+        ],
+      },
+      {
+        name: "Flagship",
+        format: "2 days · intra-company",
+        price: "on request",
+        audience: "Dev team",
+        ctaLabel: "Book a call",
+        benefits: [
+          "Foundations & first real workflow (Day 1)",
+          "Scaling & quality (Day 2)",
+          "Guardrails, Git/CI pipeline, ROI measurement",
+          "Personalised AI-first playbook",
+        ],
+      },
+      {
+        name: "Full pack",
+        format: "2 days + ½ day leadership",
+        price: "on request",
+        audience: "Dev + leadership",
+        ctaLabel: "Book a call",
+        benefits: [
+          "Full Flagship (2 days dev team)",
+          "Leadership module: AI Act, usage policy, Shadow AI, business ROI",
+          "Technical mastery + AI Act governance",
+        ],
       },
     ],
   },

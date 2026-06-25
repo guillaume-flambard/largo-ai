@@ -1,0 +1,115 @@
+---
+title: "Livrer une fonctionnalité de bout en bout"
+slug: "livrer-une-fonctionnalite-de-bout-en-bout"
+module: "m3-livrer-ai-first"
+order: 4
+durationMin: 18
+level: "avancé"
+objectives:
+  - "capable de piloter un agent de la spec au merge request, y compris les tests et la revue"
+  - "capable de gérer les itérations et corrections sans perdre le fil de la spec"
+prerequisites: []
+quiz:
+  - prompt: "Quand un agent produit un diff qui s'éloigne de la spec initiale, la bonne réaction est :"
+    choices:
+      - text: "Accepter le diff si le code fonctionne techniquement"
+      - text: "Re-spécifier (mettre à jour la spec et relancer) plutôt que de re-prompter"
+        correct: true
+      - text: "Changer de modèle pour obtenir un résultat plus fidèle"
+  - prompt: "La merge request dans un workflow AI-first est :"
+    choices:
+      - text: "Une formalité administrative avant le merge"
+      - text: "L'unité de vérité : le diff complet que vous assumez et comprenez"
+        correct: true
+      - text: "Un outil de collaboration pour l'équipe, optionnel en solo"
+  - prompt: "Les tests générés par un agent sur une spec doivent être :"
+    choices:
+      - text: "Acceptés tels quels si la couverture dépasse 80%"
+      - text: "Lus et validés comme n'importe quel autre diff"
+        correct: true
+      - text: "Régénérés par un second agent pour double validation"
+---
+
+# Livrer une fonctionnalité de bout en bout
+
+Voici un walkthrough complet. Pas un exemple théorique — le déroulé réel d'une livraison AI-first, avec les décisions à chaque étape.
+
+## Le scénario
+
+**Demande** : Ajouter une fonctionnalité "notifications par email" quand un utilisateur est mentionné dans un commentaire.
+
+## Étape 1 — Feature request → Décomposition
+
+Avant toute spec, on décompose :
+
+1. Détecter les mentions dans le texte d'un commentaire (`@username`)
+2. Résoudre les usernames vers des adresses email
+3. Envoyer l'email (service d'envoi)
+4. Stocker les notifications pour éviter les doublons
+5. API Route pour déclencher le tout
+6. Tests unitaires sur la détection et la déduplication
+
+Six tâches atomiques. On commence par la première.
+
+## Étape 2 — Spec → Agent → Diff
+
+**Spec 1** :
+
+> **Contexte** : `src/utils/` contient des utilitaires purs. Pas de dépendances externes dans ce dossier.
+> **Objectif** : Créer `src/utils/mentions.ts` avec une fonction `extractMentions(text: string): string[]` qui retourne la liste des usernames mentionnés (format `@username`, lettres/chiffres/underscores, longueur 2-20).
+> **Contraintes** : Fonction pure, pas d'import. Retourner des valeurs uniques et en minuscules.
+> **Critère de succès** : Les tests unitaires passent sur les cas listés dans la spec.
+
+L'agent produit la fonction + un fichier de test. On lit les deux diff.
+
+Le test couvre les cas nominaux mais pas les mentions en début de chaîne et les faux positifs comme `email@domain.com`. On met à jour la spec, on relance. Le second diff est correct.
+
+Commit.
+
+<Idee>
+La MR est l'unité de vérité. Ce n'est pas le prompt que vous avez écrit, ni l'intention que vous aviez — c'est le diff que vous avez lu, compris et décidé de fusionner. Si vous ne pouvez pas défendre chaque ligne du diff, vous n'êtes pas prêt à ouvrir la MR.
+</Idee>
+
+## Étape 3 — Gérer un échec d'agent
+
+À la Spec 4 (service d'envoi), l'agent propose d'installer `nodemailer` alors que votre stack utilise déjà Resend. Le diff introduit une dépendance non-justifiée.
+
+Mauvaise réaction : "non, utilise Resend, voici comment…" en re-promptant.
+
+Bonne réaction : mettre à jour `CLAUDE.md` (ajouter "service d'email : Resend via `src/services/emailService.ts`, ne pas installer de nouveau package d'email") et ré-écrire la contrainte dans la spec.
+
+<Exemple>
+**Re-spec, pas re-prompt** :
+
+> **Contraintes (mise à jour)** : Utiliser exclusivement `src/services/emailService.ts` (wrapper Resend existant). Ne pas ajouter de dépendance. La signature est `emailService.send({ to, subject, html })`.
+
+L'agent relancé sur cette spec produit le bon code du premier coup.
+</Exemple>
+
+## Étape 4 — Génération des tests
+
+Une fois les six specs commitées, on donne à l'agent une spec de test :
+
+> **Contexte** : Les fonctions `extractMentions`, `resolveMentions`, `deduplicateNotifications` sont implémentées.
+> **Objectif** : Générer un fichier de tests d'intégration couvrant le flux complet : texte avec mentions → emails envoyés → pas de doublon si le même commentaire est retraité.
+> **Contraintes** : Utiliser Vitest. Mocker `emailService.send`. Ne pas appeler de vraie base de données.
+> **Critère de succès** : Le test du flux complet est vert. Le mock de `emailService.send` est appelé exactement N fois pour N mentions uniques.
+
+On lit le diff du fichier de test. On vérifie que les assertions testent le comportement, pas l'implémentation.
+
+## Étape 5 — MR
+
+La MR contient :
+- Les six commits atomiques (un par spec)
+- Le fichier de tests d'intégration
+- La mise à jour de `CLAUDE.md`
+
+La description de la MR reprend le découpage et référence les specs. N'importe quel membre de l'équipe peut comprendre la décision d'architecture en lisant la MR sans avoir suivi le thread de session.
+
+<Attention>
+Ne regroupez pas six specs en un seul commit "feat: notifications". Un commit par spec permet de bisect proprement si quelque chose casse, et de revenir en arrière sur une seule décision sans défaire le reste.
+</Attention>
+
+<Exercice>
+Choisissez une petite fonctionnalité (2-3 jours de travail habituel). Livrez-la entièrement en AI-first : décomposition → specs atomiques → diffs lus et commitées → MR avec description. Mesurez le temps passé à écrire les specs vs le temps habituel passé à coder. Notez ce que l'agent a raté et ce qui manquait dans le contexte.
+</Exercice>

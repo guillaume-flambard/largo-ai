@@ -1,0 +1,6 @@
+{
+  "slug": "m5-integration-pipeline",
+  "title": "Pipeline integration",
+  "summary": "Plug your AI-first workflow into your existing tools: Git, CI, browser QA via MCP/Playwright, n8n automation — and measure ROI concretely to decide where AI genuinely helps.",
+  "order": 5
+}

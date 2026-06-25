@@ -1,0 +1,161 @@
+---
+title: "Context files: CLAUDE.md, conventions, architecture"
+slug: "fichiers-de-contexte"
+module: "m2-context-engineering"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "Understand why the context file is the first thing to create in an AI-first project"
+  - "Be able to write an effective CLAUDE.md covering the critical information an agent needs"
+  - "Identify what belongs there versus what stays in the task spec"
+prerequisites: []
+quiz:
+  - prompt: "The CLAUDE.md file is read by the agent…"
+    choices:
+      - text: "Only when you explicitly ask it to"
+      - text: "Automatically at every Claude Code session, before executing any command"
+        correct: true
+      - text: "Once at project initialization, then cached"
+  - prompt: "What should a CLAUDE.md contain as a priority?"
+    choices:
+      - text: "Project history and past decisions"
+      - text: "Active conventions, patterns to follow, banned anti-patterns, and project structure"
+        correct: true
+      - text: "A list of all dependencies with their versions"
+  - prompt: "Why does a poorly written CLAUDE.md cost you?"
+    choices:
+      - text: "Because it wastes tokens unnecessarily"
+      - text: "Because the agent will repeat the same context mistakes every session without ever correcting"
+        correct: true
+      - text: "Because Claude Code can't read poorly formatted files"
+---
+
+The quality of the context you give an agent determines the quality of what it produces.
+This isn't a configuration detail — it's the central skill of AI-first. A poorly written
+`CLAUDE.md` means an agent that invents your conventions every session and that you
+correct indefinitely. A well-written `CLAUDE.md` means an agent that produces mergeable
+code on the first pass for 80% of routine tasks.
+
+## What a context file is
+
+<Idee>
+A project context file (named `CLAUDE.md` for Claude Code, `.cursor/rules/*.mdc`
+for Cursor) is a natural-language document that the agent reads **before each session**.
+It gives it the information it can't infer from the code alone: your conventions,
+constraints, what's forbidden, how the project is organized, which patterns are in place.
+
+It's the equivalent of an onboarding document for a junior developer — except the agent
+re-reads it in full at every session, unlike the junior.
+</Idee>
+
+## What the file needs to cover
+
+A structure that works well in practice:
+
+### 1. Project context (2-4 lines)
+What the project is, which tech stack, what stage it's at. The agent needs to know
+whether it's working on a Next.js SaaS in production, a Python API in alpha, or a
+monorepo being split apart.
+
+### 2. Essential commands
+The commands to run, test, and build the project. The agent executes these — it needs
+to know which ones are correct for your setup.
+
+```
+dev: corepack pnpm dev
+test: corepack pnpm test
+lint: corepack pnpm lint
+build: corepack pnpm build
+```
+
+### 3. Architecture and file conventions
+Where components, types, services, and tests live. Which naming convention. If you have
+an unusual structure, say so explicitly.
+
+### 4. Patterns to follow (with examples if needed)
+How you handle auth, which ORM and how you use it, how your components are structured.
+If a pattern is non-obvious, an inline example (3-5 lines) is worth more than an
+abstract description.
+
+### 5. Explicitly banned anti-patterns
+What the agent must **never** do, even if it seems reasonable. Examples: no TypeScript
+`any`, no raw SQL (ORM only), don't install a new dependency without asking.
+
+### 6. Protected zones (do not touch)
+If certain files are out of scope (auto-generated files, public contracts, production
+migrations), say so. An agent that modifies a migration file while thinking it's
+helping can cause irreversible damage.
+
+## What doesn't go in CLAUDE.md
+
+<Attention>
+The context file is not for individual task specs. If you write "what I want you to do
+right now" in CLAUDE.md, you're confusing project context (permanent) with session
+instructions (one-off). Specs go in the conversation, not in the context file.
+
+Similarly, avoid overloading the file with documentation that doesn't affect agent
+behavior (decision history, roadmap, etc.) — it dilutes the important information.
+</Attention>
+
+## A realistic example
+
+<Exemple>
+Excerpt from CLAUDE.md for a Next.js App Router + Drizzle + Neon project:
+
+```markdown
+# Project
+
+Next.js 15 SaaS (App Router). Stack: strict TypeScript, Drizzle ORM, Neon (Postgres),
+Clerk (auth), Zod (validation).
+
+## Commands
+
+- dev: `corepack pnpm dev`
+- test: `corepack pnpm test`
+- db push: `corepack pnpm db:push`
+
+## Conventions
+
+- Components: `app/components/` (shared) or co-located with the route
+- Types: inferred from Drizzle schema (no manual types for DB entities)
+- API routes: `app/api/[resource]/route.ts`
+- Never raw SQL — Drizzle only
+- Never TypeScript `any`
+
+## Auth
+
+Clerk middleware handles auth on all `/app/*` routes.
+`auth()` from `@clerk/nextjs/server` to retrieve the user server-side.
+Never re-implement auth checks in components.
+
+## Files not to modify
+
+- `drizzle/migrations/` — auto-generated, never edit manually
+- `app/api/webhooks/` — Clerk contracts, modify with care
+```
+</Exemple>
+
+## Your turn
+
+<Exercice>
+Take a project you're actively working on. Create or update its `CLAUDE.md`
+following the six sections above.
+
+Constraint: the file must fit in under 100 lines. If you exceed that, you're putting
+documentation in it — be more selective.
+
+Then run a simple task with Claude Code and observe whether the agent references the
+conventions you wrote. If not, check that the file is at the project root and that
+sections are clearly delimited.
+</Exercice>
+
+## Summary
+
+- The context file is read before every session: it's your most effective lever for
+  improving generated code quality.
+- It covers: project context, commands, architecture, patterns, anti-patterns, protected
+  zones.
+- It doesn't cover: individual task specs, internal documentation, project history.
+- A good CLAUDE.md fits in under 100 lines and is updated as soon as an agent misses
+  a convention.

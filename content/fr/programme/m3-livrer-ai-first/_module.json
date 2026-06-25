@@ -1,0 +1,6 @@
+{
+  "slug": "m3-livrer-ai-first",
+  "title": "Livrer en AI-first",
+  "summary": "Passer de la spec au commit sur une vraie codebase : piloter un agent de bout en bout, structurer son workflow et livrer des fonctionnalités sans sacrifier la qualité.",
+  "order": 3
+}

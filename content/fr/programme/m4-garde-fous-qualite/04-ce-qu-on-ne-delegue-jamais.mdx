@@ -1,0 +1,97 @@
+---
+title: "Ce qu'on ne délègue jamais"
+slug: "ce-qu-on-ne-delegue-jamais"
+module: "m4-garde-fous-qualite"
+order: 4
+durationMin: 13
+level: "avancé"
+objectives:
+  - "capable de distinguer les décisions déléguables à un agent des décisions qui requièrent un jugement humain"
+  - "capable d'articuler la liste des responsabilités non-négociables du développeur"
+prerequisites: []
+quiz:
+  - prompt: "Laquelle de ces décisions peut légitimement être déléguée à un agent ?"
+    choices:
+      - text: "Décider si une nouvelle dépendance est acceptable dans le projet"
+      - text: "Choisir l'implémentation d'un algorithme de tri pour un tableau de 100 éléments"
+        correct: true
+      - text: "Valider que le code est prêt à être déployé en production"
+  - prompt: "La différence entre délégation et abdication est :"
+    choices:
+      - text: "La délégation concerne les tâches simples, l'abdication les tâches complexes"
+      - text: "Dans la délégation, vous restez responsable du résultat et lisez le diff ; dans l'abdication, vous acceptez le résultat sans le comprendre"
+        correct: true
+      - text: "L'abdication est acceptable si l'agent a été testé sur des cas similaires"
+  - prompt: "Un agent suggère d'ajouter une nouvelle librairie pour résoudre un problème. Quelle est la réponse correcte ?"
+    choices:
+      - text: "Accepter si la librairie est populaire et bien maintenue"
+      - text: "Évaluer soi-même si l'ajout est justifié avant d'accepter le diff"
+        correct: true
+      - text: "Demander à un second agent de valider le choix"
+---
+
+# Ce qu'on ne délègue jamais
+
+Il y a une distinction que le workflow AI-first force à clarifier : la différence entre déléguer une tâche et abdiquer une responsabilité. Les deux ressemblent à "laisser l'agent faire". Ils produisent des résultats radicalement différents.
+
+**Déléguer** : vous définissez la tâche, vous lisez le résultat, vous assumez la décision de l'intégrer.
+
+**Abdiquer** : vous demandez à l'agent de décider, vous acceptez le résultat parce que "l'agent s'est occupé de ça".
+
+L'abdication déguisée en délégation est le risque principal du workflow AI-first pour les équipes qui n'ont pas clarifié leurs lignes.
+
+## La liste des décisions non-déléguables
+
+<Idee>
+La souveraineté sur votre codebase est non-négociable. Un agent peut écrire le code. Il ne peut pas décider ce qui entre dans votre codebase, pourquoi, et quelles en sont les conséquences sur votre architecture et votre dette technique.
+</Idee>
+
+**1. Les décisions d'architecture**
+
+L'agent ne connaît pas vos contraintes réelles : charge attendue, équipe qui maintiendra le code, contraintes réglementaires, décisions passées et leurs raisons. "L'agent a proposé une architecture microservices" n'est pas une raison d'adopter une architecture microservices.
+
+**2. Les compromis de sécurité**
+
+"Est-ce qu'on peut stocker ce token en localStorage ?" — c'est une décision de sécurité avec des implications sur votre surface d'attaque. L'agent peut lister les arguments pour et contre. La décision vous appartient.
+
+**3. Merger sans avoir lu le diff**
+
+Il n'y a pas de nuance ici. Si vous mergez un diff que vous n'avez pas lu ligne par ligne, vous mettez dans votre codebase du code que vous ne comprenez pas. Quand il casse, vous ne savez pas pourquoi.
+
+**4. Déployer en production**
+
+La commande de déploiement est à vous. L'agent ne décide pas quand votre code est prêt à aller en production. Vous l'avez testé, vous avez lu le diff, vous avez vérifié les dépendances — vous décidez.
+
+**5. Décider ce qui constitue "terminé"**
+
+"L'agent dit que c'est fait" n'est pas un critère de completion. Le critère de succès de la spec est validé par vous.
+
+**6. Comprendre le code que vous shippez**
+
+Si vous ne pouvez pas expliquer ce que fait une section du diff, vous ne devez pas la merger. Demandez à l'agent de l'expliquer. Si l'explication ne vous convainc pas, re-spécifiez.
+
+**7. Ajouter une dépendance au projet**
+
+Chaque dépendance est une décision architecturale, une surface de maintenance future, un vecteur de vulnérabilité potentiel. L'agent qui ajoute `lodash` pour trier un tableau vous a pris une décision que vous n'avez peut-être pas voulu prendre.
+
+<Exemple>
+**Abdication** :
+
+> L'agent a reconfiguré le système d'authentification pour utiliser des JWT sans expiration "parce que c'est plus simple". On a mergé sans lire le diff de la config.
+
+**Délégation correcte** :
+
+> L'agent a généré l'implémentation de la validation du token JWT selon la spec (expiration 1h, refresh token en httpOnly cookie). On a lu le diff, vérifié les paramètres d'expiration, et decidé de merger.
+</Exemple>
+
+<Attention>
+La tentation de laisser l'agent "décider" de l'architecture est forte quand on est sous pression temporelle. C'est exactement dans ces moments que les décisions d'abdication s'accumulent et créent la dette que vous payez six mois plus tard. La pression temporelle est une raison de mieux spécifier, pas une raison de moins réviser.
+</Attention>
+
+## Écrire la liste de votre équipe
+
+La liste des décisions non-déléguables est contextuelle. Une équipe de trois seniors a une liste différente d'une équipe avec des juniors. Un projet greenfield a une liste différente d'un projet legacy avec des invariants fragiles.
+
+<Exercice>
+Réunissez votre équipe (ou faites-le seul si vous êtes solo) et écrivez votre propre liste "ce qu'on ne délègue jamais". Soyez précis — "les décisions importantes" n'est pas une règle. "On ne merge aucun diff touchant la couche auth sans que deux développeurs l'aient lu" est une règle. Ajoutez cette liste à votre `CLAUDE.md` et à votre template de PR.
+</Exercice>

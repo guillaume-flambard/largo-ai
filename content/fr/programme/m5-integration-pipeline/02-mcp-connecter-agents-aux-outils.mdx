@@ -1,0 +1,117 @@
+---
+title: "MCP : connecter les agents aux outils"
+slug: "mcp-connecter-agents-aux-outils"
+module: "m5-integration-pipeline"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "capable d'expliquer le Model Context Protocol et de configurer un serveur MCP local"
+  - "capable de piloter un agent via MCP Playwright pour effectuer de la QA navigateur réelle"
+prerequisites: []
+quiz:
+  - prompt: "Le Model Context Protocol (MCP) sert principalement à :"
+    choices:
+      - text: "Compresser le contexte pour économiser des tokens"
+      - text: "Exposer des outils et des ressources à un agent via une interface standardisée, quelle que soit l'application hôte"
+        correct: true
+      - text: "Synchroniser les modèles entre plusieurs providers"
+  - prompt: "Avec un serveur MCP Playwright, que peut faire un agent que des tests unitaires ne peuvent pas faire ?"
+    choices:
+      - text: "Tester la logique métier pure sans dépendances"
+      - text: "Interagir avec un vrai navigateur — cliquer, remplir des formulaires, vérifier le rendu visuel réel"
+        correct: true
+      - text: "Générer du code de test plus rapidement"
+  - prompt: "Pourquoi faut-il limiter les permissions d'un serveur MCP en production ?"
+    choices:
+      - text: "Pour réduire la latence des appels"
+      - text: "Parce qu'un agent peut appeler des outils MCP en cascade — une permission trop large devient un vecteur d'action non intentionnel"
+        correct: true
+      - text: "Pour respecter les quotas du provider de modèle"
+---
+
+# MCP : connecter les agents aux outils
+
+Le Model Context Protocol (MCP) est la couche qui permet à un agent de ne pas être limité à du texte : il peut lire des fichiers, appeler des APIs, interagir avec un navigateur, interroger une base de données — tout ce que vous exposez via un serveur MCP. C'est le passage de l'agent « assistant » à l'agent « acteur ».
+
+## Ce qu'est MCP (et ce que ce n'est pas)
+
+MCP est un protocole ouvert (Anthropic, 2024) qui standardise la façon dont un modèle accède à des outils externes. Au lieu d'intégrer les outils dans chaque application hôte (Claude.ai, Claude Code, Cursor…), les outils sont exposés par un serveur MCP que n'importe quel client compatible peut consommer.
+
+L'analogie utile : MCP est à l'IA ce que le protocole LSP est aux éditeurs de code — une interface standard qui découple le serveur (l'outil) du client (le modèle).
+
+<Idee>
+Un serveur MCP peut exposer trois types de primitives : des **outils** (actions que l'agent peut exécuter), des **ressources** (données que l'agent peut lire), et des **prompts** (instructions réutilisables). Dans la pratique d'ingénierie, les outils sont le cas d'usage central.
+</Idee>
+
+## Configurer un serveur MCP local (exemple Playwright)
+
+Claude Code lit sa configuration MCP depuis `.claude/settings.json` (ou `~/.claude/settings.json` pour la config globale) :
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
+```
+
+Après redémarrage de Claude Code, l'agent a accès aux outils Playwright : `browser_navigate`, `browser_click`, `browser_fill`, `browser_screenshot`, `browser_snapshot`…
+
+```bash
+# Vérifier que le serveur est chargé
+claude mcp list
+# playwright: connected (5 tools)
+```
+
+## Piloter la QA navigateur via MCP Playwright
+
+Scénario concret : votre agent vient de générer un formulaire de connexion. Vous voulez valider le comportement réel (rendu, états d'erreur, accessibilité basique) sans écrire manuellement des tests e2e.
+
+Instruction à l'agent :
+
+```
+Via MCP Playwright, navigue vers http://localhost:3000/connexion.
+1. Prends un screenshot initial.
+2. Soumets le formulaire vide — vérifie que les messages d'erreur de validation apparaissent.
+3. Remplis avec des credentials invalides — vérifie le message d'erreur.
+4. Remplis avec les credentials de test (user: test@example.com / pass: Test1234!) — vérifie la redirection vers /dashboard.
+Rapport : liste des comportements observés + anomalies.
+```
+
+<Exemple>
+**Rapport type produit par l'agent après la session Playwright :**
+
+```
+QA navigateur — /connexion
+
+✓ Screenshot initial : formulaire rendu correctement, labels visibles
+✓ Soumission vide : "Ce champ est requis" affiché sur email et mot de passe
+⚠ Credentials invalides : message générique "Erreur" sans précision — recommandé : "Email ou mot de passe incorrect"
+✓ Login valide : redirection vers /dashboard (302 → 200)
+⚠ Champ mot de passe : pas d'attribut autocomplete="current-password" — impact accessibilité/gestionnaire de mots de passe
+
+2 anomalies mineures détectées.
+```
+
+L'agent a fait en 90 secondes ce qu'un test e2e manuel aurait pris 20 minutes à écrire et stabiliser.
+</Exemple>
+
+## Périmètre et limites des permissions MCP
+
+MCP avec Playwright en local est safe : l'agent contrôle un navigateur sur votre machine. En environnement partagé ou CI, les règles changent :
+
+- Limitez les origines accessibles (ne pas autoriser navigation vers des domaines externes non maîtrisés)
+- Désactivez les outils d'écriture fichier si le serveur tourne dans un contexte non supervisé
+- Auditez les outils exposés : chaque outil MCP est une action que l'agent peut enchaîner sans vous demander
+
+<Attention>
+Un agent avec MCP peut appeler des outils en cascade de façon non anticipée. Si vous exposez un outil "écrire dans la base de données" et un outil "envoyer un email", l'agent peut décider d'envoyer l'email après avoir écrit — sans que vous l'ayez demandé explicitement. Exposez le minimum nécessaire pour la tâche en cours, pas tous vos outils disponibles.
+</Attention>
+
+<Exercice>
+Installez le serveur MCP Playwright localement sur un projet avec une interface (même simple). Donnez à l'agent une instruction de QA sur 3 scénarios utilisateur de votre choix. Comparez : combien de temps pour écrire les mêmes vérifications en test Playwright classique vs en instruction à l'agent ? Quelles vérifications l'agent a-t-il trouvées que vous n'aviez pas prévues ? Lesquelles a-t-il manquées ?
+</Exercice>

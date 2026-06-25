@@ -78,21 +78,18 @@ function PlainCard({ offer }: { offer: Offer }) {
       >
         {offer.name}
       </h3>
-      <div style={{ margin: "16px 0", display: "flex", alignItems: "baseline", gap: 7 }}>
+      <div style={{ margin: "16px 0" }}>
         <span
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 500,
-            fontSize: 34,
+            fontSize: 28,
             letterSpacing: "-0.03em",
             color: "var(--ink)",
           }}
         >
-          {offer.price}
+          {offer.priceNote ?? offer.price}
         </span>
-        {offer.priceNote && (
-          <span style={{ fontSize: 13, color: "var(--ink-3)" }}>{offer.priceNote}</span>
-        )}
       </div>
       <div
         style={{
@@ -236,25 +233,19 @@ function FeaturedCard({ offer }: { offer: Offer }) {
         style={{
           position: "relative",
           margin: "16px 0",
-          display: "flex",
-          alignItems: "baseline",
-          gap: 7,
         }}
       >
         <span
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 500,
-            fontSize: 34,
+            fontSize: 28,
             letterSpacing: "-0.03em",
             color: "#fff",
           }}
         >
-          {offer.price}
+          {offer.priceNote ?? offer.price}
         </span>
-        {offer.priceNote && (
-          <span style={{ fontSize: 13, color: "#8B94A8" }}>{offer.priceNote}</span>
-        )}
       </div>
       <div
         style={{

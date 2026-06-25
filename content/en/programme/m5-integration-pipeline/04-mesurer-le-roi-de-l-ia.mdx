@@ -1,0 +1,100 @@
+---
+title: "Measuring AI ROI"
+slug: "mesurer-le-roi-de-l-ia"
+module: "m5-integration-pipeline"
+order: 4
+durationMin: 13
+level: "avancé"
+objectives:
+  - "able to define relevant ROI metrics for an AI-first workflow in a dev team"
+  - "able to identify areas where AI degrades quality rather than improving it"
+prerequisites: []
+quiz:
+  - prompt: "Which metric best reveals whether AI is actually improving a team's velocity?"
+    choices:
+      - text: "Lines of code generated per week"
+      - text: "The spec-to-merge cycle time, measured before and after adoption of the AI-first workflow"
+        correct: true
+      - text: "The percentage of code coverage achieved"
+  - prompt: "A sign that AI is degrading quality rather than helping:"
+    choices:
+      - text: "Time spent writing CLAUDE.md files increases"
+      - text: "The ticket re-open rate (post-merge bugs) increases after AI-first adoption"
+        correct: true
+      - text: "Developers make fewer commits per day"
+  - prompt: "The ROI of an AI-first workflow is correctly measured:"
+    choices:
+      - text: "Over the first week of adoption — the learning curve is fast"
+      - text: "Over a minimum of one full sprint, excluding the ramp-up period"
+        correct: true
+      - text: "By asking developers whether they feel more productive"
+---
+
+# Measuring AI ROI
+
+"AI saves us time" is an intuition. "Spec-to-merge cycle time dropped from 3.2 days to 1.8 days over the last quarter" is a measurement. The difference between the two is what enables arbitration: where to keep going, where to reduce usage, where AI creates more problems than it solves.
+
+## What to measure and what not to measure
+
+Metrics that measure the wrong thing:
+
+- **Lines of code generated**: correlated with zero actual quality or velocity
+- **Number of prompts sent**: an activity indicator, not an outcome indicator
+- **Subjective sentiment** ("I feel more productive"): biased by the novelty effect
+
+Metrics that reveal something useful:
+
+- **Spec → merge cycle time**: from when a task is defined to when it passes CI
+- **Re-open rate**: bugs raised after merge on AI-first features vs. classic development
+- **Review cost**: human review time per PR (if AI generates larger, less readable PRs, ROI is negative)
+- **Token cost** vs. value delivered: for automated workflows (n8n + LLM), how much are you spending per month to automate what?
+
+<Idee>
+Measure over a minimum of one sprint, excluding the first two weeks of adoption (ramp-up). A developer who has mastered the AI-first workflow does not have the same velocity as one who is learning it — comparing the two periods gives a biased signal.
+</Idee>
+
+## A measurement protocol for a team
+
+**Baseline (before)**: extract from your management tool (Linear, Jira, GitHub) the average cycle time for features over the last 3 sprints. Also note the post-merge bug rate and the number of review comments per PR.
+
+**After adoption**: measure the same metrics over 2 full sprints. Compare feature by feature where possible — some types of tasks benefit more than others (simple CRUD forms: large gain; complex algorithms: moderate gain; architectural refactors: sometimes negative).
+
+**What deserves a table:**
+
+| Task | Before (h) | After (h) | Delta | ROI |
+|---|---|---|---|---|
+| Simple CRUD endpoint | 4h | 1.5h | −63% | ✓ strong |
+| Feature with complex business logic | 8h | 6h | −25% | ✓ moderate |
+| Cross-layer refactor | 12h | 14h | +17% | ✗ negative |
+| DB schema migration | 6h | 2h | −67% | ✓ strong |
+
+<Exemple>
+**Typical monthly report — team of 4 devs, 2 months after adoption:**
+
+- Spec→merge cycle time: 3.1d → 1.9d (−39%)
+- Re-open rate: 12% → 9% (−3 pts — slight improvement)
+- Review comments per PR: 8.2 → 11.4 (+39% — PRs are denser, review is heavier)
+- Anthropic token cost: ~€180/month for the team
+
+**Decisions made**: keep the workflow for CRUD + tests; add a systematic PR splitting step for AI-first PRs (they are too large); do not use the agent on architectural refactors.
+</Exemple>
+
+## The areas where AI degrades
+
+Blind adoption produces documented negative effects. The most common:
+
+**Oversized PRs**: the agent generates in one session what a developer would have naturally split up. Result: 800-line diffs impossible to review seriously.
+
+**False confidence on test coverage**: high coverage generated automatically, but implementation tests with no real value (see M4).
+
+**Context debt**: `CLAUDE.md` files and specs become unmaintained artefacts. After 3 months, the agent is working from stale context and produces inconsistent results.
+
+**Token overhead on simple tasks**: automating with an LLM what could be solved in 5 lines of code or a trivial business rule.
+
+<Attention>
+AI ROI is not uniform over time. The typical curve: strong gains at adoption (simple, well-scoped tasks), plateau after 6 weeks, then risk of degradation if context files are not maintained. Schedule a review of `CLAUDE.md` files and agent conventions every 2 sprints.
+</Attention>
+
+<Exercice>
+Pick three recent features developed partially or fully AI-first. For each: estimate the real development time (commits, PRs, reviews). Compare to your estimate for an equivalent classic feature. Calculate the delta. Is there a pattern in the types of tasks where the gain is real vs. absent? Share the results with the team — collective arbitration is more reliable than individual measurement.
+</Exercice>

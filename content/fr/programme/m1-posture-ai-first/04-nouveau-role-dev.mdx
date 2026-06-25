@@ -1,0 +1,123 @@
+---
+title: "Le nouveau rôle du développeur : orchestration et revue"
+slug: "nouveau-role-dev"
+module: "m1-posture-ai-first"
+order: 4
+durationMin: 13
+level: "intermédiaire"
+objectives:
+  - "Articuler ce que le développeur gagne (vitesse, périmètre) et ce qu'il ne délègue pas (architecture, sécurité, domaine) dans un workflow AI-first"
+  - "Identifier les compétences qui montent en valeur avec l'AI-first par opposition à celles qui s'automatisent"
+  - "Adopter une posture de revue rigoureuse sur le code généré"
+prerequisites: []
+quiz:
+  - prompt: "Quelle compétence devient PLUS importante avec l'AI-first, pas moins ?"
+    choices:
+      - text: "Mémoriser la syntaxe des APIs"
+      - text: "Savoir lire et critiquer du code rapidement, identifier les invariantes cassées"
+        correct: true
+      - text: "Taper vite"
+  - prompt: "Ce qu'on ne délègue jamais à un agent, c'est…"
+    choices:
+      - text: "La rédaction des tests unitaires"
+      - text: "La décision d'architecture et la validation des changements de sécurité"
+        correct: true
+      - text: "L'écriture de la documentation"
+  - prompt: "Un développeur AI-first qui remarque que l'agent a contourné une contrainte de sécurité doit…"
+    choices:
+      - text: "Accepter le commit si les tests passent"
+      - text: "Refuser le diff, corriger la spec et relancer avec des contraintes explicites"
+        correct: true
+      - text: "Committer et ouvrir un ticket pour corriger plus tard"
+---
+
+Une question revient souvent : « Est-ce que l'IA va remplacer les développeurs ? »
+La réponse courte : non. La réponse longue : elle déplace le travail. Ce qui change,
+c'est ce sur quoi votre expertise compte le plus. Et c'est plutôt une bonne nouvelle —
+si vous adoptez la bonne posture.
+
+## Ce qui s'automatise, ce qui monte en valeur
+
+<Idee>
+**Ce que l'agent fait bien (et que vous n'avez plus besoin de faire à la main) :**
+écrire du code boilerplate, générer des tests à partir d'une spec, faire des refactors
+mécaniques, documenter, convertir entre formats. Ce sont des tâches à faible densité
+de jugement.
+
+**Ce que l'agent fait mal sans vous (et où votre expertise monte) :**
+comprendre les invariantes de votre domaine métier, évaluer les implications de
+sécurité d'un changement, arbitrer entre deux approches d'architecture sur votre
+codebase spécifique, détecter qu'un code « qui marche » viole une règle implicite
+du système. Ce sont des tâches à haute densité de jugement.
+</Idee>
+
+Le développeur AI-first ne code pas moins dans le sens qualitatif — il code moins dans
+le sens mécanique. La compréhension du système, elle, ne se délègue pas.
+
+## Ce qu'on ne délègue jamais
+
+Quelques catégories où la main humaine reste obligatoire :
+
+**Architecture :** les décisions d'architecture (quel pattern, quelle abstraction,
+comment découper les responsabilités) ont des conséquences qui s'étendent sur des mois.
+Un agent optimise pour la tâche donnée — pas pour la cohérence à long terme du système.
+
+**Sécurité :** la logique métier critique (auth, permissions, gestion des données sensibles)
+doit être lue et validée par un humain qui comprend le domaine. Un agent peut écrire du
+code sécurisé — mais il peut aussi introduire une faille subtile en contournant
+involontairement une garde que vous n'avez pas explicitement spécifiée.
+
+**Données de production :** toute opération irréversible (migration, suppression, reset)
+doit être validée par un humain, jamais déléguée à un agent en mode autonome complet.
+
+<Attention>
+Le code généré qui passe les tests peut quand même être mauvais. Les tests vérifient le
+comportement spécifié — pas la conformité aux invariantes implicites de votre système.
+Un agent qui ne connaît pas votre modèle de données peut écrire une requête qui renvoie
+le bon résultat sur les données de test et le mauvais sur les données réelles.
+</Attention>
+
+## La revue comme compétence centrale
+
+En mode AI-first, la code review devient votre activité principale. Ce n'est plus une
+étape qu'on bâcle à la fin — c'est le moment où votre expertise s'exprime.
+
+<Exemple>
+Ce que cherche un développeur AI-first dans un diff produit par un agent :
+
+1. **Corrections de périmètre :** l'agent a-t-il touché à des fichiers qui n'étaient
+   pas dans la spec ? (Signe qu'il a mal compris la frontière de la tâche.)
+2. **Pattern match :** le code suit-il les patterns existants du projet, ou a-t-il
+   inventé un troisième pattern pour quelque chose qu'on fait déjà de deux façons ?
+3. **Implications de sécurité :** y a-t-il des données qui transitent d'une couche à
+   l'autre d'une façon que vous n'aviez pas prévue ?
+4. **Logique métier :** le code est-il correct dans votre domaine, pas seulement
+   syntaxiquement valide ?
+5. **Tests :** les tests couvrent-ils les cas limites importants, ou seulement le
+   happy path ?
+</Exemple>
+
+## Le développeur comme garant de la qualité
+
+Une façon de résumer le nouveau rôle : le développeur AI-first est le **garant de la
+qualité** du code produit, qu'il l'ait écrit ou qu'il l'ait fait écrire. Cette
+responsabilité ne se délègue pas.
+
+<Exercice>
+Sur votre prochain diff généré par un agent, faites une revue explicite en vous posant
+ces cinq questions (listées ci-dessus). Combien de minutes ça prend ? Qu'avez-vous
+trouvé que vous n'auriez pas trouvé en lisant vite ?
+
+Si la revue prend moins de 2 minutes sur un diff de 50+ lignes, c'est que vous lisez
+trop vite.
+</Exercice>
+
+## En résumé
+
+- L'AI-first déplace le travail vers l'orchestration et la revue — pas vers moins
+  d'exigence.
+- Ce qui monte en valeur : comprendre les systèmes, lire les diffs avec rigueur, poser
+  les bonnes contraintes.
+- Ce qu'on ne délègue jamais : architecture, sécurité, logique métier critique, opérations
+  irréversibles.
+- La revue du code généré est la compétence centrale du développeur AI-first.

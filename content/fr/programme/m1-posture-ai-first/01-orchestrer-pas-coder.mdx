@@ -1,0 +1,126 @@
+---
+title: "L'AI-first en pratique : orchestrer plutôt que coder"
+slug: "orchestrer-pas-coder"
+module: "m1-posture-ai-first"
+order: 1
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "Distinguer la posture « orchestrateur » de la posture « codeur » et savoir quand chacune s'applique"
+  - "Expliquer ce que signifie concrètement travailler en AI-first sur une vraie codebase"
+  - "Identifier les risques de la posture anarchique (Shadow AI) par opposition à la méthode"
+prerequisites: []
+quiz:
+  - prompt: "Dans un workflow AI-first, l'orchestrateur est avant tout responsable de…"
+    choices:
+      - text: "écrire moins de code possible pour aller vite"
+      - text: "cadrer la tâche, relire le résultat et décider ce qui part en prod"
+        correct: true
+      - text: "laisser l'agent décider de l'architecture sans intervenir"
+  - prompt: "Le Shadow AI, c'est quoi ?"
+    choices:
+      - text: "Un agent autonome déployé sans supervision humaine"
+      - text: "L'usage de l'IA sans méthode ni garde-fous, répandu dans les équipes sans cadre"
+        correct: true
+      - text: "Un modèle d'IA hébergé on-premise"
+  - prompt: "AI-first signifie que le développeur…"
+    choices:
+      - text: "ne touche plus jamais au code manuellement"
+      - text: "pilote des agents pour livrer, mais reste décisionnaire sur chaque diff"
+        correct: true
+      - text: "remplace son IDE par l'interface web de l'IA"
+---
+
+Si vous avez déjà collé du code généré par ChatGPT dans un fichier sans le lire
+en entier, vous avez pratiqué le Shadow AI. Ce n'est pas un reproche — c'est la
+norme dans la plupart des équipes aujourd'hui. Le problème, c'est que ça
+ressemble à de la productivité mais accumule de la dette et des failles que
+personne ne voit venir.
+
+L'AI-first est l'antithèse du Shadow AI : c'est une **méthode** pour tirer le
+maximum des agents de code sans sacrifier la qualité ni la sécurité.
+
+## L'idée centrale
+
+<Idee>
+**Orchestrer ≠ coder.** En mode AI-first, le développeur ne disparaît pas : il
+change de rôle. Il passe de « celui qui écrit le code » à « celui qui cadre la
+tâche, supervise l'agent et valide ce qui part en prod ». C'est le même niveau
+d'exigence technique, appliqué différemment.
+</Idee>
+
+La distinction est importante parce qu'elle change ce que vous devez être bon à
+faire. Écrire du code est une compétence parmi d'autres. Cadrer une tâche pour
+un agent, lire un diff avec l'œil du code reviewer, et décider « ça passe » ou
+« ça ne passe pas » : c'est un ensemble de compétences que les bons développeurs
+ont déjà — elles s'appliquent juste différemment.
+
+## Ce que ça change dans une journée de travail
+
+Concrètement, travailler en AI-first, ça ressemble à ça :
+
+1. Vous écrivez une spec courte (contexte, objectif, contraintes, critères de
+   succès) — deux à dix lignes.
+2. Vous confiez la spec à un agent (Claude Code, Cursor) en vous assurant qu'il
+   a le bon contexte projet.
+3. Vous lisez le diff produit : chaque ligne, chaque fichier modifié.
+4. Vous itérez ou vous validez, vous commitez.
+
+Ce qui change : l'étape 3 devient le travail principal, pas l'étape 2. Et c'est
+là que votre expertise compte le plus — aucun agent ne sait mieux que vous ce
+qui est acceptable dans votre codebase.
+
+## La dette invisible du Shadow AI
+
+<Attention>
+L'usage non encadré de l'IA génère de la dette technique plus vite qu'à la
+main, parce que le code produit est plausible mais rarement optimisé pour votre
+contexte. Un agent qui ne connaît pas vos conventions va introduire un troisième
+pattern d'auth dans un projet qui en a déjà deux. Sans revue systématique, vous
+ne le voyez pas avant que ça devienne un problème.
+</Attention>
+
+Ce n'est pas un problème d'outil, c'est un problème de méthode. Les modules qui
+suivent couvrent exactement ça : comment donner le bon contexte à l'agent, comment
+structurer les specs, comment lire et valider les résultats.
+
+## Un exemple de la différence
+
+<Exemple>
+**Shadow AI :** « Génère-moi une fonction qui pagine ma liste d'utilisateurs. »
+L'agent produit quelque chose. Vous copiez-collez. Ça marche en local. Vous
+pushez. La semaine d'après, vous découvrez qu'il a utilisé un pattern de requête
+SQL non indexé qui tient à 100 utilisateurs mais s'effondre à 10 000.
+
+**AI-first :** Vous écrivez : « Ajouter la pagination à `UserRepository.findAll()`.
+Contraintes : utiliser le pattern cursor-based déjà présent dans `OrderRepository`,
+pas d'offset SQL, taille de page max 50. Retourner un objet `PaginatedResult<User>`.
+Tests à ajouter dans `user.repository.spec.ts`. » L'agent a le contexte. Le diff
+est lisible. Vous vérifiez que le pattern correspond à ce que vous avez spécifié
+avant de merger.
+</Exemple>
+
+## À votre tour
+
+<Exercice>
+Prenez la dernière tâche de dev que vous avez faite avec de l'IA. Répondez à ces
+trois questions :
+
+1. Aviez-vous spécifié les contraintes techniques (patterns existants, performances
+   attendues, conventions du projet) ?
+2. Avez-vous relu chaque ligne du diff avant de committer ?
+3. Y a-t-il un bout de code dans ce diff que vous n'auriez pas écrit vous-même et
+   dont vous n'avez pas vérifié les implications ?
+
+L'objectif n'est pas de culpabiliser — c'est de calibrer l'écart entre là où vous
+en êtes et un workflow AI-first structuré.
+</Exercice>
+
+## En résumé
+
+- AI-first = orchestrer des agents, pas juste les interroger. Le développeur reste
+  décisionnaire sur chaque diff.
+- Shadow AI = usage sans méthode ni garde-fous. Plausible à court terme, risqué à moyen
+  terme.
+- Le changement de posture ne demande pas moins de rigueur technique — il la réoriente
+  vers le cadrage et la revue.

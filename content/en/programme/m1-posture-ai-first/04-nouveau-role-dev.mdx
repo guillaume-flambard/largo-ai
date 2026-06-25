@@ -1,0 +1,116 @@
+---
+title: "The developer's new role: orchestration and review"
+slug: "nouveau-role-dev"
+module: "m1-posture-ai-first"
+order: 4
+durationMin: 13
+level: "intermédiaire"
+objectives:
+  - "Articulate what the developer gains (speed, scope) and what they never delegate (architecture, security, domain) in an AI-first workflow"
+  - "Identify which skills increase in value with AI-first versus which ones get automated"
+  - "Adopt a rigorous review stance on generated code"
+prerequisites: []
+quiz:
+  - prompt: "Which skill becomes MORE important with AI-first, not less?"
+    choices:
+      - text: "Memorizing API syntax"
+      - text: "Being able to read and critique code quickly, spotting broken invariants"
+        correct: true
+      - text: "Typing fast"
+  - prompt: "What you never delegate to an agent is…"
+    choices:
+      - text: "Writing unit tests"
+      - text: "Architecture decisions and validation of security changes"
+        correct: true
+      - text: "Writing documentation"
+  - prompt: "An AI-first developer who notices the agent bypassed a security constraint should…"
+    choices:
+      - text: "Accept the commit if tests pass"
+      - text: "Reject the diff, fix the spec, and relaunch with explicit constraints"
+        correct: true
+      - text: "Commit and open a ticket to fix it later"
+---
+
+A question comes up often: "Will AI replace developers?" The short answer: no. The long
+answer: it shifts the work. What changes is what your expertise is most valuable for.
+And that's actually good news — if you adopt the right mindset.
+
+## What gets automated, what increases in value
+
+<Idee>
+**What the agent does well (and you no longer need to do by hand):**
+writing boilerplate, generating tests from a spec, mechanical refactors, documentation,
+format conversions. These are low-judgment-density tasks.
+
+**What the agent does poorly without you (and where your expertise grows):**
+understanding your business domain's invariants, evaluating the security implications
+of a change, choosing between two architectural approaches for your specific codebase,
+detecting that code "that works" violates an implicit system rule. These are
+high-judgment-density tasks.
+</Idee>
+
+The AI-first developer doesn't code less in the qualitative sense — they code less in
+the mechanical sense. System understanding doesn't get delegated.
+
+## What you never delegate
+
+A few categories where the human hand remains mandatory:
+
+**Architecture:** architectural decisions (which pattern, which abstraction, how to
+split responsibilities) have consequences that stretch across months. An agent optimizes
+for the given task — not for the long-term coherence of the system.
+
+**Security:** critical business logic (auth, permissions, sensitive data handling) must
+be read and validated by a human who understands the domain. An agent can write secure
+code — but it can also introduce a subtle vulnerability by inadvertently bypassing a
+guardrail you didn't explicitly specify.
+
+**Production data:** any irreversible operation (migration, deletion, reset) must be
+validated by a human and never delegated to a fully autonomous agent.
+
+<Attention>
+Generated code that passes tests can still be wrong. Tests verify specified behavior —
+not conformance to your system's implicit invariants. An agent that doesn't know your
+data model can write a query that returns the right result on test data and the wrong
+result on real data.
+</Attention>
+
+## Review as the core skill
+
+In AI-first mode, code review becomes your main activity. It's no longer a step you rush
+through at the end — it's the moment where your expertise is expressed.
+
+<Exemple>
+What an AI-first developer looks for in a diff produced by an agent:
+
+1. **Scope violations:** did the agent touch files that weren't in the spec? (Sign it
+   misunderstood the task boundary.)
+2. **Pattern match:** does the code follow existing project patterns, or did it invent
+   a third approach for something you already do in two ways?
+3. **Security implications:** is data flowing between layers in a way you hadn't planned?
+4. **Business logic:** is the code correct in your domain, not just syntactically valid?
+5. **Tests:** do the tests cover the important edge cases, or just the happy path?
+</Exemple>
+
+## The developer as quality guarantor
+
+One way to summarize the new role: the AI-first developer is the **quality guarantor**
+of the produced code, whether they wrote it or had it written. That responsibility
+doesn't get delegated.
+
+<Exercice>
+On your next agent-generated diff, do an explicit review by asking yourself these five
+questions (listed above). How many minutes does it take? What did you find that you
+wouldn't have caught reading quickly?
+
+If the review takes less than 2 minutes on a 50+ line diff, you're reading too fast.
+</Exercice>
+
+## Summary
+
+- AI-first shifts the work toward orchestration and review — not toward lower standards.
+- What increases in value: understanding systems, reading diffs rigorously, setting the
+  right constraints.
+- What you never delegate: architecture, security, critical business logic, irreversible
+  operations.
+- Reviewing generated code is the core skill of the AI-first developer.

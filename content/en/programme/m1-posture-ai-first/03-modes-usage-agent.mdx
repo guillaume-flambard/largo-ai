@@ -1,0 +1,124 @@
+---
+title: "Usage modes: completion, supervised agent, orchestration"
+slug: "modes-usage-agent"
+module: "m1-posture-ai-first"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "Distinguish the three agent usage modes (completion, supervised autonomous agent, orchestration) and their respective risk levels"
+  - "Choose the right mode based on the nature and size of the task"
+  - "Identify mandatory checkpoints in each mode before committing"
+prerequisites: []
+quiz:
+  - prompt: "In 'supervised autonomous agent' mode, the right practice is to…"
+    choices:
+      - text: "Let the agent finish completely and merge without re-reading"
+      - text: "Review each produced diff before allowing the agent to continue or commit"
+        correct: true
+      - text: "Only run the agent on protected branches so CI stops it if needed"
+  - prompt: "Inline completion is appropriate for…"
+    choices:
+      - text: "A cross-cutting refactor across 20 files"
+      - text: "Completing a function whose signature you're writing and whose expected output you already know"
+        correct: true
+      - text: "Generating the entire architecture of a new module"
+  - prompt: "Multi-agent orchestration is presented in this course as…"
+    choices:
+      - text: "The mode to use first for all complex tasks"
+      - text: "An advanced pattern to know about, not a prerequisite for working AI-first"
+        correct: true
+      - text: "Only available with Claude Code Enterprise"
+---
+
+Not all AI usage is equal in terms of risk and control. Accepting an inline completion
+suggestion in a function you just wrote is very different from launching an agent in
+autonomous mode over an entire module. Conflating the two means either underusing the
+tool (too cautious) or producing unmanageable diffs (too permissive).
+
+## The three modes
+
+<Idee>
+**Mode 1 — Inline completion:** The AI suggests code as you type (Cursor, GitHub
+Copilot). You accept or reject each suggestion. This is the lowest level of autonomy
+— context stays in your head, you stay in control at every keystroke.
+
+**Mode 2 — Supervised autonomous agent:** You describe a task. The agent reads files,
+plans steps, modifies code, runs commands. You supervise the steps and review diffs
+before approving. Claude Code operates primarily in this mode.
+
+**Mode 3 — Orchestration:** A high-level agent decomposes a complex project and
+delegates to specialized sub-agents. This is an advanced pattern to know about — not
+the starting mode.
+</Idee>
+
+## Choosing the right mode for the task
+
+| Task type | Recommended mode | Reason |
+|---|---|---|
+| Complete a function you're writing | Completion | Trivial context, low risk |
+| Add an API endpoint on a known project | Supervised agent | Multiple files, defined scope |
+| Write tests for an existing module | Supervised agent | The diff is readable and testable |
+| Cross-cutting architecture refactor | Supervised agent + enhanced review | High breakage risk |
+| Full pipeline feature → CI → deploy | Orchestration (advanced) | Complex multi-step pattern |
+
+## Mandatory checkpoints
+
+Regardless of mode, two things are never delegated:
+
+1. **Reviewing the diff.** Every modified file, every line. An agent can produce
+   something functional that breaks a domain invariant — only someone who knows the
+   project can catch that.
+2. **The commit decision.** You sign the commit, not the agent. You are responsible
+   for what goes to prod.
+
+<Attention>
+In autonomous agent mode, watch out for the "correction spiral": the agent makes a
+mistake, you ask it to fix it, it fixes it but introduces another problem, and so on.
+If you're on the third correction round for the same task, stop. Take back control
+manually or rewrite the spec from scratch with more explicit constraints. The
+correction spiral is almost always a sign of a spec that's too vague, not an
+incompetent agent.
+</Attention>
+
+## On multi-agent orchestration
+
+Orchestration (one agent driving other agents on parallel sub-tasks) is a real and
+powerful pattern. It's also complex to configure correctly: errors propagate between
+agents, debugging is harder, and human control is more indirect.
+
+<Exemple>
+A typical orchestration workflow (for illustration, not a prerequisite):
+
+- Agent 1 (planner): decomposes the spec into independent sub-tasks.
+- Agent 2 (backend): implements the API endpoints.
+- Agent 3 (tests): writes tests against what Agent 2 produced.
+- Agent 1 (validator): checks consistency and flags conflicts.
+
+The value is real on large projects. But mastering modes 1 and 2 is a prerequisite:
+you don't start with orchestration.
+</Exemple>
+
+## Your turn
+
+<Exercice>
+On your next dev ticket, consciously choose the mode:
+
+- If the task touches 1-2 functions in a file you're already editing →
+  inline completion.
+- If the task touches multiple files with a clearly defined scope → supervised
+  agent, spec written before launching.
+- If you're tempted to launch the agent without writing the spec first → go back to
+  the lesson on specs (module 2) first.
+
+Note the chosen mode and why. After the task, evaluate: was the result better or worse
+than expected? Why?
+</Exercice>
+
+## Summary
+
+- Completion, supervised agent, and orchestration are three distinct levels of autonomy
+  with different risks and guardrails.
+- Supervised agent mode is the heart of daily AI-first practice.
+- Orchestration is a pattern to know about, not an immediate objective.
+- In all modes: diff review and commit decision remain human.

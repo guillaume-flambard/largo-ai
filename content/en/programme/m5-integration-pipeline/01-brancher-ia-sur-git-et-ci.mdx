@@ -1,0 +1,117 @@
+---
+title: "Plugging AI into Git and CI"
+slug: "brancher-ia-sur-git-et-ci"
+module: "m5-integration-pipeline"
+order: 1
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "able to integrate an agent into the Git workflow (hooks, assisted PR review) without slowing down the pipeline"
+  - "able to configure a CI job that drives an agent for review or test generation"
+prerequisites: []
+quiz:
+  - prompt: "A pre-commit hook driven by an agent should primarily:"
+    choices:
+      - text: "Automatically generate all missing code before the commit"
+      - text: "Validate the quality of the produced diff — and fail explicitly if a guardrail is not respected"
+        correct: true
+      - text: "Reformat code according to the agent's style"
+  - prompt: "In a CI pipeline, the agent is most useful for:"
+    choices:
+      - text: "Deploying directly to production without human validation"
+      - text: "Analysing PR diffs and commenting on risk vectors not covered by tests"
+        correct: true
+      - text: "Replacing existing tests with its own analysis"
+  - prompt: "What is the risk if the agent has write access to CI secrets (tokens, API keys) in its prompts?"
+    choices:
+      - text: "Nothing — modern agents encrypt their context"
+      - text: "Involuntary exfiltration if the model outputs them in a PR comment or a log"
+        correct: true
+      - text: "Pipeline slowdown because the agent has to decrypt on every run"
+---
+
+# Plugging AI into Git and CI
+
+The AI-first workflow doesn't replace Git — it grafts onto it. The goal is to have automatic intervention points where an agent adds value without becoming a bottleneck or a risk vector.
+
+## The three Git integration points
+
+There are three natural places to hook an agent into the Git cycle:
+
+1. **Pre-commit** — local validation before the diff leaves the machine
+2. **PR / code review** — diff analysis on the server (GitHub Actions, GitLab CI)
+3. **Merge guard** — rule checking before the merge (labels, checklist, coverage)
+
+Each point has a good use case and an anti-pattern to avoid.
+
+<Idee>
+The agent in CI is not an autonomous reviewer — it is an assistant that complements human review by flagging what a rushed reviewer might miss: unauthenticated routes, sensitive data in logs, type inconsistencies. The merge decision remains human.
+</Idee>
+
+## Pre-commit hook: a local guardrail
+
+A `pre-commit` hook driven by an agent analyses the diff before the commit is created. Typical configuration with `husky`:
+
+```bash
+# .husky/pre-commit
+#!/bin/sh
+DIFF=$(git diff --cached)
+# Pass the diff to the agent via the claude CLI with guardrail instructions
+echo "$DIFF" | claude --print "Analyse this diff. Flag: routes without auth, plaintext secrets, PII data in logs. Format: list of risks or 'no risks detected'."
+```
+
+The rule: **the hook must fail explicitly** (`exit 1`) if the agent finds a blocking risk. Otherwise it can be mentally bypassed ("the agent said OK") without any real human decision.
+
+<Exemple>
+**Expected output from a hook that detects a problem:**
+
+```
+[pre-commit agent] Diff analysis:
+⚠ POST /api/users route created without authentication middleware (line 47)
+⚠ DATABASE_URL environment variable logged via console.log (line 83)
+
+Hook blocked. Fix these issues before committing.
+```
+
+The developer sees the problem, fixes it, re-commits. The agent didn't decide — it flagged.
+</Exemple>
+
+## Assisted PR review in CI
+
+On GitHub Actions / GitLab CI, a job can submit the diff to an agent and post its observations as a PR comment. Job skeleton:
+
+```yaml
+# .github/workflows/ai-review.yml
+name: AI Review
+on: [pull_request]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Diff to agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+          REVIEW=$(echo "$DIFF" | claude --print "Security review: routes without auth, exposed secrets, injections, unjustified dependencies. One line per risk, or 'no risks detected'.")
+          gh pr comment ${{ github.event.pull_request.number }} --body "**Agent review:** $REVIEW"
+```
+
+<Attention>
+Never pass CI secrets (tokens, API keys) into the agent's prompt. Use scoped environment variables and inject them only into the API call, not into the text submitted to the model. A secret in the prompt can end up in a log or a PR comment.
+</Attention>
+
+## What we don't delegate to CI
+
+- The merge decision (remains human)
+- Business logic validation (the agent doesn't know your implicit rules)
+- Dependency arbitration (internal policy, licenses, supply chain security)
+
+CI with an agent flags and blocks on codifiable rules. Anything that requires contextual judgement stays in human review.
+
+<Exercice>
+Pick a repo your team works on. Identify the three most frequent risks in your PRs (forgotten auth, sensitive data logging, unjustified dependency...). Write an agent instruction that detects them — test it on three recent diffs. Would the agent have flagged them? Are there false positives? Refine the instruction.
+</Exercice>

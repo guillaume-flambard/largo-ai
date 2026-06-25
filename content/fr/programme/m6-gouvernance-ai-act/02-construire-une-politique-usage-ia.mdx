@@ -1,0 +1,109 @@
+---
+title: "Construire une politique d'usage IA"
+slug: "construire-une-politique-usage-ia"
+module: "m6-gouvernance-ai-act"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "capable de rédiger une politique d'usage IA opérationnelle adaptée à une équipe de développement"
+  - "capable d'identifier les clauses obligatoires vs les clauses de bon sens pour une politique IA"
+prerequisites: []
+quiz:
+  - prompt: "Une politique d'usage IA efficace doit avant tout :"
+    choices:
+      - text: "Interdire toute utilisation d'IA non approuvée pour couvrir tous les risques"
+      - text: "Définir clairement ce qui est autorisé, ce qui est interdit, et ce qui nécessite une validation — avec des exemples concrets"
+        correct: true
+      - text: "Être rédigée par le service juridique sans consultation des équipes techniques"
+  - prompt: "La clause sur les données confidentielles dans une politique IA doit :"
+    choices:
+      - text: "Interdire tout partage de données avec des APIs externes"
+      - text: "Préciser quelles catégories de données ne peuvent pas être envoyées à un modèle externe (données clients, secrets, PII) — et ce qui est autorisé"
+        correct: true
+      - text: "Laisser le choix à chaque développeur selon son jugement"
+  - prompt: "Pourquoi inclure une procédure de revue annuelle dans la politique IA ?"
+    choices:
+      - text: "Pour satisfaire une obligation légale de l'AI Act"
+      - text: "Parce que l'outillage IA évolue vite — une politique rédigée en 2024 sera obsolète sur des points clés en 2026"
+        correct: true
+      - text: "Pour pouvoir facturer la formation de mise à jour à l'OPCO"
+---
+
+# Construire une politique d'usage IA
+
+Une politique d'usage IA n'est pas un document de conformité rédigé par le juridique et rangé dans un tiroir. C'est un outil opérationnel que les développeurs consultent pour savoir ce qu'ils peuvent faire, ce qu'ils ne peuvent pas faire, et ce qui nécessite une validation. Une politique utile tient en 2 pages. Une politique inutile en fait 20 que personne ne lit.
+
+## Les cinq clauses d'une politique opérationnelle
+
+**1. Périmètre des outils autorisés**
+
+Listez les outils validés par l'entreprise (avec leur niveau d'usage autorisé) et ceux qui sont hors périmètre. Exemple :
+
+| Outil | Statut | Conditions |
+|---|---|---|
+| Claude Code (Anthropic) | Autorisé | Sur code interne et non-confidentiel |
+| Cursor | Autorisé | Idem |
+| ChatGPT (OpenAI) | Autorisé avec restrictions | Voir clause données |
+| Outils non listés | Sur validation | Demander à [référent IA] avant usage |
+
+**2. Données interdites dans les prompts**
+
+C'est la clause la plus critique. Listez explicitement ce qui ne peut pas être envoyé à un modèle externe :
+
+- Données personnelles de clients ou d'utilisateurs (noms, emails, IBAN, données de santé)
+- Secrets d'entreprise non publics (roadmap, données financières non publiées)
+- Secrets techniques (clés API, tokens, mots de passe, certificats)
+- Code qui expose la logique d'algorithmes propriétaires critiques
+
+Et ce qui est autorisé : code interne sans données sensibles, specs de feature, questions techniques génériques, contenus marketing.
+
+<Idee>
+La règle simple pour les développeurs : "Avant d'envoyer quelque chose à un modèle externe, demandez-vous si vous seriez à l'aise si ce texte était public." Si non, ne l'envoyez pas. Cette heuristique couvre 90% des cas sans avoir à mémoriser la liste exhaustive.
+</Idee>
+
+**3. Responsabilité sur les sorties**
+
+Le code, le texte ou les décisions produits avec l'aide d'un agent restent sous la responsabilité du développeur. Cela signifie :
+
+- Le développeur relit et valide le code généré avant de le committer
+- Un commentaire "généré par IA" dans le code ne dispense pas de la responsabilité de son auteur
+- Les sorties de l'agent ne sont pas des preuves, des certifications, ni des validations légales
+
+**4. Déclaration des usages à risque élevé**
+
+Tout projet qui envisage d'utiliser l'IA pour des décisions sur des personnes (recrutement, évaluation, scoring) doit être déclaré au référent IA avant développement. Ce référent évalue le niveau de risque AI Act et engage le processus de conformité si nécessaire.
+
+**5. Revue annuelle**
+
+La politique est révisée tous les 12 mois. Le référent IA est responsable de la mise à jour. Les développeurs sont notifiés des changements significatifs.
+
+<Exemple>
+**Politique d'usage IA — version courte (template)**
+
+*Date d'entrée en vigueur : [date]. Prochaine révision : [date + 12 mois]. Référent : [nom/email].*
+
+**Autorisé :** utiliser Claude Code, Cursor, Copilot sur du code interne ne contenant pas de données listées ci-dessous. Générer des tests, specs, documentation. Utiliser des assistants IA pour des questions techniques génériques.
+
+**Interdit :** envoyer des données personnelles de clients, des secrets d'infrastructure, des données financières non publiées à un modèle externe. Utiliser un outil non listé sans validation préalable.
+
+**Sur validation ([référent IA]) :** tout projet développant un système IA qui assiste des décisions sur des personnes. Tout outil IA externe non encore validé.
+
+**Responsabilité :** tout output IA est sous la responsabilité du développeur qui l'intègre. La relecture et la validation restent obligatoires.
+</Exemple>
+
+## Ce que la politique ne résout pas seule
+
+Une politique écrite sans adoption est du papier. Pour qu'elle soit opérationnelle :
+
+- Elle doit être co-construite avec les équipes (les développeurs savent quels usages existent réellement)
+- Le référent IA doit être joignable et répondre en moins de 24h sur les cas "sur validation"
+- Les incidents de non-conformité doivent faire l'objet d'un apprentissage partagé, pas de sanctions systématiques pour les premiers cas
+
+<Attention>
+Ne rédigez pas une politique qui interdit ce qui est déjà pratiqué sans offrir une alternative. Une politique qui dit "interdit" sans proposer de cadre légal génère du Shadow AI — les développeurs continuent, mais en cachette. L'objectif est de sortir du shadow, pas d'y pousser davantage.
+</Attention>
+
+<Exercice>
+Rédigez la clause "données interdites" de votre politique d'usage IA en listant les catégories spécifiques à votre contexte (quelles données clients, quels secrets techniques, quelle propriété intellectuelle). Testez cette clause en demandant à trois développeurs de juger 5 cas concrets : "est-ce que j'envoie ça ?" Ajustez si les réponses divergent — un manque de clarté dans la clause est un risque opérationnel.
+</Exercice>

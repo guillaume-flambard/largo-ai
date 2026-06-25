@@ -1,0 +1,102 @@
+---
+title: "Eliminating Shadow AI"
+slug: "sortir-du-shadow-ai"
+module: "m6-gouvernance-ai-act"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "able to diagnose the extent of Shadow AI in a team and its main vectors"
+  - "able to propose a Shadow AI exit strategy that does not result in a counterproductive ban"
+prerequisites: []
+quiz:
+  - prompt: "Shadow AI in a development team manifests primarily as:"
+    choices:
+      - text: "The use of unapproved open-source AI models on internal servers"
+      - text: "Regular use of AI tools not validated by the organisation — often personal ChatGPT, Gemini, or Claude accounts — with work data"
+        correct: true
+      - text: "Developers writing their own machine learning models"
+  - prompt: "The main reason developers use non-validated AI tools is:"
+    choices:
+      - text: "A lack of awareness of security risks"
+      - text: "That validated tools are absent, insufficient, or too slow to access — Shadow AI fills a real gap"
+        correct: true
+      - text: "A deliberate desire to circumvent company policy"
+  - prompt: "The most effective strategy for reducing Shadow AI is:"
+    choices:
+      - text: "Audit tools installed on workstations and sanction non-compliant uses"
+      - text: "Make validated tools good enough that the non-validated alternative is no longer attractive"
+        correct: true
+      - text: "Train teams on GDPR risks so they become aware of the dangers"
+---
+
+# Eliminating Shadow AI
+
+Shadow AI — the use of AI tools not validated by the organisation — is already massively present in most development teams. This is not a bad-faith problem. It is a gap problem: AI is useful, the organisation has no framework, developers use their personal accounts. The answer is not a ban — a ban drives the usage underground without eliminating it.
+
+## Why Shadow AI exists
+
+The logic is simple: developers discovered that ChatGPT, Claude, or Gemini made them more effective. The organisation has no policy. They use personal accounts with work data because it is convenient and nobody told them not to.
+
+Shadow AI is not a symptom of bad intent — it is a signal that the official offer is insufficient or non-existent.
+
+**What Shadow AI actually costs:**
+
+- Customer data or proprietary code sent to APIs whose terms of service permit training (depending on the plan and account used)
+- No usage traceability — impossible to know what has been shared
+- Uncontrolled GDPR risks, and growing exposure to AI Act obligations
+- No standardisation: each developer has their own usage, their own prompts, their own habits — no collective knowledge capture
+
+<Idee>
+Mapping Shadow AI in a team starts with a direct, non-punitive question: "Which AI tools are you currently using, validated or not?" Honest answers require a psychologically safe culture — if developers fear sanctions, they lie and the problem stays invisible.
+</Idee>
+
+## Diagnosing Shadow AI
+
+**Quick audit (team interview, 30 min):**
+
+1. Which AI tools do you use in your daily workflow? (List all, validated or not)
+2. For which tasks? (code generation, technical questions, writing, log analysis...)
+3. Have you ever sent customer data, credentials, or sensitive code to one of these tools?
+4. Which tool would be hardest for you to give up? Why?
+
+The answers to these four questions give the real usage map and the priority vectors to address.
+
+## The exit strategy
+
+The only strategy that works: **offer better**. Not ban — offer better.
+
+**Step 1 — Validate and deploy the official tools**
+
+Select one or two tools the organisation takes responsibility for (licences, data contracts with non-training clauses, centralised configuration). For a dev team: Claude Code or Cursor with an Anthropic/Cursor enterprise account where data is not used for training.
+
+**Step 2 — Make the official tool better than the alternative**
+
+The official tool must be at least as good as what developers were using in Shadow. If it isn't, they will return to Shadow. Invest in configuration (team CLAUDE.md, agent conventions) so that the official tool is more effective than an unconfigured personal account.
+
+<Exemple>
+**Concrete transition: from a personal ChatGPT account to enterprise Claude Code**
+
+| Before (Shadow) | After (official) |
+|---|---|
+| Free or personal account — data potentially used for training | Anthropic Enterprise contract — data not used for training |
+| No project context — the developer pastes code by hand | Team CLAUDE.md — the agent knows the stack, conventions, constraints |
+| Each developer has their own usage — no knowledge capture | Shared playbook, reusable prompts, capitalisation of effective patterns |
+| No traceability | Centralised logs (available depending on the enterprise plan) |
+
+The gain is not just compliance — it is also collective efficiency.
+</Exemple>
+
+**Step 3 — Communicate without punishing**
+
+Announce the transition clearly: "Here are the validated tools. Here is why this is better. Here is what you should no longer send to non-validated tools." No moralising tone about the past — focus on the future framework.
+
+A tacit amnesty on past uses is often necessary for teams to cooperate honestly with the diagnosis.
+
+<Attention>
+Do not audit workstations for non-compliant tools before you have put the alternative in place. A punitive audit without a solution pushes usage even further underground and destroys trust. The order is: solution → communication → adoption → then possibly monitoring.
+</Attention>
+
+<Exercice>
+Organise a 20-minute interview with two or three developers on your team, positioning yourself as someone who wants to improve the framework, not catch wrongdoers. Ask the four diagnostic questions above. Identify the main Shadow AI tool being used and the main sensitive data vector. Propose one concrete first measure that addresses this vector without an outright ban.
+</Exercice>

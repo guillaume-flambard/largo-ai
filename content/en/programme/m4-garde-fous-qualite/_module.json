@@ -1,0 +1,6 @@
+{
+  "slug": "m4-garde-fous-qualite",
+  "title": "Guardrails & quality",
+  "summary": "Code review, tests, security, and what you never delegate: the non-negotiable practices for shipping AI-first without introducing debt or vulnerabilities.",
+  "order": 4
+}

@@ -1,0 +1,6 @@
+{
+  "slug": "m5-integration-pipeline",
+  "title": "Intégration pipeline",
+  "summary": "Brancher le workflow AI-first sur vos outils existants : Git, CI, QA navigateur via MCP/Playwright, automatisation n8n — et mesurer concrètement le ROI pour arbitrer où l'IA aide vraiment.",
+  "order": 5
+}

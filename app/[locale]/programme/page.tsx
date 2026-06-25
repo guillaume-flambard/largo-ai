@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LocaleLink } from "@/components/LocaleLink";
 import { ReserveButton } from "@/components/ReserveButton";
-import { FormateurGate } from "@/components/learn/FormateurGate";
 import { Msi, Kicker, CONTAINER } from "@/components/sections/saas-ui";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { listModules, getModule } from "@/lib/content/programme";
@@ -63,7 +62,6 @@ export default async function ProgrammePage({
   const loc = locale as Locale;
   const copy = getPageCopy(loc);
   const c = copy.programme;
-  const isFr = loc === "fr";
 
   const modulesMeta = await listModules(loc);
   const modules = (
@@ -90,11 +88,9 @@ export default async function ProgrammePage({
       })),
   };
 
-  const lessonsWord = isFr ? "leçons" : "lessons";
-  const viewModule = isFr ? "Voir le module" : "View module";
-  const filters = isFr
-    ? ["Tous les modules", "Pour les équipes", "Train-the-trainer"]
-    : ["All modules", "For teams", "Train-the-trainer"];
+  const lessonsWord = c.lessonsWord;
+  const viewModule = c.viewModule;
+  const filters = [c.filterAll, c.filterTeams, c.filterTrainer];
 
   return (
     <>
@@ -103,7 +99,7 @@ export default async function ProgrammePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseList) }}
       />
 
-      {/* ── Bande héros : grille filigrane + masque soleil ── */}
+      {/* ── 1. Bande héros : grille filigrane + masque soleil ── */}
       <section
         style={{
           position: "relative",
@@ -204,7 +200,236 @@ export default async function ProgrammePage({
         </div>
       </section>
 
-      {/* ── Liste des modules (rangées éditoriales, cohérentes avec module/leçon) ── */}
+      {/* ── 2. Objectifs pédagogiques ── */}
+      <section
+        style={{
+          borderBottom: "1px solid var(--line)",
+          background: "var(--bg-2)",
+        }}
+      >
+        <div
+          className="lg-reveal"
+          style={{
+            maxWidth: CONTAINER,
+            margin: "0 auto",
+            padding: "64px 24px",
+          }}
+        >
+          <Kicker>{c.objectivesEyebrow}</Kicker>
+          <h2
+            style={{
+              margin: "12px 0 32px",
+              fontFamily: "var(--font-display)",
+              fontWeight: 400,
+              fontSize: "clamp(26px,3.5vw,40px)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.03em",
+              color: "var(--ink)",
+            }}
+          >
+            {c.objectivesTitle}
+          </h2>
+          <ol
+            style={{
+              listStyle: "none",
+              margin: 0,
+              padding: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 0,
+            }}
+          >
+            {c.objectives.map((obj, i) => (
+              <li
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 18,
+                  padding: "20px 0",
+                  borderTop: "1px solid var(--line)",
+                }}
+              >
+                <span
+                  style={{
+                    flexShrink: 0,
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 600,
+                    fontSize: 11,
+                    letterSpacing: "0.08em",
+                    color: "var(--sun-ink)",
+                    paddingTop: 3,
+                    minWidth: "2ch",
+                  }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 16.5,
+                    lineHeight: 1.55,
+                    color: "var(--ink)",
+                  }}
+                >
+                  {obj}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ── 3. Formules détaillées avec découpage jour par jour ── */}
+      <section
+        style={{
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
+        <div
+          className="lg-reveal"
+          style={{
+            maxWidth: CONTAINER,
+            margin: "0 auto",
+            padding: "64px 24px",
+          }}
+        >
+          <Kicker>{c.formulesEyebrow}</Kicker>
+          <h2
+            style={{
+              margin: "12px 0 8px",
+              fontFamily: "var(--font-display)",
+              fontWeight: 400,
+              fontSize: "clamp(26px,3.5vw,40px)",
+              lineHeight: 1.08,
+              letterSpacing: "-0.03em",
+              color: "var(--ink)",
+            }}
+          >
+            {c.formulesTitle}
+          </h2>
+          <p
+            style={{
+              margin: "0 0 48px",
+              fontSize: 16,
+              lineHeight: 1.6,
+              color: "var(--ink-2)",
+              maxWidth: "44em",
+            }}
+          >
+            {c.formulesSubtitle}
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 24,
+            }}
+          >
+            {c.curriculum.map((item) => (
+              <div
+                key={item.key}
+                style={{
+                  padding: "28px 26px",
+                  borderRadius: "var(--radius-lg)",
+                  border: "1px solid var(--line)",
+                  background: "var(--surface)",
+                  boxShadow: "var(--shadow-card)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 20,
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      display: "block",
+                      fontFamily: "var(--font-mono)",
+                      fontWeight: 600,
+                      fontSize: 11,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--sun-ink)",
+                      marginBottom: 8,
+                    }}
+                  >
+                    {item.format}
+                  </span>
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 600,
+                      fontSize: "var(--fs-h3)",
+                      letterSpacing: "-0.02em",
+                      color: "var(--ink)",
+                    }}
+                  >
+                    {item.label}
+                  </h3>
+                </div>
+
+                {item.blocks.map((block, bi) => (
+                  <div key={bi}>
+                    <p
+                      style={{
+                        margin: "0 0 10px",
+                        fontFamily: "var(--font-sans)",
+                        fontWeight: 600,
+                        fontSize: 13,
+                        color: "var(--ink-2)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {block.title}
+                    </p>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        margin: 0,
+                        padding: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6,
+                      }}
+                    >
+                      {block.items.map((it, ii) => (
+                        <li
+                          key={ii}
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 10,
+                            fontSize: 14.5,
+                            lineHeight: 1.5,
+                            color: "var(--ink-2)",
+                          }}
+                        >
+                          <Msi
+                            size={16}
+                            style={{
+                              color: "var(--sun-ink)",
+                              flexShrink: 0,
+                              marginTop: 2,
+                            }}
+                          >
+                            check_small
+                          </Msi>
+                          {it}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. Modules du playbook (rangées éditoriales) ── */}
       <section
         style={{
           maxWidth: CONTAINER,
@@ -324,16 +549,12 @@ export default async function ProgrammePage({
               </LocaleLink>
             );
 
-            return trainer ? (
-              <FormateurGate key={meta.slug}>{row}</FormateurGate>
-            ) : (
-              row
-            );
+            return row;
           })}
         </div>
       </section>
 
-      {/* ── Bande formats + CTA réserver ── */}
+      {/* ── 5. Bande formats + CTA réserver ── */}
       <section
         style={{
           borderTop: "1px solid var(--line)",
@@ -397,7 +618,7 @@ export default async function ProgrammePage({
             }}
             iconRight={<Msi size={18}>arrow_forward</Msi>}
           >
-            {c.offers[0]?.ctaLabel ?? (isFr ? "Réserver un appel" : "Book a call")}
+            {c.offers[0]?.ctaLabel}
           </ReserveButton>
         </div>
 

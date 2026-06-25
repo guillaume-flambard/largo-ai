@@ -8,11 +8,7 @@ import type { Marketing } from "@/lib/marketing";
 const ICONS = ["translate", "target", "trending_up"];
 
 export function TrainerTeaser({ copy }: { copy: Marketing["trainer"] }) {
-  const en = copy.cta.toLowerCase().startsWith("more");
-  const statusLabel = en ? "Single trainer, in person" : "Formateur unique, en personne";
-  const quote = en
-    ? "“My job is to make AI useful for people who have a business to run — not to turn your teams into engineers.”"
-    : "« Mon métier, c'est de rendre l'IA utile pour des gens qui ont une entreprise à faire tourner — pas de transformer vos équipes en ingénieurs. »";
+  const { statusLabel, quote } = copy;
 
   return (
     <section id="formateur" style={{ maxWidth: 1180, margin: "0 auto", padding: "96px 24px" }}>

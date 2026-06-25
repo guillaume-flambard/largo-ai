@@ -1,0 +1,112 @@
+---
+title: "AI-assisted testing"
+slug: "les-tests-assistes-par-ia"
+module: "m4-garde-fous-qualite"
+order: 2
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "able to generate unit and integration tests with an agent starting from a spec"
+  - "able to evaluate the relevance of produced tests (coverage vs. relevance)"
+prerequisites: []
+quiz:
+  - prompt: "A test that verifies `calculateDiscount` calls `Math.round` once is a:"
+    choices:
+      - text: "Behavior test — it verifies that rounding is applied"
+      - text: "Implementation test — it will break if you refactor without changing behavior"
+        correct: true
+      - text: "Integration test — it involves multiple layers"
+  - prompt: "What instruction in a test spec helps the agent most to produce relevant tests?"
+    choices:
+      - text: "\"Reach 90% coverage\""
+      - text: "\"Test the following edge cases: [explicit list]\""
+        correct: true
+      - text: "\"Generate complete tests for this function\""
+  - prompt: "For visual QA of a UI component, the recommended tool in this course is:"
+    choices:
+      - text: "Jest + jsdom to simulate rendering"
+      - text: "Playwright via MCP to interact with a real browser"
+        correct: true
+      - text: "Storybook to isolate the component"
+---
+
+# AI-assisted testing
+
+Tests are the executable contract of your codebase. When an agent generates tests, that contract can be superficially valid (high coverage) while being fundamentally useless (tests that don't detect real regressions). Knowing how to read and steer test generation is a distinct skill.
+
+<Idee>
+Tests are executable documentation. A well-written test answers the question "what does this code do when…" better than a comment. Generating tests with an agent is an opportunity to force that documentation to stay up to date.
+</Idee>
+
+## Tests as specs: the order of operations
+
+The best way to use an agent for tests isn't "generate tests for this code." It's "generate tests that correspond to this spec" — ideally before or during code generation itself.
+
+Benefits:
+- The agent generates code that passes the tests (rather than tests that pass the code)
+- Edge cases are defined in the spec, not discovered after the fact
+- Tests survive a refactor if the spec is correct
+
+Minimal effective test spec:
+
+```
+Generate unit tests for `parseInvoiceDate(rawDate: string): Date | null`.
+Cases to cover:
+- Valid ISO format ("2024-01-15") → correct Date
+- French format ("15/01/2024") → correct Date
+- Empty string → null
+- Invalid string ("not-a-date") → null
+- Invalid but parseable date ("2024-13-01") → null
+Use Vitest. No external dependencies.
+```
+
+## Coverage vs. relevance
+
+An agent left free to generate tests will often optimize for coverage — which is measurable — rather than relevance — which requires judgment.
+
+What coverage doesn't capture:
+- Tests that verify a hardcoded value in the test itself
+- Tests that pass because they mock everything that could fail
+- Implementation tests that break on every refactor
+
+<Exemple>
+**Implementation test (to avoid)**:
+```typescript
+it('should call Math.round', () => {
+  const spy = vi.spyOn(Math, 'round')
+  calculateDiscount(100, 0.15)
+  expect(spy).toHaveBeenCalledOnce()
+})
+```
+
+**Behavior test (what we want)**:
+```typescript
+it('should round discount to nearest cent', () => {
+  expect(calculateDiscount(100, 0.151)).toBe(84.9) // not 84.849
+  expect(calculateDiscount(100, 0.155)).toBe(84.5)
+})
+```
+
+The first tests how the code works. The second tests what the code does. If you replace `Math.round` with another correct implementation, the first breaks, the second passes.
+</Exemple>
+
+## Visual QA with Playwright via MCP
+
+For UI components, unit tests have limits: they don't see what the user sees. Playwright via MCP lets you launch a real browser, interact with components, and verify visual behavior.
+
+Typical usage in an AI-first workflow:
+
+1. The agent generates the component
+2. You ask the agent (via MCP Playwright) to navigate to the preview page
+3. The agent clicks, fills fields, checks visual states
+4. Anomalies are reported and corrected in a new spec
+
+This isn't a replacement for unit tests — it's an additional layer for what tests can't see.
+
+<Attention>
+A test that verifies internal behavior (which method is called, in what order) is coupled to the implementation. Refactoring the code without changing behavior will break these tests. Explicitly ask the agent to test observable behavior, not implementation details.
+</Attention>
+
+<Exercice>
+Choose an existing utility function in your codebase that isn't tested. Write a test spec (explicit list of cases to cover, expected format, constraints). Give it to the agent. Read the produced tests and identify: are they behavior tests or implementation tests? Are there missing cases? Correct the spec and relaunch if needed.
+</Exercice>

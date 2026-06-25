@@ -1,0 +1,89 @@
+---
+title: "Le développement piloté par les specs"
+slug: "le-developpement-pilote-par-les-specs"
+module: "m3-livrer-ai-first"
+order: 3
+durationMin: 16
+level: "intermédiaire"
+objectives:
+  - "capable de décomposer une fonctionnalité en tâches atomiques pour un agent"
+  - "capable de structurer des specs qui guident l'agent vers la bonne architecture"
+prerequisites: []
+quiz:
+  - prompt: "Pourquoi privilégier des specs atomiques (une préoccupation = une spec) ?"
+    choices:
+      - text: "Pour limiter la longueur des réponses de l'agent"
+      - text: "Pour que l'agent puisse valider chaque étape indépendamment et produire un code cohérent"
+        correct: true
+      - text: "Pour réduire le coût en tokens de chaque appel"
+  - prompt: "Une spec couvrant à la fois la couche données ET l'UI d'une fonctionnalité va typiquement produire :"
+    choices:
+      - text: "Un code plus complet car l'agent voit l'ensemble"
+      - text: "Un code architecturalement incohérent car l'agent fait des compromis entre les deux couches"
+        correct: true
+      - text: "Une erreur de l'agent qui refusera d'aller aussi loin"
+  - prompt: "Dans le développement piloté par les specs, quand affine-t-on la spec ?"
+    choices:
+      - text: "Jamais — une bonne spec ne change pas"
+      - text: "Uniquement après un échec de l'agent"
+      - text: "À chaque itération, en intégrant ce qu'on a appris du diff précédent"
+        correct: true
+---
+
+# Le développement piloté par les specs
+
+Le développement piloté par les tests (TDD) a appris à une génération de développeurs à penser en termes de contrats avant de penser en termes d'implémentation. Le développement piloté par les specs (SDD) applique la même logique au workflow AI-first : vous définissez le contrat avant d'engager l'agent.
+
+La différence fondamentale : dans le SDD, la spec n'est pas un post-it. C'est un document structuré qui contraint l'agent vers la bonne architecture.
+
+## Le principe de la tâche atomique
+
+<Idee>
+Une tâche est atomique quand elle couvre exactement une préoccupation : soit la persistance, soit la logique métier, soit l'interface, soit la validation — jamais deux à la fois. Une spec atomique produit du code cohérent. Une spec multi-concerns produit des compromis architecturaux.
+</Idee>
+
+L'agent n'a pas de jugement architectural propre. Si votre spec mélange la couche repository et la couche service, il va les mélanger dans le code. Si votre spec est claire sur la séparation, il la respecte.
+
+## Décomposer une fonctionnalité réelle
+
+<Exemple>
+**Fonctionnalité** : "Ajouter un système de paiement par carte via Stripe"
+
+**Décomposition en tâches atomiques** :
+
+1. **Spec 1 — Modèle de données** : Créer la table `payments` en base (schema Drizzle). Champs : id, userId, stripePaymentIntentId, amount, currency, status, createdAt. Pas de logique, pas d'API.
+
+2. **Spec 2 — Service Stripe** : Créer `src/services/stripeService.ts` avec une fonction `createPaymentIntent(amount, currency, userId)`. Utilise le SDK Stripe déjà installé. Retourne le clientSecret. Pas de route, pas de base de données.
+
+3. **Spec 3 — Persistance** : Créer `src/repositories/paymentRepository.ts` avec `savePayment(data)` et `getPaymentsByUser(userId)`. Utilise le schema de la Spec 1. Pas de logique Stripe.
+
+4. **Spec 4 — API Route** : Créer `POST /api/payments/create-intent`. Appelle stripeService (Spec 2), puis paymentRepository (Spec 3). Utilise `withErrorHandler`. Retourne `{ clientSecret }`.
+
+5. **Spec 5 — UI** : Créer le composant `PaymentForm` qui appelle l'API de la Spec 4 et gère les états (loading, success, error).
+
+Chaque spec est livrée, revue et commitée avant la suivante.
+</Exemple>
+
+## L'itération sur la spec
+
+Une spec n'est pas gravée dans le marbre. Chaque diff vous apprend quelque chose sur ce que vous n'aviez pas anticipé. Le cycle est :
+
+1. Écrire la spec → Donner à l'agent → Lire le diff
+2. Si le diff révèle une contrainte manquante : mettre à jour la spec, relancer
+3. Si le diff est satisfaisant : committer, passer à la spec suivante
+
+L'itération se fait sur la **spec**, pas sur le **prompt**. Relancer l'agent avec "non pas comme ça, plutôt comme ça" sans mettre à jour la spec ne capitalise rien.
+
+<Attention>
+Une spec qui couvre deux préoccupations distinctes (ex : "ajoute le cache ET migre le schema") produit quasi-systématiquement un code incohérent. L'agent fait des hypothèses sur les dépendances entre les deux parties. Ces hypothèses sont souvent fausses. Découpez.
+</Attention>
+
+## La spec comme documentation d'architecture
+
+Un effet secondaire utile : vos specs constituent une trace de vos décisions d'architecture. Dans six mois, quand quelqu'un demande "pourquoi ce pattern ?", la spec de l'époque répond à la question.
+
+Stockez vos specs dans le repo (dossier `specs/` ou dans les issues de votre tracker). Ce n'est pas de la documentation après-coup — c'est l'entrée du processus de livraison.
+
+<Exercice>
+Prenez une fonctionnalité en cours ou prévue dans votre roadmap. Décomposez-la en tâches atomiques en respectant la séparation des couches (données, logique métier, API, UI). Écrivez la première spec complète avec les quatre composantes (contexte, objectif, contraintes, critère de succès). Ne donnez pas encore à l'agent — relisez d'abord pour vérifier qu'aucune spec ne couvre deux préoccupations.
+</Exercice>

@@ -1,6 +1,15 @@
 import type { Locale } from "@/lib/i18n";
 
 type TitleDesc = { t: string; d: string };
+type OfferComparison = {
+  /** Row "Format" in the comparison table (duration only, e.g. "1 jour"). */
+  format: string;
+  /** Row "Pour qui" in the comparison table (audience type, e.g. "Équipe dev"). */
+  pourQui: string;
+  /** Row "Objectif" in the comparison table (outcome, e.g. "Démarrer & révéler les écarts"). */
+  objectif: string;
+};
+
 type Offer = {
   name: string;
   format: string;
@@ -12,6 +21,8 @@ type Offer = {
   ctaHref: string;
   featured?: boolean;
   badge?: string;
+  /** Structured fields for the FormulesTable comparison table. */
+  comparison?: OfferComparison;
 };
 
 export type Marketing = {
@@ -34,13 +45,24 @@ export type Marketing = {
     ctaPrimary: string;
     ctaSecondary: string;
   };
-  offers: { kicker: string; title: string; subtitle: string; items: Offer[] };
+  offers: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    items: Offer[];
+    /** Bilingual labels for the FormulesTable comparison rows. */
+    comparisonLabels: { format: string; pourQui: string; objectif: string };
+  };
   how: { kicker: string; title: string; steps: TitleDesc[] };
   trainer: {
     kicker: string;
     title: string;
     name: string;
     role: string;
+    /** Status badge shown below name/role on the trainer card. */
+    statusLabel: string;
+    /** Proof quote displayed in the trainer card body. */
+    quote: string;
     principles: TitleDesc[];
     cta: string;
   };
@@ -55,240 +77,494 @@ export type Marketing = {
     cols: { h: string; items: { label: string; href: string }[] }[];
     baseline: string;
   };
+  // Techs & outils (section §7) — catégories d'outils enseignés.
+  tech: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    note: string; // « des principes transposables, pas un outil figé »
+    categories: { name: string; items: string[] }[];
+  };
+  // Livrables (section §8) — ce que le client repart avec.
+  deliverables: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    items: TitleDesc[];
+  };
 };
 
 const fr: Marketing = {
   hero: {
-    kicker: "Formation IA · TPE & PME",
-    titleBefore: "Prenez le large avec l'",
+    kicker: "AI-First Engineering",
+    titleBefore: "Faites passer votre équipe dev en mode ",
     titleEmphasis: "IA",
-    titleAfter: ".",
-    lead: "Formez vos dirigeants et vos équipes à l'IA générative, en visio, sans jargon. Des résultats concrets dès la première semaine — et la conformité AI Act incluse.",
-    ctaPrimary: "Réserver un appel découverte",
-    ctaSecondary: "Voir les formations",
-    proof: ["100 % en visio, partout en France", "Sans jargon", "Conforme AI Act & RGPD"],
-  },
-  atouts: {
-    kicker: "Pourquoi Largo IA",
-    title: "Une formation faite pour les petites entreprises",
-    subtitle:
-      "Pas une conférence théorique. Un accompagnement pragmatique, conçu pour des équipes qui n'ont pas de temps à perdre.",
-    items: [
-      { t: "100 % en visio", d: "Aucun déplacement. Vos équipes se forment depuis leur bureau, partout en France — caméra allumée, en petit groupe." },
-      { t: "Du concret, vite", d: "On travaille sur vos vrais cas et vos propres outils. Des résultats applicables dès la première semaine, pas dans six mois." },
-      { t: "Conforme & sécurisé", d: "RGPD et AI Act intégrés à chaque parcours. Vos données restent protégées, vos usages restent dans les clous." },
-      { t: "Pensé pour les TPE / PME", d: "Petits groupes, sans jargon, au rythme d'équipes qui ont un métier à faire tourner et peu de temps à y consacrer." },
-    ],
+    titleAfter: " — sans casser votre prod ni votre qualité.",
+    lead: "Formation B2B intra pour équipes de développement. En 2 jours, d'un usage anarchique à une méthode d'ingénierie AI-first maîtrisée.",
+    ctaPrimary: "Réserver un appel",
+    ctaSecondary: "Voir les formules",
+    proof: ["100 % B2B intra-entreprise", "Conforme AI Act · sanctions dès août 2026", "Formateur praticien — SaaS en prod AI-first"],
   },
   manifesto: {
-    kicker: "Notre conviction",
-    before: "Pas besoin d'être technicien, ni de tout changer. Quelques heures, vos propres outils, une méthode claire — et l'IA devient ",
-    emphasis: "un réflexe utile",
-    after: ", pas une source de stress.",
-    ctaPrimary: "Réserver un appel découverte",
-    ctaSecondary: "Découvrir le programme",
+    kicker: "Le problème — Shadow AI",
+    before: "Vos devs utilisent déjà l'IA, mais sans méthode : copier-coller non revu, dette technique, failles, aucune mesure du gain. L'AI Act approche — ",
+    emphasis: "sanctions dès août 2026",
+    after: ". C'est le Shadow AI : partout, sans cadre.",
+    ctaPrimary: "Réserver un appel",
+    ctaSecondary: "Voir le cursus",
+  },
+  atouts: {
+    kicker: "La promesse",
+    title: "En 2 jours, d'un usage anarchique à une méthode AI-first maîtrisée",
+    subtitle: "Votre équipe repart avec une méthode d'ingénierie opérationnelle, pas une initiation théorique.",
+    items: [
+      { t: "Livrer plus vite", d: "Chaque développeur orchestre un agent de code sur sa propre codebase dès le Jour 1. Le gain est mesurable immédiatement." },
+      { t: "Sans sacrifier la qualité", d: "Revue de code, tests assistés, ce qu'on ne délègue jamais : les garde-fous sont au cœur de la méthode, pas en option." },
+      { t: "Sans ouvrir de failles", d: "Sécurité, gestion des secrets, dette technique IA : on couvre ce que l'usage spontané ignore systématiquement." },
+      { t: "Mesurer le gain", d: "On calibre ensemble où l'IA aide vs dégrade. Vos leads repartent capables d'arbitrer, pas de subir." },
+    ],
   },
   offers: {
-    kicker: "Les formations",
-    title: "Trois façons de prendre le large",
-    subtitle: "De la première sensibilisation à l'accompagnement sur-mesure du dirigeant.",
+    kicker: "Les formules",
+    title: "Trois formules, un objectif",
+    subtitle: "De l'audit éclair à la maîtrise complète avec cadrage AI Act pour la direction.",
+    comparisonLabels: { format: "Format", pourQui: "Pour qui", objectif: "Objectif" },
     items: [
       {
-        name: "Acculturation IA",
-        format: "Demi-journée (3h30) · visio",
-        price: "dès 690 €",
-        priceNote: "HT / groupe",
-        audience: "Sensibiliser, lever les freins",
+        name: "Diagnostic",
+        format: "1 jour · équipe dev",
+        price: "Sur devis",
+        priceNote: "Sur devis",
+        audience: "Démarrer et révéler les écarts",
         ctaLabel: "Réserver un appel",
         ctaHref: "#contact",
-        benefits: ["Comprendre l'IA sans jargon", "Repérer vos premiers cas d'usage", "Lever les craintes de l'équipe"],
+        comparison: {
+          format: "1 jour",
+          pourQui: "Équipe dev",
+          objectif: "Démarrer & révéler les écarts",
+        },
+        benefits: [
+          "Posture AI-first + config des outils",
+          "Context engineering en pratique",
+          "Atelier première fonctionnalité",
+          "Mini-rapport d'écarts + recommandations",
+        ],
       },
       {
-        name: "L'IA au quotidien",
-        format: "2 jours (4×3h30) · visio",
-        price: "dès 1 900 €",
-        priceNote: "HT / groupe",
-        audience: "Monter en compétence toute l'équipe",
+        name: "Flagship",
+        format: "2 jours · équipe dev",
+        price: "Sur devis",
+        priceNote: "Sur devis",
+        audience: "Maîtrise complète",
+        ctaLabel: "Réserver un appel",
         ctaHref: "#contact",
         featured: true,
-        ctaLabel: "Réserver un appel",
-        badge: "Le plus choisi",
-        benefits: ["Écrire & communiquer plus vite", "Marketing & création de contenu", "Productivité & automatisation", "Sécurité, RGPD & AI Act"],
+        badge: "Cœur de l'offre",
+        comparison: {
+          format: "2 jours",
+          pourQui: "Équipe dev",
+          objectif: "Maîtrise complète de l'ingénierie AI-first",
+        },
+        benefits: [
+          "Jour 1 — Fondations & premier workflow réel",
+          "Jour 2 — Passage à l'échelle & qualité",
+          "Garde-fous, sécurité, tests assistés",
+          "Intégration Git/CI + mesurer le ROI",
+        ],
       },
       {
-        name: "Accompagnement dirigeant",
-        format: "Parcours 4–6 semaines",
-        price: "sur devis",
-        audience: "Transformation + mise en conformité",
-        ctaLabel: "En parler",
+        name: "Pack complet",
+        format: "2 j + ½ j direction · dev + direction",
+        price: "Sur devis",
+        priceNote: "Sur devis",
+        audience: "Maîtrise + gouvernance AI Act",
+        ctaLabel: "Réserver un appel",
         ctaHref: "#contact",
-        benefits: ["Feuille de route IA sur-mesure", "Sessions individuelles", "Conformité AI Act de l'entreprise"],
+        badge: "Montée en gamme",
+        comparison: {
+          format: "2 j + ½ j direction",
+          pourQui: "Dev + direction",
+          objectif: "Maîtrise complète + gouvernance AI Act",
+        },
+        benefits: [
+          "Formation complète équipe dev (2 j)",
+          "Module direction ½ j : AI Act, politique d'usage, ROI business",
+          "Sortir du Shadow AI à l'échelle de l'entreprise",
+          "Politique d'usage IA formalisée",
+        ],
       },
     ],
   },
   how: {
-    kicker: "Comment ça marche",
-    title: "Du premier appel à l'autonomie",
+    kicker: "Le cursus — aperçu",
+    title: "Ce que votre équipe sera capable de faire",
     steps: [
-      { t: "Appel découverte", d: "30 minutes pour comprendre votre activité, vos outils et vos objectifs." },
-      { t: "Programme sur-mesure", d: "On construit un parcours adapté à vos vrais cas — rien d'inutile." },
-      { t: "Sessions en visio", d: "En direct, en petits groupes, avec des exercices sur vos documents." },
-      { t: "Suivi & autonomie", d: "On vérifie que les acquis tiennent dans la durée, sans dépendance." },
+      { t: "Cadrer une tâche pour un agent", d: "Contexte, specs, contraintes : obtenir un résultat exploitable du premier coup, sans itérations inutiles." },
+      { t: "Livrer une feature de bout en bout", d: "De la spec au commit sur une vraie codebase, en mode AI-first. Exercice réel dès le Jour 1." },
+      { t: "Appliquer les garde-fous", d: "Revue de code IA, tests, sécurité — et identifier ce qu'on ne délègue jamais à un agent." },
+      { t: "Intégrer le workflow dans le pipeline", d: "Git, CI, QA automatisée : l'IA s'insère dans ce qui existe, sans tout casser." },
+      { t: "Mesurer le gain et arbitrer", d: "Où l'IA aide vs dégrade ? Vos leads repartent avec les outils pour décider, pas pour subir." },
     ],
   },
   trainer: {
-    kicker: "Le formateur",
-    title: "Une méthode simple, en trois principes",
+    kicker: "Pourquoi moi — la preuve",
+    title: "J'enseigne ce que je pratique",
     name: "Guillaume Flambard",
-    role: "Formateur IA · TPE / PME",
+    role: "AI-First Engineering · Équipes de développement",
+    statusLabel: "Formateur-praticien · en production",
+    quote: "« Je ne suis pas un consultant qui a lu la doc. Je dirige un SaaS en production en 100 % AI-first depuis plusieurs années — j'orchestre, je n'écris plus de code à la main. J'enseigne exactement ce que je pratique. »",
     principles: [
-      { t: "Zéro jargon", d: "On parle métier, pas technique." },
-      { t: "Sur vos vrais cas", d: "Vos documents, vos outils, vos objectifs." },
-      { t: "Autonomie durable", d: "Vous repartez capables, sans dépendance." },
+      { t: "Praticien, pas consultant", d: "Je dirige un SaaS en production en 100 % AI-first depuis plusieurs années. Je n'écris plus de code à la main, j'orchestre." },
+      { t: "Méthode issue du terrain", d: "Chaque pattern enseigné vient d'un vrai contexte de production : contexte engineering, garde-fous, mesure du ROI." },
+      { t: "Formation sur votre codebase", d: "Pas des slides fictifs. Vos devs travaillent sur leur propre environnement, leurs propres problèmes, dès le Jour 1." },
     ],
     cta: "En savoir plus sur Guillaume",
   },
   faq: {
-    kicker: "Questions fréquentes",
-    title: "Tout ce que vous vous demandez",
+    kicker: "Objections",
+    title: "Ce que vous vous demandez sûrement",
     items: [
-      { q: "Faut-il des prérequis techniques ?", a: "Aucun. On part de votre niveau actuel, de vos outils et de vos vrais cas. Si vous savez écrire un email, vous pouvez suivre.", open: true },
-      { q: "Comment se déroulent les sessions en visio ?", a: "En direct, en petits groupes, avec partage d'écran et exercices pratiques sur vos propres documents. Un support est fourni après chaque session." },
-      { q: "Les formations sont-elles finançables par mon OPCO ?", a: "La certification Qualiopi — celle qui ouvre le financement par votre OPCO — est en cours d'obtention. En attendant, on regarde ensemble votre situation lors de l'appel découverte et on vous indique les démarches. Dès la certification obtenue, nos parcours sont finançables OPCO." },
-      { q: "En quoi êtes-vous concernés par l'AI Act ?", a: "Depuis 2025, former vos équipes à un usage responsable de l'IA devient une obligation, avec premières sanctions dès août 2026. Chaque parcours intègre ce volet conformité." },
-      { q: "Quelle est la taille idéale des groupes ?", a: "De 1 à 8 personnes pour garder de l'interaction. Au-delà, on organise plusieurs sessions pour préserver la qualité." },
+      {
+        q: "L'IA va remplacer mes devs ?",
+        a: "Non. Elle déplace leur travail vers l'orchestration et la revue. Le rôle du développeur monte en valeur — il pilote des agents plutôt que d'écrire mécaniquement. La formation porte précisément sur ce nouveau rôle.",
+        open: true,
+      },
+      {
+        q: "Mes devs s'y sont déjà mis seuls.",
+        a: "Sans méthode ni garde-fous, c'est là que naissent la dette technique IA et les failles. On ne repart pas de zéro : on structure et sécurise ce qui existe déjà.",
+      },
+      {
+        q: "On verra l'AI Act plus tard.",
+        a: "Les sanctions nationales sont applicables dès août 2026. Se mettre en conformité (politique d'usage, formation documentée) prend des mois — pas des jours. Attendre, c'est déjà prendre du retard.",
+      },
+      {
+        q: "C'est cher.",
+        a: "Comparé au coût d'une dette technique IA non maîtrisée, d'un incident de sécurité ou d'une non-conformité AI Act, c'est un investissement défensif. Et l'équipe livre plus vite dès la semaine suivante.",
+      },
     ],
   },
   footer: {
-    kicker: "Restons en contact",
-    voiceBefore: "Une question, un doute, un projet ? Écrivez à Guillaume — ",
+    kicker: "Prêt à passer en mode AI-first ?",
+    voiceBefore: "Un projet, une question sur les formules ? Écrivez à Guillaume — ",
     voiceEmphasis: "c'est lui qui vous répond",
-    voiceAfter: ", en personne, sous 24 h.",
-    ctaPrimary: "Réserver un appel découverte",
-    tagline: "Formation à l'IA générative pour les TPE et PME françaises. 100 % en visio, sans jargon, au tempo qui vous va.",
+    voiceAfter: ", sous 24 h.",
+    ctaPrimary: "Réserver un appel",
+    tagline: "Formation à l'ingénierie AI-first pour les équipes de développement. Méthode praticien, garde-fous, conforme AI Act.",
     cols: [
-      { h: "Se former", items: [{ label: "Acculturation IA", href: "/programme" }, { label: "L'IA au quotidien", href: "/programme" }, { label: "Accompagnement dirigeant", href: "/programme" }] },
-      { h: "Largo IA", items: [{ label: "Rencontrer Guillaume", href: "/a-propos" }, { label: "Le programme", href: "/programme" }, { label: "Réserver un appel", href: "/contact" }] },
-      { h: "Le sérieux", items: [{ label: "Mentions légales", href: "/mentions-legales" }, { label: "Confidentialité", href: "/confidentialite" }, { label: "AI Act & RGPD", href: "/confidentialite" }] },
+      {
+        h: "Les formules",
+        items: [
+          { label: "Diagnostic (1 j)", href: "/programme" },
+          { label: "Flagship (2 j)", href: "/programme" },
+          { label: "Pack complet", href: "/programme" },
+        ],
+      },
+      {
+        h: "Largo IA",
+        items: [
+          { label: "Rencontrer Guillaume", href: "/a-propos" },
+          { label: "Le cursus détaillé", href: "/programme" },
+          { label: "Réserver un appel", href: "/contact" },
+        ],
+      },
+      {
+        h: "Le sérieux",
+        items: [
+          { label: "Mentions légales", href: "/mentions-legales" },
+          { label: "Confidentialité", href: "/confidentialite" },
+          { label: "AI Act & conformité", href: "/confidentialite" },
+        ],
+      },
     ],
-    baseline: "Basé entre la France et l'Asie · 100 % visio toute l'année",
+    baseline: "Largo IA · Formation AI-First Engineering · B2B intra-entreprise",
+  },
+  tech: {
+    kicker: "Technologies & outils",
+    title: "L'outillage AI-first en pratique",
+    subtitle: "Ce qu'on utilise, comment on le choisit, et surtout comment on l'encadre.",
+    note: "L'outillage change vite : on enseigne des principes — cadrage, garde-fous, mesure — transposables, pas un outil figé.",
+    categories: [
+      {
+        name: "Agents de code",
+        items: ["Claude Code", "Cursor"],
+      },
+      {
+        name: "Context engineering",
+        items: ["Fichiers CLAUDE.md", "Specs exploitables par un agent", "Découpage de tâches", "Boucles de feedback"],
+      },
+      {
+        name: "Intégration & MCP",
+        items: ["MCP (Model Context Protocol)", "QA navigateur — Playwright", "Branchement Git / revue de PR", "CI assistée"],
+      },
+      {
+        name: "Qualité & garde-fous",
+        items: ["Tests automatisés assistés", "Revue de code IA", "Sécurité & gestion des secrets", "Ce qu'on ne délègue jamais"],
+      },
+      {
+        name: "Automatisation des process",
+        items: ["n8n (workflows métier)", "OCR / vision pour la dématérialisation"],
+      },
+    ],
+  },
+  deliverables: {
+    kicker: "Livrables",
+    title: "Le client repart avec des outils, pas des slides",
+    subtitle: "Quatre livrables opérationnels, personnalisés à votre stack et votre contexte.",
+    items: [
+      {
+        t: "Playbook AI-first personnalisé",
+        d: "Adapté à votre stack technique, votre pipeline et vos conventions d'équipe. Réutilisable immédiatement en production.",
+      },
+      {
+        t: "Templates de configuration",
+        d: "Fichiers de contexte projet (CLAUDE.md), conventions agent, structures de specs exploitables par un agent de code.",
+      },
+      {
+        t: "Checklist de garde-fous",
+        d: "Revue de code, sécurité, gestion des secrets, dette technique IA — ce qu'on vérifie avant chaque merge.",
+      },
+      {
+        t: "Politique d'usage IA + cadrage AI Act",
+        d: "Document prêt à l'emploi pour formaliser les usages autorisés, les gardes-fous et la conformité AI Act (module direction).",
+      },
+    ],
   },
 };
 
 const en: Marketing = {
   hero: {
-    kicker: "AI training · Small & mid-sized businesses",
-    titleBefore: "Set sail with ",
+    kicker: "AI-First Engineering",
+    titleBefore: "Move your dev team to ",
     titleEmphasis: "AI",
-    titleAfter: ".",
-    lead: "Train your leaders and teams in generative AI, over video, without jargon. Concrete results from the very first week — AI Act compliance included.",
-    ctaPrimary: "Book a discovery call",
-    ctaSecondary: "See the courses",
-    proof: ["100% remote, across France", "No jargon", "AI Act & GDPR compliant"],
-  },
-  atouts: {
-    kicker: "Why Largo IA",
-    title: "Training built for small businesses",
-    subtitle: "Not a theory lecture. Pragmatic support, built for teams with no time to waste.",
-    items: [
-      { t: "100% remote", d: "No travel. Your teams learn from their desk, anywhere in France — camera on, in small groups." },
-      { t: "Concrete, fast", d: "We work on your real cases and your own tools. Results you can apply from week one, not in six months." },
-      { t: "Compliant & secure", d: "GDPR and the AI Act built into every course. Your data stays protected, your usage stays within the rules." },
-      { t: "Built for small & mid-sized firms", d: "Small groups, no jargon, at the pace of teams that have a business to run and little time to spare." },
-    ],
+    titleAfter: "-first — without breaking your prod or your quality.",
+    lead: "B2B in-house training for development teams. In 2 days, from chaotic AI use to a mastered AI-first engineering method.",
+    ctaPrimary: "Book a call",
+    ctaSecondary: "See the formulas",
+    proof: ["100% B2B in-house", "AI Act compliant · penalties from August 2026", "Practitioner trainer — SaaS running AI-first in prod"],
   },
   manifesto: {
-    kicker: "Our conviction",
-    before: "No need to be technical, no need to change everything. A few hours, your own tools, a clear method — and AI becomes ",
-    emphasis: "a useful habit",
-    after: ", not a source of stress.",
-    ctaPrimary: "Book a discovery call",
-    ctaSecondary: "Explore the programme",
+    kicker: "The problem — Shadow AI",
+    before: "Your devs are already using AI, but without a method: unreviewed copy-paste, technical debt, vulnerabilities, no ROI measurement. The AI Act is closing in — ",
+    emphasis: "penalties from August 2026",
+    after: ". That's Shadow AI: everywhere, uncontrolled.",
+    ctaPrimary: "Book a call",
+    ctaSecondary: "See the curriculum",
+  },
+  atouts: {
+    kicker: "The promise",
+    title: "In 2 days, from chaotic use to a mastered AI-first method",
+    subtitle: "Your team leaves with an operational engineering method, not a theoretical introduction.",
+    items: [
+      { t: "Ship faster", d: "Every developer orchestrates a code agent on their own codebase from Day 1. The gain is measurable immediately." },
+      { t: "Without sacrificing quality", d: "Code review, assisted testing, what you never delegate: guardrails are at the core of the method, not an afterthought." },
+      { t: "Without opening vulnerabilities", d: "Security, secrets management, AI technical debt: we cover what spontaneous usage systematically ignores." },
+      { t: "Measure the gain", d: "We calibrate together where AI helps vs. degrades. Your leads leave able to decide, not to follow blindly." },
+    ],
   },
   offers: {
-    kicker: "The courses",
-    title: "Three ways to set sail",
-    subtitle: "From first awareness to tailored one-to-one coaching for leaders.",
+    kicker: "The formulas",
+    title: "Three formulas, one objective",
+    subtitle: "From a quick audit to full mastery with AI Act governance for leadership.",
+    comparisonLabels: { format: "Format", pourQui: "For whom", objectif: "Objective" },
     items: [
       {
-        name: "AI awareness",
-        format: "Half-day (3.5h) · remote",
-        price: "from €690",
-        priceNote: "excl. VAT / group",
-        audience: "Raise awareness, ease concerns",
+        name: "Diagnostic",
+        format: "1 day · dev team",
+        price: "On request",
+        priceNote: "On request",
+        audience: "Get started and reveal the gaps",
         ctaLabel: "Book a call",
         ctaHref: "#contact",
-        benefits: ["Understand AI without jargon", "Spot your first use cases", "Ease the team's worries"],
+        comparison: {
+          format: "1 day",
+          pourQui: "Dev team",
+          objectif: "Get started & reveal the gaps",
+        },
+        benefits: [
+          "AI-first posture + tool setup",
+          "Context engineering in practice",
+          "First feature workshop",
+          "Mini gap report + recommendations",
+        ],
       },
       {
-        name: "AI every day",
-        format: "2 days (4×3.5h) · remote",
-        price: "from €1,900",
-        priceNote: "excl. VAT / group",
-        audience: "Upskill the whole team",
+        name: "Flagship",
+        format: "2 days · dev team",
+        price: "On request",
+        priceNote: "On request",
+        audience: "Full mastery",
+        ctaLabel: "Book a call",
         ctaHref: "#contact",
         featured: true,
-        ctaLabel: "Book a call",
-        badge: "Most chosen",
-        benefits: ["Write & communicate faster", "Marketing & content creation", "Productivity & automation", "Security, GDPR & AI Act"],
+        badge: "Core offer",
+        comparison: {
+          format: "2 days",
+          pourQui: "Dev team",
+          objectif: "Full AI-first engineering mastery",
+        },
+        benefits: [
+          "Day 1 — Foundations & first real workflow",
+          "Day 2 — Scaling & quality",
+          "Guardrails, security, assisted testing",
+          "Git/CI integration + measuring ROI",
+        ],
       },
       {
-        name: "Leadership coaching",
-        format: "4–6 week journey",
-        price: "on quote",
-        audience: "Transformation + compliance",
-        ctaLabel: "Let's talk",
+        name: "Full pack",
+        format: "2 d + ½ d leadership · dev + leadership",
+        price: "On request",
+        priceNote: "On request",
+        audience: "Mastery + AI Act governance",
+        ctaLabel: "Book a call",
         ctaHref: "#contact",
-        benefits: ["Tailored AI roadmap", "One-to-one sessions", "Company-wide AI Act compliance"],
+        badge: "Premium tier",
+        comparison: {
+          format: "2 d + ½ d leadership",
+          pourQui: "Dev + leadership",
+          objectif: "Full mastery + AI Act governance",
+        },
+        benefits: [
+          "Full dev team training (2 d)",
+          "Leadership module ½ d: AI Act, usage policy, business ROI",
+          "Exit Shadow AI at company scale",
+          "Formalized AI usage policy",
+        ],
       },
     ],
   },
   how: {
-    kicker: "How it works",
-    title: "From the first call to autonomy",
+    kicker: "The curriculum — overview",
+    title: "What your team will be able to do",
     steps: [
-      { t: "Discovery call", d: "30 minutes to understand your business, your tools and your goals." },
-      { t: "Tailored programme", d: "We build a path matched to your real cases — nothing wasted." },
-      { t: "Remote sessions", d: "Live, in small groups, with exercises on your own documents." },
-      { t: "Follow-up & autonomy", d: "We make sure the skills last, with no dependency." },
+      { t: "Frame a task for an agent", d: "Context, specs, constraints: get a usable result on the first try, without unnecessary back-and-forth." },
+      { t: "Ship a feature end-to-end", d: "From spec to commit on a real codebase, AI-first. A real exercise from Day 1." },
+      { t: "Apply the guardrails", d: "AI code review, testing, security — and identify what you never delegate to an agent." },
+      { t: "Integrate the workflow into the pipeline", d: "Git, CI, automated QA: AI slots into what already exists, without breaking it." },
+      { t: "Measure the gain and decide", d: "Where does AI help vs. degrade? Your leads leave with the tools to decide, not to react." },
     ],
   },
   trainer: {
-    kicker: "The trainer",
-    title: "A simple method, in three principles",
+    kicker: "Why me — the proof",
+    title: "I teach what I practice",
     name: "Guillaume Flambard",
-    role: "AI trainer · Small & mid-sized businesses",
+    role: "AI-First Engineering · Development Teams",
+    statusLabel: "Practitioner trainer · in production",
+    quote: `“I’m not a consultant who read the docs. I’ve been running a SaaS in production 100% AI-first for several years — I orchestrate, I no longer write code by hand. I teach exactly what I practise.”`,
     principles: [
-      { t: "Zero jargon", d: "We talk business, not tech." },
-      { t: "On your real cases", d: "Your documents, your tools, your goals." },
-      { t: "Lasting autonomy", d: "You leave capable, with no dependency." },
+      { t: "Practitioner, not consultant", d: "I run a SaaS in production 100% AI-first for several years. I no longer write code by hand — I orchestrate." },
+      { t: "Method from real production", d: "Every pattern taught comes from a real production context: context engineering, guardrails, ROI measurement." },
+      { t: "Training on your codebase", d: "No fictional slides. Your devs work on their own environment and their own problems, from Day 1." },
     ],
     cta: "More about Guillaume",
   },
   faq: {
-    kicker: "Frequently asked",
-    title: "Everything you're wondering",
+    kicker: "Objections",
+    title: "What you're probably wondering",
     items: [
-      { q: "Any technical prerequisites?", a: "None. We start from your current level, your tools and your real cases. If you can write an email, you can follow along.", open: true },
-      { q: "How do the remote sessions work?", a: "Live, in small groups, with screen sharing and hands-on exercises on your own documents. Notes are provided after each session." },
-      { q: "Can the training be funded by my OPCO?", a: "The Qualiopi certification — the one that unlocks OPCO funding — is being obtained. In the meantime, we review your situation together on the discovery call and point you to the steps. Once certified, our courses are OPCO-fundable." },
-      { q: "How does the AI Act concern you?", a: "Since 2025, training your teams in responsible AI use is becoming a legal obligation, with first penalties from August 2026. Every course includes this compliance dimension." },
-      { q: "What's the ideal group size?", a: "1 to 8 people to keep interaction high. Beyond that, we run several sessions to preserve quality." },
+      {
+        q: "Will AI replace my devs?",
+        a: "No. It shifts their work toward orchestration and review. The developer's role gains in value — they drive agents rather than writing mechanically. That's exactly what the training covers.",
+        open: true,
+      },
+      {
+        q: "My devs are already doing it on their own.",
+        a: "Without a method or guardrails, that's exactly where AI technical debt and vulnerabilities come from. We don't start from scratch: we structure and secure what already exists.",
+      },
+      {
+        q: "We'll deal with the AI Act later.",
+        a: "National penalties apply from August 2026. Getting compliant — usage policy, documented training — takes months, not days. Waiting means falling behind.",
+      },
+      {
+        q: "It's expensive.",
+        a: "Compared to the cost of unmanaged AI technical debt, a security incident, or an AI Act non-compliance, it's a defensive investment. And the team ships faster the week after.",
+      },
     ],
   },
   footer: {
-    kicker: "Let's stay in touch",
-    voiceBefore: "A question, a doubt, a project? Write to Guillaume — ",
+    kicker: "Ready to go AI-first?",
+    voiceBefore: "A project, a question about the formulas? Write to Guillaume — ",
     voiceEmphasis: "he answers you himself",
-    voiceAfter: ", in person, within 24 h.",
-    ctaPrimary: "Book a discovery call",
-    tagline: "Generative-AI training for small and mid-sized French businesses. 100% remote, no jargon, at a pace that suits you.",
+    voiceAfter: ", within 24 h.",
+    ctaPrimary: "Book a call",
+    tagline: "AI-first engineering training for development teams. Practitioner method, guardrails, AI Act compliant.",
     cols: [
-      { h: "Learn", items: [{ label: "AI awareness", href: "/programme" }, { label: "AI every day", href: "/programme" }, { label: "Leadership coaching", href: "/programme" }] },
-      { h: "Largo IA", items: [{ label: "Meet Guillaume", href: "/a-propos" }, { label: "The programme", href: "/programme" }, { label: "Book a call", href: "/contact" }] },
-      { h: "The serious bits", items: [{ label: "Legal notice", href: "/mentions-legales" }, { label: "Privacy", href: "/confidentialite" }, { label: "AI Act & GDPR", href: "/confidentialite" }] },
+      {
+        h: "The formulas",
+        items: [
+          { label: "Diagnostic (1 d)", href: "/programme" },
+          { label: "Flagship (2 d)", href: "/programme" },
+          { label: "Full pack", href: "/programme" },
+        ],
+      },
+      {
+        h: "Largo IA",
+        items: [
+          { label: "Meet Guillaume", href: "/a-propos" },
+          { label: "Full curriculum", href: "/programme" },
+          { label: "Book a call", href: "/contact" },
+        ],
+      },
+      {
+        h: "The serious bits",
+        items: [
+          { label: "Legal notice", href: "/mentions-legales" },
+          { label: "Privacy", href: "/confidentialite" },
+          { label: "AI Act & compliance", href: "/confidentialite" },
+        ],
+      },
     ],
-    baseline: "Based between France and Asia · 100% remote, all year round",
+    baseline: "Largo IA · AI-First Engineering Training · B2B in-house",
+  },
+  tech: {
+    kicker: "Technologies & tools",
+    title: "The AI-first toolset in practice",
+    subtitle: "What we use, how we choose it, and above all how we govern it.",
+    note: "Tooling evolves fast: we teach transferable principles — framing, guardrails, measurement — not a fixed tool set.",
+    categories: [
+      {
+        name: "Code agents",
+        items: ["Claude Code", "Cursor"],
+      },
+      {
+        name: "Context engineering",
+        items: ["CLAUDE.md context files", "Agent-ready specs", "Task decomposition", "Feedback loops"],
+      },
+      {
+        name: "Integration & MCP",
+        items: ["MCP (Model Context Protocol)", "Browser QA — Playwright", "Git branching / PR review", "Assisted CI"],
+      },
+      {
+        name: "Quality & guardrails",
+        items: ["Assisted automated testing", "AI code review", "Security & secrets management", "What you never delegate"],
+      },
+      {
+        name: "Process automation",
+        items: ["n8n (business workflows)", "OCR / vision for document processing"],
+      },
+    ],
+  },
+  deliverables: {
+    kicker: "Deliverables",
+    title: "Clients leave with tools, not slides",
+    subtitle: "Four operational deliverables, tailored to your stack and context.",
+    items: [
+      {
+        t: "Tailored AI-first playbook",
+        d: "Matched to your tech stack, pipeline, and team conventions. Ready to use in production immediately.",
+      },
+      {
+        t: "Configuration templates",
+        d: "Project context files (CLAUDE.md), agent conventions, spec structures ready for a code agent.",
+      },
+      {
+        t: "Guardrail checklist",
+        d: "Code review, security, secrets management, AI technical debt — what you verify before every merge.",
+      },
+      {
+        t: "AI usage policy + AI Act framing",
+        d: "A ready-to-use document formalizing authorized uses, guardrails, and AI Act compliance (leadership module).",
+      },
+    ],
   },
 };
 

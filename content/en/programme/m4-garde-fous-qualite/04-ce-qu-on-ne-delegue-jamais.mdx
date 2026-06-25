@@ -1,0 +1,97 @@
+---
+title: "What you never delegate"
+slug: "ce-qu-on-ne-delegue-jamais"
+module: "m4-garde-fous-qualite"
+order: 4
+durationMin: 13
+level: "avancé"
+objectives:
+  - "able to distinguish decisions that can be delegated to an agent from those that require human judgment"
+  - "able to articulate the list of a developer's non-negotiable responsibilities"
+prerequisites: []
+quiz:
+  - prompt: "Which of these decisions can legitimately be delegated to an agent?"
+    choices:
+      - text: "Deciding whether a new dependency is acceptable in the project"
+      - text: "Choosing the implementation of a sorting algorithm for an array of 100 elements"
+        correct: true
+      - text: "Validating that code is ready to deploy to production"
+  - prompt: "The difference between delegation and abdication is:"
+    choices:
+      - text: "Delegation is for simple tasks, abdication for complex ones"
+      - text: "In delegation, you remain responsible for the result and read the diff; in abdication, you accept the result without understanding it"
+        correct: true
+      - text: "Abdication is acceptable if the agent has been tested on similar cases"
+  - prompt: "An agent suggests adding a new library to solve a problem. The correct response is:"
+    choices:
+      - text: "Accept if the library is popular and well maintained"
+      - text: "Evaluate yourself whether the addition is justified before accepting the diff"
+        correct: true
+      - text: "Ask a second agent to validate the choice"
+---
+
+# What you never delegate
+
+There is a distinction the AI-first workflow forces you to clarify: the difference between delegating a task and abdicating a responsibility. Both look like "letting the agent handle it." They produce radically different results.
+
+**Delegating**: you define the task, you read the result, you own the decision to integrate it.
+
+**Abdicating**: you ask the agent to decide, you accept the result because "the agent took care of it."
+
+Abdication disguised as delegation is the main risk of the AI-first workflow for teams that haven't clarified their lines.
+
+## The list of non-delegable decisions
+
+<Idee>
+Sovereignty over your codebase is non-negotiable. An agent can write the code. It cannot decide what enters your codebase, why, and what the consequences are for your architecture and technical debt.
+</Idee>
+
+**1. Architectural decisions**
+
+The agent doesn't know your real constraints: expected load, the team that will maintain the code, regulatory constraints, past decisions and their reasons. "The agent proposed a microservices architecture" is not a reason to adopt a microservices architecture.
+
+**2. Security trade-offs**
+
+"Can we store this token in localStorage?" — that's a security decision with implications for your attack surface. The agent can list arguments for and against. The decision is yours.
+
+**3. Merging without reading the diff**
+
+There's no nuance here. If you merge a diff you haven't read line by line, you're putting code you don't understand into your codebase. When it breaks, you won't know why.
+
+**4. Deploying to production**
+
+The deploy command is yours to run. The agent doesn't decide when your code is ready for production. You've tested it, you've read the diff, you've verified the dependencies — you decide.
+
+**5. Deciding what constitutes "done"**
+
+"The agent says it's done" is not a completion criterion. The success criterion from the spec is validated by you.
+
+**6. Understanding the code you ship**
+
+If you can't explain what a section of the diff does, you must not merge it. Ask the agent to explain it. If the explanation doesn't convince you, re-spec.
+
+**7. Adding a dependency to the project**
+
+Every dependency is an architectural decision, a future maintenance surface, a potential vulnerability vector. An agent that adds `lodash` to sort an array has made a decision you may not have wanted to make.
+
+<Exemple>
+**Abdication**:
+
+> The agent reconfigured the authentication system to use JWTs with no expiration "because it's simpler." We merged without reading the config diff.
+
+**Correct delegation**:
+
+> The agent generated the JWT token validation implementation according to the spec (1h expiration, refresh token in httpOnly cookie). We read the diff, verified the expiration parameters, and decided to merge.
+</Exemple>
+
+<Attention>
+The temptation to let the agent "decide" the architecture is strongest when you're under time pressure. That's exactly when abdication decisions accumulate and create the debt you pay six months later. Time pressure is a reason to spec better, not a reason to review less.
+</Attention>
+
+## Writing your team's list
+
+The list of non-delegable decisions is contextual. A team of three seniors has a different list from a team with juniors. A greenfield project has a different list from a legacy project with fragile invariants.
+
+<Exercice>
+Gather your team (or do it alone if you're solo) and write your own "what we never delegate" list. Be precise — "important decisions" is not a rule. "We never merge any diff touching the auth layer without two developers having read it" is a rule. Add this list to your `CLAUDE.md` and to your PR template.
+</Exercice>

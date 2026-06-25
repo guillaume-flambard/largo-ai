@@ -3,7 +3,6 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import { LocaleLink } from "@/components/LocaleLink";
 import { Idee, Exemple, Exercice, Attention } from "@/components/learn/mdx-blocks";
 import { Formateur } from "@/components/learn/Formateur";
-import { RoleToggle } from "@/components/learn/RoleToggle";
 import { LessonProvider } from "@/components/learn/LessonProgress";
 import { LessonAside } from "@/components/learn/LessonAside";
 import { Quiz } from "@/components/learn/quiz/Quiz";
@@ -62,7 +61,6 @@ export default async function LessonPage({
 
   const dict = await getDictionary(locale);
   const pageCopy = getPageCopy(locale);
-  const f = pageCopy.formateur;
   const user = await getSessionUser();
   const mod = await getModule(locale, moduleSlug);
   const { prev, next } = await getAdjacentLessons(locale, moduleSlug, lecon);
@@ -92,7 +90,7 @@ export default async function LessonPage({
 
   return (
     <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
-      {/* Sous-barre collante : fil d'Ariane + bascule formateur */}
+      {/* Sous-barre collante : fil d'Ariane */}
       <div className="lg-lecon-subbar">
         <div className="lg-lecon-subbar__inner">
           <nav
@@ -111,11 +109,6 @@ export default async function LessonPage({
             </Msi>
             <span style={{ color: "var(--ink)" }}>{lesson.meta.title}</span>
           </nav>
-          <RoleToggle
-            label={dict.programme.modeFormateur}
-            stateOn={f.on}
-            stateOff={f.off}
-          />
         </div>
       </div>
 

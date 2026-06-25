@@ -1,0 +1,113 @@
+---
+title: "Working on a real codebase"
+slug: "travailler-sur-une-vraie-codebase"
+module: "m3-livrer-ai-first"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "able to prepare project context so an agent produces code consistent with existing conventions"
+  - "able to identify what was missing from the context when results are disappointing"
+prerequisites: []
+quiz:
+  - prompt: "An agent produces code that doesn't use your project's error-handling pattern. The most likely cause is:"
+    choices:
+      - text: "The agent isn't powerful enough to understand your pattern"
+      - text: "That pattern wasn't in the context provided to the agent"
+        correct: true
+      - text: "Your pattern is non-standard and the agent rejected it"
+  - prompt: "The primary role of a CLAUDE.md file is to:"
+    choices:
+      - text: "Document the project for new developers"
+      - text: "Configure file access permissions"
+      - text: "Provide the agent with the project's persistent conventions, constraints, and context"
+        correct: true
+  - prompt: "When an agent produces a disappointing result, the first question to ask is:"
+    choices:
+      - text: "Which model should I use instead?"
+      - text: "What was missing from the context I provided?"
+        correct: true
+      - text: "How do I rephrase the prompt to be more precise?"
+---
+
+# Working on a real codebase
+
+An AI agent has no memory of your project between sessions. It doesn't know your naming conventions, your architecture, your error-handling patterns, your past architectural decisions. Every time you start a session, you're starting from zero — unless you've prepared the context.
+
+Context is the key variable. Not the model. Not the prompt phrasing.
+
+<Idee>
+The quality of code an agent produces is proportional to the quality of the context you give it. A mediocrely-prompted agent with rich context beats a well-prompted agent with no context on a real codebase.
+</Idee>
+
+## CLAUDE.md: your contract with the agent
+
+`CLAUDE.md` is the file Claude Code reads automatically at the start of every session. It's where you encode the project's permanent context. A good `CLAUDE.md` contains:
+
+- **Architecture**: folder structure, layer roles (services, repositories, controllers)
+- **Conventions**: file naming, function naming, variable naming; error-handling style; logging pattern
+- **What we don't do**: forbidden dependencies, patterns to avoid, identified anti-patterns
+- **Useful commands**: how to run tests, the linter, the build
+
+An empty or missing `CLAUDE.md` forces the agent to guess. It guesses wrong often.
+
+## What happens without context
+
+<Exemple>
+**Context**: A Next.js codebase with API Routes. All routes follow this error-handling pattern:
+
+```typescript
+// src/lib/api-handler.ts
+export function withErrorHandler(handler: RouteHandler) {
+  return async (req, res) => {
+    try {
+      await handler(req, res)
+    } catch (err) {
+      logger.error(err)
+      res.status(500).json({ error: 'Internal server error', code: err.code })
+    }
+  }
+}
+```
+
+**Without context in CLAUDE.md**:
+
+The agent produces a new route with a different inline try/catch, a different error format, and no logger call. Technically valid. Architecturally inconsistent.
+
+**After adding to CLAUDE.md**:
+
+```markdown
+## Error handling
+All API routes are wrapped with `withErrorHandler` (src/lib/api-handler.ts).
+Never write try/catch directly inside a route.
+Error response format: `{ error: string, code?: string }`.
+```
+
+The agent applies it consistently.
+</Exemple>
+
+## Read before you write
+
+Before drafting a spec for a task in an area of the codebase you haven't touched in a while, read the relevant files. Not diagonally — actually read them.
+
+Two reasons:
+
+1. You can't describe constraints you don't know about
+2. The agent can include those files in its context if you reference them explicitly in your spec
+
+## Diagnosing a disappointing result
+
+When the agent produces something that doesn't match your expectations, the question isn't "how do I rephrase the prompt?" — it's "what was missing from the context?"
+
+Diagnostic checklist:
+
+- [ ] Was the expected pattern described in `CLAUDE.md` or in the spec?
+- [ ] Were reference files (existing examples) mentioned?
+- [ ] Were the constraints (what not to do) explicit?
+- [ ] Was the success criterion measurable?
+
+After this diagnosis, enrich `CLAUDE.md` so the next session starts with that context already in place.
+
+<Exercice>
+Open your current `CLAUDE.md` (or create one if it doesn't exist). Identify three project conventions that aren't documented there. Add them. If you're not sure which conventions to pick, look at the last diff where an agent produced something disappointing — the missing convention is right there.
+</Exercice>

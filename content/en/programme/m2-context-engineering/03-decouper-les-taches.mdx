@@ -1,0 +1,146 @@
+---
+title: "Decomposing tasks for an agent"
+slug: "decouper-les-taches"
+module: "m2-context-engineering"
+order: 3
+durationMin: 15
+level: "avancé"
+objectives:
+  - "Apply the criteria for good task decomposition so an agent can handle a task in one pass"
+  - "Identify dependencies between sub-tasks and define their execution order"
+  - "Avoid decomposition patterns that produce unmanageable diffs or merge conflicts"
+prerequisites: []
+quiz:
+  - prompt: "A well-decomposed task for an agent produces a diff that…"
+    choices:
+      - text: "Touches as many files as possible to be complete"
+      - text: "Can be reviewed in under 15 minutes and only touches a coherent functional scope"
+        correct: true
+      - text: "Necessarily includes tests and documentation"
+  - prompt: "When two sub-tasks have a strong dependency (B depends on A's result), you hand them to the agent…"
+    choices:
+      - text: "In parallel to go faster"
+      - text: "Sequentially: A first, reviewed and committed, then B"
+        correct: true
+      - text: "As a single combined task to avoid conflicts"
+  - prompt: "The signal that a task is too large for an agent is…"
+    choices:
+      - text: "It takes more than 30 minutes"
+      - text: "The produced diff touches more than 10 files or exceeds 200 modified lines"
+        correct: true
+      - text: "It requires modifying the database schema"
+---
+
+One of the most common patterns in teams starting out with AI-first: hand the agent a
+task that's too large, get a 300-line diff across 15 files, find yourself unable to
+review it properly, merge it anyway because the tests pass, and pay the debt two weeks
+later.
+
+Decomposition isn't a tool constraint — it's a work discipline.
+
+## Why decomposition changes everything
+
+<Idee>
+An agent that receives a well-decomposed task produces a diff you can review completely
+in 10-15 minutes. That's the threshold below which review is genuine. Beyond 15 minutes
+of review, you start skimming — and that's where problems slip through.
+
+Breaking a feature into 4 tasks of 15 minutes each (60 min total) is safer and often
+faster than a single 60-minute task with a diff you'll skim in 5 minutes.
+</Idee>
+
+## Criteria for good decomposition
+
+A task is well-decomposed for an agent when:
+
+1. **It has a coherent functional scope** — not "add feature X" but "implement the data
+   layer of X" or "implement the UI of X."
+2. **The expected diff is reviewable** — under 200 modified lines, under 10 touched
+   files is a good signal.
+3. **It has verifiable success criteria** — tests that pass, observable behavior,
+   not "it's roughly good."
+4. **It doesn't depend on another unmerged task** — unresolved dependencies are the
+   main source of merge conflicts in generated code.
+
+## A layer-based decomposition pattern
+
+For a classic feature (adding product-side functionality), layer-based decomposition
+works well:
+
+```
+Task 1: Schema and migration (if data changes)
+Task 2: Repository / data access layer
+Task 3: Business logic / service
+Task 4: API endpoint or server action
+Task 5: UI component
+Task 6: Integration tests
+```
+
+Each task is a separate spec. Each task is committed before moving to the next. The
+agent works on a stable base at every step.
+
+<Attention>
+Don't include tests in the same spec as the implementation if the test is non-trivial.
+An agent that implements AND tests in the same pass is tempted to write tests that pass
+against its own implementation rather than tests that capture the expected behavior.
+Separating the two forces a cross-review.
+</Attention>
+
+## Managing dependencies between tasks
+
+Dependencies are the real challenge of decomposition. Two practical rules:
+
+**Rule 1 — Sequential by default.** If B depends on A, do A first, review it, commit
+it, then launch B on the stable base. Working on two parallel branches with a dependency
+is a needless source of conflicts.
+
+**Rule 2 — Interface first if parallel is essential.** If you genuinely need to
+parallelize (multiple developers on the same feature), first define the interface contract
+(TypeScript types, API signature, JSON schema). Each person implements their side against
+the contract. The contract doesn't change mid-flight.
+
+<Exemple>
+**Bad decomposition (single task, too large):**
+> Add real-time notifications: notification schema, server API, bell component, counter
+> badge, list drawer, end-to-end tests.
+
+**Good decomposition (sequential):**
+> Task 1: Drizzle `notifications` schema + TypeScript types → reviewed and committed.
+> Task 2: `GET /api/notifications` (list + unread count) → reviewed and committed.
+> Task 3: `POST /api/notifications/mark-read` → reviewed and committed.
+> Task 4: `<NotificationBell>` component (badge + drawer trigger) → committed.
+> Task 5: `<NotificationDrawer>` component (list + inline mark-as-read) → committed.
+> Task 6: Integration tests → committed.
+
+Each task is a 10-15 line spec. Each diff is reviewable in 10-15 minutes.
+</Exemple>
+
+## Signs a task needs to be re-decomposed
+
+- The spec is over 20 lines and you're struggling to summarize it in one sentence.
+- The produced diff exceeds 200 lines or 10 modified files.
+- The agent asks questions about architectural choices you hadn't anticipated.
+- You need more than 15 minutes to review the diff.
+
+If any of these signals appear, stop. Decompose the original spec and start over.
+
+## Your turn
+
+<Exercice>
+Take a feature from your backlog you'd estimate at 2+ days of development. Decompose it
+into tasks using the criteria above. Goal: at least 4 tasks, each with a coherent
+functional scope and verifiable success criteria.
+
+Check each task: can you write the spec in under 15 lines? Does the expected diff fit
+in under 200 lines?
+
+If not, decompose further.
+</Exercice>
+
+## Summary
+
+- A diff reviewable in under 15 minutes is the primary criterion for a good task.
+- Decompose by functional layers (data → logic → API → UI → tests), not by files.
+- Sequential by default: each task merged before launching the next.
+- Signs to re-decompose: spec > 20 lines, diff > 200 lines, agent questions about
+  architecture.

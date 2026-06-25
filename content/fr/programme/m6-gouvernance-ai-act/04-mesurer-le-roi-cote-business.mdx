@@ -1,0 +1,95 @@
+---
+title: "Mesurer le ROI côté business"
+slug: "mesurer-le-roi-cote-business"
+module: "m6-gouvernance-ai-act"
+order: 4
+durationMin: 13
+level: "avancé"
+objectives:
+  - "capable de construire un argumentaire ROI pour une direction sur l'investissement dans une formation AI-first"
+  - "capable d'identifier les coûts cachés de la non-adoption (dette technique, risques AI Act) pour compléter le calcul"
+prerequisites: []
+quiz:
+  - prompt: "Le coût de la non-conformité AI Act pour une entreprise qui développe un système à risque élevé peut atteindre :"
+    choices:
+      - text: "500 € d'amende administrative"
+      - text: "Jusqu'à 15 M€ ou 3% du CA mondial annuel, selon le type de violation"
+        correct: true
+      - text: "Un avertissement formel sans pénalité financière pour les entreprises de moins de 250 salariés"
+  - prompt: "Dans le calcul du ROI d'une formation AI-first, quel coût est souvent oublié ?"
+    choices:
+      - text: "Le coût des licences des outils IA"
+      - text: "Le coût de la dette technique générée par un usage non encadré de l'IA — bugs post-merge, refactors correctifs, incidents"
+        correct: true
+      - text: "Le coût de déplacement des formateurs"
+  - prompt: "Quel indicateur est le plus pertinent pour une direction qui veut mesurer l'impact business de l'adoption AI-first ?"
+    choices:
+      - text: "Le nombre de commits par développeur par semaine"
+      - text: "Le temps de mise sur le marché des features (time-to-ship) et le taux d'incidents en production"
+        correct: true
+      - text: "Le score de satisfaction des développeurs sur les outils IA"
+---
+
+# Mesurer le ROI côté business
+
+Le ROI d'une formation AI-first ne se mesure pas de la même façon selon qu'on est CTO (vélocité, qualité du code, dette) ou direction générale / DSI (time-to-market, coût opérationnel, risque réglementaire). Ce module s'adresse aux deux — et à la conversation entre les deux.
+
+## Le calcul que la direction comprend
+
+Les directions ne sont pas insensibles aux arguments techniques. Elles sont insensibles aux arguments qui ne quantifient pas. Le CTO doit être capable de traduire.
+
+**Côté gains :**
+
+- **Vélocité développeur** : si une équipe de 5 devs gagne en moyenne 30% de temps sur les tâches CRUD et de tests (conservateur d'après les mesures terrain), c'est l'équivalent de 1,5 développeur supplémentaire sans recrutement. Au coût moyen d'un développeur sénior en France (60-80 k€ chargé), la valeur créée est mesurable.
+
+- **Time-to-ship** : raccourcir le cycle spec→production de 30% permet de livrer plus de features par trimestre, d'itérer plus vite sur le produit, et de réduire le temps entre investissement et revenu.
+
+- **Réduction de la dette technique** : un workflow AI-first non encadré génère de la dette (code non relu, tests superficiels). Un workflow AI-first avec garde-fous réduit la dette — moins de sprints "dette" en fin de roadmap.
+
+<Idee>
+Pour une direction, la traduction la plus efficace du ROI est celle qui parle de risques évités, pas seulement de gains. "Former vos équipes en août 2026 coûte X. Ne pas les former et tomber sous une investigation AI Act coûte potentiellement 15 M€ ou 3% du CA." Le cadre défensif ouvre souvent la décision plus vite que le cadre de performance.
+</Idee>
+
+**Côté coûts cachés de la non-adoption :**
+
+- **Bugs post-merge liés à du code AI non revu** : chaque bug en production coûte en moyenne 6 à 10× le temps qu'il aurait coûté à corriger avant le merge. Sans formation, le ratio erreurs/code généré est élevé.
+
+- **Shadow AI et risques RGPD** : un incident de fuite de données client via un outil IA non validé peut déclencher une investigation CNIL. Une notification de violation de données coûte en réputation, en ressources juridiques, et en amendes RGPD potentielles (jusqu'à 4% du CA mondial).
+
+- **Non-conformité AI Act** : pour les entreprises qui développent ou déploient des systèmes à risque élevé (RH, scoring, évaluation), les sanctions peuvent atteindre 15 M€ ou 3% du CA mondial annuel.
+
+## Construire le tableau de ROI pour une direction
+
+Un format simple et honnête — pas de projection fantaisiste, uniquement ce qui est mesurable :
+
+<Exemple>
+**Tableau ROI formation AI-first — équipe de 6 développeurs**
+
+| | Montant estimé |
+|---|---|
+| **Coût de la formation** | Sur devis (nous consulter) |
+| **Gain de vélocité (conservateur : +25%)** | ~1,5 ETP évité sur 12 mois |
+| **Coût ETP évité (sénior chargé)** | ~90 000 € |
+| **Réduction bugs post-merge (estimé)** | ~15 jours dev récupérés |
+| **Coût Shadow AI non adressé (risque RGPD)** | Variable — potentiellement 10 000€+ par incident |
+| **Risque AI Act (si système à risque élevé)** | Jusqu'à 15 M€ (non-conformité documentée) |
+| **Horizon de rentabilité** | 3 à 6 mois selon vélocité de l'équipe |
+
+*Ces estimations sont basées sur des mesures terrain typiques — votre contexte peut différer. Le temps réel est mesuré au premier sprint post-formation.*
+</Exemple>
+
+## Ce que la direction doit décider
+
+La formation est un investissement — elle ne se rembourse que si les équipes adoptent réellement le workflow. La direction doit prendre deux engagements pour que le ROI se matérialise :
+
+1. **Fournir les outils** : sans licences d'outils IA validées, les développeurs reviennent au Shadow AI après la formation. L'investissement est perdu.
+
+2. **Protéger le temps d'adoption** : les deux premières semaines post-formation, la vélocité baisse (montée en compétence). Si la pression est maximale immédiatement, les équipes abandonnent le nouveau workflow. Planifiez la formation en dehors des pics de livraison critiques.
+
+<Attention>
+Ne présentez pas à votre direction un ROI de 300% en 3 mois. Ces projections existent dans des études marketing — elles ne correspondent pas aux mesures terrain sur des équipes réelles. Un argumentaire honnête avec des chiffres conservatifs et mesurables est plus crédible, et survit à la confrontation avec la réalité post-formation.
+</Attention>
+
+<Exercice>
+Préparez la réunion avec votre direction. Calculez le coût de votre équipe dev en ETP chargé. Estimez conservativement le gain de vélocité sur les tâches qui se prêtent le mieux à l'AI-first dans votre contexte (pas de % global — listez des types de tâches). Identifiez si votre entreprise développe ou utilise des systèmes qui pourraient être classés à risque élevé AI Act. Construisez un slide avec ces trois éléments — c'est la base de la conversation budgétaire.
+</Exercice>

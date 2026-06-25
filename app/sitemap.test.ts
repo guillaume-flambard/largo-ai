@@ -8,18 +8,19 @@ describe("sitemap", () => {
     const urls = (await sitemap()).map((e) => e.url);
     expect(urls).toContain(`${SITE_URL}/fr`);
     expect(urls).toContain(`${SITE_URL}/fr/programme`);
-    expect(urls.some((u) => /\/fr\/programme\/m1-fondamentaux\/.+/.test(u))).toBe(true);
+    expect(urls.some((u) => /\/fr\/programme\/m1-posture-ai-first\/.+/.test(u))).toBe(true);
     for (const u of urls) {
       expect(u.startsWith(`${SITE_URL}/fr`)).toBe(true);
     }
   });
 
-  it("exclut le(s) module(s) formateur gaté(s)", async () => {
+  it("aucun module n'est gaté (formateurOnly supprimé) — tous les modules apparaissent dans le sitemap", async () => {
     const urls = (await sitemap()).map((e) => e.url);
-    const gated = (await listModules("fr")).filter((m) => m.formateurOnly);
-    expect(gated.length).toBeGreaterThan(0);
-    for (const m of gated) {
-      expect(urls.some((u) => u.includes(m.slug))).toBe(false);
+    const mods = await listModules("fr");
+    const gated = mods.filter((m) => m.formateurOnly);
+    expect(gated).toHaveLength(0);
+    for (const m of mods) {
+      expect(urls.some((u) => u.includes(m.slug))).toBe(true);
     }
   });
 

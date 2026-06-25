@@ -15,6 +15,8 @@ const LISTS: ReadonlyArray<[string, (m: Marketing) => readonly unknown[]]> = [
   ["trainer.principles", (m) => m.trainer.principles],
   ["faq.items", (m) => m.faq.items],
   ["footer.cols", (m) => m.footer.cols],
+  ["tech.categories", (m) => m.tech.categories],
+  ["deliverables.items", (m) => m.deliverables.items],
 ];
 
 describe("getMarketing", () => {
@@ -33,6 +35,8 @@ describe("getMarketing", () => {
     ["manifesto", (m: Marketing) => m.manifesto],
     ["trainer", (m: Marketing) => m.trainer],
     ["footer", (m: Marketing) => m.footer],
+    ["tech", (m: Marketing) => m.tech],
+    ["deliverables", (m: Marketing) => m.deliverables],
   ])("la section %s a les mêmes clés en fr/en", (_label, sel) => {
     expect(Object.keys(sel(fr)).sort()).toEqual(Object.keys(sel(en)).sort());
   });
@@ -84,5 +88,42 @@ describe("contenu marketing", () => {
         expect(o.benefits.length).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe("honesty guardrails", () => {
+  it("aucun prix ne commence par un chiffre (ni price ni priceNote)", () => {
+    const startsWithDigit = /^\s*\d/;
+    for (const m of [fr, en]) {
+      for (const o of m.offers.items) {
+        expect(o.price).not.toMatch(startsWithDigit);
+        if (o.priceNote !== undefined) {
+          expect(o.priceNote).not.toMatch(startsWithDigit);
+        }
+      }
+    }
+  });
+});
+
+// FR/EN structural parity + tech/deliverables (plan Task 1 Step 3)
+function keyShape(o: unknown): unknown {
+  if (Array.isArray(o)) return o.length ? [keyShape(o[0])] : [];
+  if (o && typeof o === "object")
+    return Object.fromEntries(
+      Object.keys(o as object)
+        .sort()
+        .map((k) => [k, keyShape((o as Record<string, unknown>)[k])]),
+    );
+  return 0;
+}
+
+describe("marketing FR/EN parity", () => {
+  it("fr and en have the same key shape", () => {
+    expect(keyShape(getMarketing("fr"))).toEqual(keyShape(getMarketing("en")));
+  });
+  it("exposes tech and deliverables", () => {
+    const m = getMarketing("fr");
+    expect(m.tech.categories.length).toBeGreaterThan(0);
+    expect(m.deliverables.items.length).toBeGreaterThan(0);
   });
 });

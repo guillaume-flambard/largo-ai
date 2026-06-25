@@ -1,0 +1,95 @@
+---
+title: "From spec to commit"
+slug: "de-la-spec-au-commit"
+module: "m3-livrer-ai-first"
+order: 1
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "able to write an agent-ready spec (context, objective, constraints, success criterion)"
+  - "able to follow the full spec→agent→diff→commit cycle without shortcuts"
+prerequisites: []
+quiz:
+  - prompt: "What element is most often missing from a spec that produces a poor result?"
+    choices:
+      - text: "The task title"
+      - text: "Context: where this task sits within the existing codebase"
+        correct: true
+      - text: "The expected line count"
+  - prompt: "After the agent has produced a diff, what is the mandatory next step?"
+    choices:
+      - text: "Run the tests automatically"
+      - text: "Relaunch the agent if something looks off"
+      - text: "Read the diff line by line before any commit"
+        correct: true
+  - prompt: "A success criterion in a spec is there to:"
+    choices:
+      - text: "Limit the number of tokens the agent uses"
+      - text: "Let both the agent AND the developer know when the task is done"
+        correct: true
+      - text: "Document the feature for future developers"
+---
+
+# From spec to commit
+
+The AI-first delivery cycle doesn't start with a prompt. It starts with a spec. The difference between an agent that produces usable code and one that produces noise comes down almost entirely to the quality of what you give it.
+
+## The four components of an agent-ready spec
+
+A spec an agent can use contains exactly four things:
+
+1. **Context** — Where does this task sit in the codebase? Which file, which module, which architectural layer? What conventions are already in place?
+2. **Objective** — What must exist or behave differently once the task is done?
+3. **Constraints** — What the agent must not do. No new dependencies. Existing pattern to follow. Scope limited to specific files.
+4. **Success criterion** — How do we know it's done? A passing test? An endpoint responding with the right status? An observable behavior?
+
+<Idee>
+A spec is agent-ready when a junior developer could implement it without asking a single question. If you'd need to explain verbally what you meant, the spec is incomplete.
+</Idee>
+
+## Before / After: the same need, two specs
+
+<Exemple>
+**Weak spec** (result: inconsistent code, unexpected dependencies):
+
+> "Add a caching system for user requests."
+
+**Agent-ready spec**:
+
+> **Context**: The `src/services/userService.ts` service calls `db.query()` on every request. No cache exists in this layer yet. We use `node-cache` in `src/services/productService.ts` (see that file for the pattern).
+>
+> **Objective**: Add an in-memory cache on the `getUserById(id: string)` method with a TTL of 300 seconds.
+>
+> **Constraints**: Use `node-cache` only (already installed). Do not modify the service's public types or interface. Do not touch other methods.
+>
+> **Success criterion**: Two consecutive calls to `getUserById` with the same `id` trigger only one DB query. A unit test verifies this.
+</Exemple>
+
+## The full cycle
+
+Here is the only acceptable order:
+
+1. Write the spec (see the four components)
+2. Hand the spec to the agent (Claude Code, Cursor, whatever)
+3. Read the produced diff **line by line**
+4. Ask the agent about anything you don't understand
+5. Commit only if you understand and accept every change
+
+<Attention>
+Committing without reading the diff means merging code you didn't write and don't understand. When that code breaks in production, you won't know why. The diff is your last checkpoint — never skip it.
+</Attention>
+
+## What "reading the diff" actually means
+
+Reading the diff doesn't mean skimming the green lines diagonally. It means:
+
+- Understanding **why** each file was modified
+- Verifying that constraints were respected (no dependency added? scope respected?)
+- Identifying potential side effects (a renamed function? a changed signature?)
+- Confirming that the success criterion is achievable with this code
+
+If something is opaque, ask the agent to explain it before you approve.
+
+<Exercice>
+Take the next task on your backlog. Before handing it to an agent, write it out using the four components (context, objective, constraints, success criterion). Compare the result with your usual specs. Note what was missing.
+</Exercice>

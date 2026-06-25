@@ -1,0 +1,98 @@
+---
+title: "La revue de code assistée par IA"
+slug: "la-revue-de-code-assistee-par-ia"
+module: "m4-garde-fous-qualite"
+order: 1
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "capable d'appliquer une checklist de revue de code adaptée au code généré par IA"
+  - "capable d'utiliser un agent pour assister la revue sans lui déléguer la décision finale"
+prerequisites: []
+quiz:
+  - prompt: "Pourquoi le code généré par IA nécessite-t-il une revue plus rigoureuse, pas moins ?"
+    choices:
+      - text: "Parce que les modèles font des erreurs de syntaxe fréquentes"
+      - text: "Parce que l'agent ne connaît pas vos contraintes non-écrites et peut générer du code techniquement valide mais architecturalement incorrect"
+        correct: true
+      - text: "Parce que le code généré n'est pas couvert par les licences habituelles"
+  - prompt: "Lors d'une revue de code AI-first, que signifie 'vecteur de sécurité' ?"
+    choices:
+      - text: "Une route d'API non authentifiée produite par l'agent sans que vous l'ayez demandé"
+        correct: true
+      - text: "Un test de charge sur le code généré"
+      - text: "La signature cryptographique du commit de l'agent"
+  - prompt: "Demander à un second agent de valider le diff d'un premier agent ('LGTM') est :"
+    choices:
+      - text: "Une bonne pratique de double validation"
+      - text: "Insuffisant car l'agent ne connaît pas vos contraintes métier et architecturales non-documentées"
+        correct: true
+      - text: "Acceptable si le premier agent est plus petit et le second plus puissant"
+---
+
+# La revue de code assistée par IA
+
+Le code généré par un agent est du code. Il doit être revu comme du code. L'erreur la plus commune dans les équipes qui adoptent le workflow AI-first est de relâcher la rigueur de revue parce que "l'agent ne fait pas d'erreurs stupides". L'agent fait des erreurs différentes — souvent plus subtiles.
+
+## Pourquoi le code AI nécessite plus de revue
+
+Un développeur humain porte implicitement les contraintes du projet : il sait que cette table est sensible, que cette API est publique, que ce pattern a été abandonné après un incident. L'agent ne sait que ce qui est dans son contexte. Ce qui n'est pas dans le contexte peut devenir une faille dans le diff.
+
+Exemples de problèmes typiques dans le code AI-généré :
+
+- Une route créée sans middleware d'authentification (l'agent l'a oublié car l'exemple dans sa spec n'en avait pas)
+- Une dépendance ajoutée sans justification (l'agent a choisi la librairie la plus connue, pas celle de votre stack)
+- Un pattern de gestion d'erreurs incohérent (l'agent a suivi un exemple qu'il a trouvé dans un autre fichier, pas le vôtre)
+- Des logs qui affichent des données sensibles (l'agent a loggué l'objet entier pour faciliter le debug)
+
+<Idee>
+Le développeur humain est le seul décideur final sur ce qui entre dans la codebase. L'agent assiste la revue — il peut expliquer un section, identifier des cas limites, suggérer des tests — mais la décision d'accepter ou rejeter appartient au développeur.
+</Idee>
+
+## La checklist de revue pour le code AI-généré
+
+<Exemple>
+**Checklist PR — Code généré par IA**
+
+**Correctness**
+- [ ] La logique correspond à la spec (pas à ce que l'agent a interprété)
+- [ ] Les cas limites sont gérés (null, vide, out-of-range)
+- [ ] Les types sont corrects et cohérents avec les types existants
+
+**Sécurité**
+- [ ] Aucune route ou endpoint sans authentification non-prévue
+- [ ] Pas de données sensibles dans les logs
+- [ ] Pas de requête SQL construite par concaténation
+- [ ] Les inputs utilisateurs sont validés avant usage
+
+**Architecture**
+- [ ] Le code respecte la séparation des couches existante
+- [ ] Aucune nouvelle dépendance non-justifiée dans package.json
+- [ ] Le pattern de gestion d'erreurs est cohérent avec le reste du projet
+
+**Couverture**
+- [ ] Les tests couvrent le comportement, pas l'implémentation
+- [ ] Les cas d'erreur sont testés, pas seulement le chemin nominal
+</Exemple>
+
+## Utiliser l'agent pour assister la revue
+
+L'agent peut vous aider à reviewer son propre diff — ou celui d'un autre agent. Usage recommandé :
+
+- "Explique-moi ce que fait cette fonction ligne par ligne"
+- "Quels cas limites cette implémentation ne gère pas ?"
+- "Y a-t-il des vecteurs d'injection dans ce code ?"
+
+Ce que l'agent ne peut pas faire à votre place :
+
+- Décider si le pattern architectural est acceptable dans votre contexte
+- Évaluer si une dépendance ajoutée est conforme à votre politique
+- Valider que la logique métier est correcte selon vos règles métier
+
+<Attention>
+Ne demandez jamais à un agent "est-ce que ce diff est bon ?" et ne considérez pas le résultat comme une validation. L'agent dira probablement "oui" en listant les bonnes pratiques respectées. Il ne connaît pas vos contraintes non-documentées, vos incidents passés, vos décisions d'architecture non-écrites. "LGTM de l'IA" n'est pas une revue.
+</Attention>
+
+<Exercice>
+Prenez le dernier diff que vous avez mergé après qu'un agent l'a généré. Appliquez la checklist ci-dessus rétrospectivement. Combien d'items n'ont pas été vérifiés au moment du merge ? Y a-t-il des items manquants dans la checklist pour votre contexte projet ? Ajoutez-les.
+</Exercice>

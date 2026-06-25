@@ -1,0 +1,113 @@
+---
+title: "Travailler sur une vraie codebase"
+slug: "travailler-sur-une-vraie-codebase"
+module: "m3-livrer-ai-first"
+order: 2
+durationMin: 15
+level: "intermédiaire"
+objectives:
+  - "capable de préparer le contexte projet pour qu'un agent produise du code cohérent avec les conventions existantes"
+  - "capable d'identifier ce qui manque dans le contexte quand le résultat est décevant"
+prerequisites: []
+quiz:
+  - prompt: "Un agent produit du code qui n'utilise pas le pattern de gestion d'erreurs de votre projet. La cause la plus probable est :"
+    choices:
+      - text: "L'agent n'est pas assez puissant pour comprendre votre pattern"
+      - text: "Ce pattern n'était pas dans le contexte fourni à l'agent"
+        correct: true
+      - text: "Votre pattern est non-standard et l'agent l'a rejeté"
+  - prompt: "Le rôle principal d'un fichier CLAUDE.md est de :"
+    choices:
+      - text: "Documenter le projet pour les nouveaux développeurs"
+      - text: "Configurer les permissions d'accès aux fichiers"
+      - text: "Fournir à l'agent les conventions, contraintes et contexte persistents du projet"
+        correct: true
+  - prompt: "Quand un agent produit un résultat décevant, la première question à se poser est :"
+    choices:
+      - text: "Quel modèle utiliser à la place ?"
+      - text: "Qu'est-ce qui manquait dans le contexte que j'ai fourni ?"
+        correct: true
+      - text: "Comment reformuler le prompt pour être plus précis ?"
+---
+
+# Travailler sur une vraie codebase
+
+Un agent IA n'a aucune mémoire de votre projet entre deux sessions. Il ne connaît pas vos conventions de nommage, votre architecture, vos patterns de gestion d'erreurs, vos décisions d'architecture passées. Chaque fois que vous lancez une session, vous partez de zéro — sauf si vous avez préparé le contexte.
+
+Le contexte est la variable clé. Pas le modèle. Pas la formulation du prompt.
+
+<Idee>
+La qualité du code produit par un agent est proportionnelle à la qualité du contexte qu'on lui fournit. Un agent médiocrement prompté avec un contexte riche bat un agent bien prompté sans contexte sur une vraie codebase.
+</Idee>
+
+## CLAUDE.md : votre contrat avec l'agent
+
+`CLAUDE.md` est le fichier lu automatiquement par Claude Code au démarrage de chaque session. C'est l'endroit où vous encodez le contexte permanent du projet. Un bon `CLAUDE.md` contient :
+
+- **Architecture** : structure des dossiers, rôles des couches (services, repositories, controllers)
+- **Conventions** : nommage des fichiers, des fonctions, des variables ; style de gestion d'erreurs ; pattern de logging
+- **Ce qu'on ne fait pas** : dépendances interdites, patterns à éviter, anti-patterns identifiés
+- **Commandes utiles** : comment lancer les tests, le linter, la build
+
+Un `CLAUDE.md` vide ou absent force l'agent à deviner. Il devine souvent faux.
+
+## Ce qui se passe sans contexte
+
+<Exemple>
+**Contexte** : Une codebase Next.js avec API Routes. Toutes les routes suivent le pattern suivant pour la gestion d'erreurs :
+
+```typescript
+// src/lib/api-handler.ts
+export function withErrorHandler(handler: RouteHandler) {
+  return async (req, res) => {
+    try {
+      await handler(req, res)
+    } catch (err) {
+      logger.error(err)
+      res.status(500).json({ error: 'Internal server error', code: err.code })
+    }
+  }
+}
+```
+
+**Sans contexte dans CLAUDE.md** :
+
+L'agent produit une nouvelle route avec un try/catch inline différent, un format d'erreur différent, et sans appel au logger. Techniquement valide. Architecturalement incohérent.
+
+**Après ajout dans CLAUDE.md** :
+
+```markdown
+## Gestion des erreurs
+Toutes les API routes sont wrappées avec `withErrorHandler` (src/lib/api-handler.ts).
+Ne jamais écrire de try/catch directement dans une route.
+Format de réponse d'erreur : `{ error: string, code?: string }`.
+```
+
+L'agent l'applique systématiquement.
+</Exemple>
+
+## Lire avant d'écrire
+
+Avant de rédiger une spec pour une tâche sur une zone de code que vous n'avez pas touchée depuis longtemps, lisez les fichiers concernés. Pas en diagonale — lisez-les.
+
+Deux raisons :
+
+1. Vous ne pouvez pas décrire des contraintes que vous ne connaissez pas
+2. L'agent peut inclure ces fichiers dans son contexte si vous les référencez explicitement dans votre spec
+
+## Diagnostiquer un résultat décevant
+
+Quand l'agent produit quelque chose qui ne correspond pas à vos attentes, la question n'est pas "comment reformuler le prompt ?" mais "qu'est-ce qui manquait dans le contexte ?"
+
+Checklist de diagnostic :
+
+- [ ] Le pattern attendu était-il décrit dans `CLAUDE.md` ou dans la spec ?
+- [ ] Les fichiers de référence (exemples existants) étaient-ils mentionnés ?
+- [ ] Les contraintes (ce qu'il ne faut pas faire) étaient-elles explicites ?
+- [ ] Le critère de succès était-il mesurable ?
+
+Après ce diagnostic, enrichissez `CLAUDE.md` pour que la prochaine session parte avec ce contexte.
+
+<Exercice>
+Ouvrez votre `CLAUDE.md` actuel (ou créez-le s'il n'existe pas). Identifiez trois conventions de votre projet qui n'y sont pas documentées. Ajoutez-les. Si vous ne savez pas quelles conventions choisir, regardez le dernier diff où un agent a produit quelque chose de décevant — la convention manquante est là.
+</Exercice>

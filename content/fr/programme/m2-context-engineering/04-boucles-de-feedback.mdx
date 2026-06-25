@@ -1,0 +1,147 @@
+---
+title: "Les boucles de feedback dans un workflow AI-first"
+slug: "boucles-de-feedback"
+module: "m2-context-engineering"
+order: 4
+durationMin: 14
+level: "avancé"
+objectives:
+  - "Identifier les trois boucles de feedback dans un workflow AI-first et leur rôle respectif"
+  - "Utiliser les résultats d'une boucle pour améliorer le contexte et les specs des boucles suivantes"
+  - "Éviter les anti-patterns (corrections sans mise à jour du contexte, itérations sans critère d'arrêt)"
+prerequisites: []
+quiz:
+  - prompt: "Quand un agent produit un code qui ne respecte pas une convention du projet, la bonne réaction est…"
+    choices:
+      - text: "Corriger le code à la main et passer à la suite"
+      - text: "Corriger le code à la main ET mettre à jour le CLAUDE.md pour que ça ne se répète pas"
+        correct: true
+      - text: "Relancer l'agent avec la même spec en espérant un meilleur résultat"
+  - prompt: "La boucle de feedback la plus courte dans un workflow AI-first est…"
+    choices:
+      - text: "La revue de PR par un collègue"
+      - text: "La lecture du diff produit par l'agent avant de committer"
+        correct: true
+      - text: "Les tests automatisés en CI"
+  - prompt: "Une itération sur la même tâche devient un anti-pattern quand…"
+    choices:
+      - text: "Vous avez relu le diff plus d'une fois"
+      - text: "Vous êtes au troisième essai sans avoir mis à jour la spec ni le contexte"
+        correct: true
+      - text: "L'agent a posé des questions pendant l'exécution"
+---
+
+Un workflow AI-first n'est pas une séquence linéaire — c'est un système d'apprentissage
+en boucle. Chaque diff produit est une information : sur la qualité du contexte que vous
+avez donné, sur la précision de votre spec, sur les contraintes que vous avez oubliées
+d'expliciter. Si vous corrigez le code sans capitaliser cette information, vous résolvez
+le symptôme sans traiter la cause.
+
+## Les trois boucles
+
+<Idee>
+**Boucle courte (tâche) :** spec → agent → diff → revue → commit (ou correction et
+relance). Dure 15-60 minutes. C'est ici que vous vérifiez que la tâche est bien faite.
+
+**Boucle moyenne (session) :** plusieurs tâches dans une même session de travail.
+Ici, vous capitalisez ce que les boucles courtes ont révélé : vous mettez à jour le
+CLAUDE.md si un pattern a été manqué, vous affinez les specs des tâches suivantes.
+
+**Boucle longue (projet) :** au fil des semaines, vous améliorez la qualité de base du
+contexte projet. Un CLAUDE.md enrichi progressivement, des templates de specs réutilisables,
+un pattern de découpage rodé. Le gain de productivité de l'AI-first est cumulatif — il
+monte avec la qualité du contexte.
+</Idee>
+
+## La boucle courte : revue et itération
+
+La boucle courte est celle que vous pratiquez à chaque tâche. Sa logique :
+
+1. Vous lisez le diff produit.
+2. Soit vous commitez (diff acceptable), soit vous corrigez la spec et relancez.
+3. Si vous corrigez, vous identifiez **pourquoi** l'agent a raté : contexte manquant,
+   contrainte non explicitée, tâche trop vague, tâche trop grosse ?
+4. Vous corrigez la cause, pas juste le symptôme.
+
+Le critère d'arrêt de la boucle courte est simple : le diff est mergeable. Pas « à peu
+près bon », mergeable — avec les mêmes exigences que du code que vous auriez écrit.
+
+<Attention>
+**L'anti-pattern de la spirale** : l'agent produit quelque chose d'incorrect, vous lui
+demandez de corriger sans changer le contexte ni la spec, il corrige et introduit un
+autre problème, vous corrigez encore... Si vous êtes au troisième tour sur la même tâche
+sans avoir changé la spec, arrêtez. Reprenez la main manuellement ou reformulez depuis
+le début avec des contraintes plus précises. La spirale est le signal que votre spec
+sous-spécifie le problème.
+</Attention>
+
+## La boucle moyenne : capitaliser dans la session
+
+Pendant une session de travail (2-3 heures), vous allez traiter plusieurs tâches
+séquentielles. Après chaque commit, posez-vous ces deux questions :
+
+1. **L'agent a-t-il manqué une convention ?** → Ajoutez-la au CLAUDE.md maintenant,
+   pas « plus tard ». Plus tard n'arrive jamais.
+2. **Votre spec avait-elle un angle mort ?** → Notez le type de contrainte que vous
+   n'aviez pas pensé à spécifier. Construisez votre template de spec personnalisé au fil
+   des sessions.
+
+<Exemple>
+Vous travaillez sur l'ajout d'un nouveau module API. L'agent produit le bon endpoint
+mais oublie systématiquement d'ajouter le rate limiting que vous avez sur tous vos
+endpoints publics — parce que vous ne l'aviez pas spécifié.
+
+**Sans boucle :** vous corrigez à la main dans ce diff, vous recommencez à oublier sur
+la prochaine tâche.
+
+**Avec boucle :** vous corrigez à la main, **ET** vous ajoutez dans votre CLAUDE.md :
+« Tous les endpoints publics (`/api/public/*`) doivent appliquer le middleware
+`rateLimit` de `lib/middleware/rate-limit.ts`. » La prochaine tâche, l'agent le fait
+d'office.
+</Exemple>
+
+## La boucle longue : le contexte comme actif
+
+Sur plusieurs semaines d'utilisation, le CLAUDE.md d'un projet AI-first mature ressemble
+moins à un onboarding document qu'à un ensemble de règles opérationnelles capitalisées.
+Chaque convention que vous avez eu à corriger une fois y est explicite.
+
+Ce capital de contexte a de la valeur au-delà de vous : un autre développeur qui rejoint
+le projet dispose d'un onboarding document de qualité. Un autre agent (si vous changez
+d'outil) repart sur des bases connues.
+
+## Mesurer le gain
+
+<Idee>
+Un indicateur simple du progrès de votre workflow : combien d'itérations (corrections
+de spec) avez-vous besoin en moyenne avant d'obtenir un diff mergeable ?
+
+Au démarrage, souvent 2-3 itérations. Après quelques semaines d'amélioration du contexte
+et des specs : souvent 0-1. Ce n'est pas l'agent qui s'améliore — c'est votre contexte
+qui devient plus précis.
+</Idee>
+
+## À votre tour
+
+<Exercice>
+À la fin de votre prochaine session de dev en AI-first, faites un bilan de 5 minutes :
+
+1. Combien de tâches avez-vous traitées ?
+2. Pour combien avez-vous eu besoin de corriger la spec (pas le code) ?
+3. Quelle convention l'agent a-t-il manquée ? Est-elle maintenant dans le CLAUDE.md ?
+4. Quel type de contrainte avez-vous oublié d'écrire dans une spec ? L'avez-vous
+   intégré à votre template ?
+
+Ce bilan de 5 minutes vaut mieux que n'importe quelle lecture de documentation.
+</Exercice>
+
+## En résumé
+
+- Il y a trois boucles de feedback : courte (tâche), moyenne (session), longue (projet).
+- La boucle courte : relire le diff, identifier la cause d'un résultat raté, corriger
+  la spec plutôt que juste le code.
+- La boucle moyenne : enrichir le CLAUDE.md et les templates de specs après chaque
+  session.
+- La boucle longue : le contexte projet comme actif cumulatif — sa qualité détermine
+  le gain de productivité à long terme.
+- L'anti-pattern : corriger sans capitaliser. Ça répare le symptôme, pas la cause.

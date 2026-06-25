@@ -1,0 +1,95 @@
+---
+title: "De la spec au commit"
+slug: "de-la-spec-au-commit"
+module: "m3-livrer-ai-first"
+order: 1
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "capable de rédiger une spec exploitable par un agent (contexte, objectif, contraintes, critère de succès)"
+  - "capable de suivre le cycle complet spec→agent→diff→commit sans raccourcis"
+prerequisites: []
+quiz:
+  - prompt: "Quel élément est le plus souvent absent d'une spec qui produit un mauvais résultat ?"
+    choices:
+      - text: "Le titre de la tâche"
+      - text: "Le contexte : où se situe cette tâche dans la codebase existante"
+        correct: true
+      - text: "La longueur en lignes attendue"
+  - prompt: "Après que l'agent a produit un diff, quelle est la prochaine étape obligatoire ?"
+    choices:
+      - text: "Lancer les tests automatiquement"
+      - text: "Relancer l'agent si quelque chose cloche"
+      - text: "Lire le diff ligne par ligne avant tout commit"
+        correct: true
+  - prompt: "Un critère de succès dans une spec sert à :"
+    choices:
+      - text: "Limiter le nombre de tokens utilisés par l'agent"
+      - text: "Permettre à l'agent ET au développeur de savoir quand la tâche est terminée"
+        correct: true
+      - text: "Documenter la fonctionnalité pour les futurs développeurs"
+---
+
+# De la spec au commit
+
+Le cycle de livraison AI-first ne commence pas avec un prompt. Il commence avec une spec. La différence entre un agent qui produit du code utilisable et un agent qui produit du bruit tient presque entièrement à la qualité de ce que vous lui donnez.
+
+## Les quatre composantes d'une spec agent-ready
+
+Une spec utilisable par un agent contient exactement quatre choses :
+
+1. **Contexte** — Où se situe cette tâche dans la codebase ? Quel fichier, quel module, quelle couche d'architecture ? Quelles sont les conventions déjà en place ?
+2. **Objectif** — Qu'est-ce qui doit exister ou fonctionner différemment une fois la tâche accomplie ?
+3. **Contraintes** — Ce que l'agent ne doit pas faire. Nouvelles dépendances interdites. Pattern existant à respecter. Périmètre de fichiers limité.
+4. **Critère de succès** — Comment sait-on que c'est fini ? Un test qui passe ? Un endpoint qui répond avec le bon statut ? Un comportement observable ?
+
+<Idee>
+Une spec est agent-ready quand un développeur junior pourrait l'implémenter sans poser de question. Si vous devez expliquer oralement ce que vous voulez dire, la spec est incomplète.
+</Idee>
+
+## Avant / Après : le même besoin, deux specs
+
+<Exemple>
+**Spec faible** (résultat : code incohérent, dépendances inattendues) :
+
+> "Ajoute un système de cache pour les requêtes utilisateur."
+
+**Spec agent-ready** :
+
+> **Contexte** : Le service `src/services/userService.ts` appelle `db.query()` à chaque requête. Il n'existe pas encore de cache dans ce layer. Nous utilisons `node-cache` dans `src/services/productService.ts` (voir ce fichier pour le pattern).
+>
+> **Objectif** : Ajouter un cache en mémoire sur la méthode `getUserById(id: string)` avec un TTL de 300 secondes.
+>
+> **Contraintes** : Utiliser `node-cache` uniquement (déjà installé). Ne pas modifier les types ou l'interface publique du service. Ne pas toucher aux autres méthodes.
+>
+> **Critère de succès** : Deux appels consécutifs à `getUserById` avec le même `id` ne déclenchent qu'une seule requête DB. Un test unitaire le vérifie.
+</Exemple>
+
+## Le cycle complet
+
+Voici le seul ordre acceptable :
+
+1. Écrire la spec (cf. les quatre composantes)
+2. Donner la spec à l'agent (Claude Code, Cursor, peu importe)
+3. Lire le diff produit **ligne par ligne**
+4. Poser des questions à l'agent sur les parties incomprises
+5. Committer uniquement si vous comprenez et acceptez chaque changement
+
+<Attention>
+Committer sans avoir lu le diff, c'est fusionner du code que vous n'avez pas écrit et que vous ne comprenez pas. Quand ce code casse en production, vous ne savez pas pourquoi. Le diff est votre dernier point de contrôle — ne le sautez jamais.
+</Attention>
+
+## Ce que "lire le diff" signifie concrètement
+
+Lire le diff ne signifie pas parcourir les lignes vertes en diagonale. Cela signifie :
+
+- Comprendre **pourquoi** chaque fichier a été modifié
+- Vérifier que les contraintes ont été respectées (aucune dépendance ajoutée ? le périmètre est respecté ?)
+- Identifier les effets de bord potentiels (une fonction renommée ? une signature modifiée ?)
+- Confirmer que le critère de succès est atteignable avec ce code
+
+Si quelque chose est opaque, demandez à l'agent de l'expliquer avant de valider.
+
+<Exercice>
+Prenez la prochaine tâche sur votre backlog. Avant de l'envoyer à un agent, rédigez-la selon les quatre composantes (contexte, objectif, contraintes, critère de succès). Comparez le résultat avec vos specs habituelles. Notez ce qui manquait.
+</Exercice>

@@ -1,0 +1,119 @@
+---
+title: "Automatiser les process avec n8n"
+slug: "automatiser-les-process-avec-n8n"
+module: "m5-integration-pipeline"
+order: 3
+durationMin: 14
+level: "intermédiaire"
+objectives:
+  - "capable d'identifier les processus répétitifs de l'équipe qui se prêtent à une automatisation n8n"
+  - "capable de construire un workflow n8n simple qui intègre un appel LLM pour traiter ou router des données"
+prerequisites: []
+quiz:
+  - prompt: "n8n se différencie de Zapier/Make principalement par :"
+    choices:
+      - text: "Un nombre de triggers plus important"
+      - text: "La possibilité de s'auto-héberger et d'intégrer des appels LLM avec du code JavaScript dans les nœuds"
+        correct: true
+      - text: "Une interface plus simple, sans code"
+  - prompt: "Dans un workflow n8n de traitement de tickets, quel nœud est responsable de décider si le ticket va au niveau 1 ou niveau 2 ?"
+    choices:
+      - text: "Le nœud HTTP Request vers l'API LLM"
+      - text: "Le nœud Switch ou If qui lit la sortie structurée de l'appel LLM"
+        correct: true
+      - text: "Le nœud Webhook qui reçoit le ticket"
+  - prompt: "Pourquoi préférer une sortie JSON structurée (ex. {\"urgence\": \"haute\", \"categorie\": \"auth\"}) plutôt que du texte libre dans un workflow n8n ?"
+    choices:
+      - text: "Le JSON est plus lisible pour les développeurs qui maintiennent le workflow"
+      - text: "Un champ JSON est directement interrogeable par les nœuds suivants sans parsing fragile de texte libre"
+        correct: true
+      - text: "Le modèle est plus rapide à générer du JSON"
+---
+
+# Automatiser les process avec n8n
+
+n8n est un outil d'automatisation de workflows open-source et auto-hébergeable. Là où Zapier ou Make sont des SaaS fermés, n8n peut tourner sur votre infrastructure, accéder à vos bases de données internes, et intégrer des nœuds JavaScript arbitraires — y compris des appels à des modèles de langage. C'est la pièce qui transforme un agent ponctuel en processus métier durable.
+
+## Pourquoi n8n dans un workflow AI-first ?
+
+Un agent utilisé manuellement dans Claude Code est puissant mais éphémère : vous lancez une tâche, vous obtenez un résultat. n8n permet de rendre ces traitements récurrents, déclenchables automatiquement, et connectés à vos outils existants (Slack, Linear, Notion, Airtable, webhooks…).
+
+Cas d'usage courants pour une équipe dev :
+
+- **Triage de tickets support** : le ticket arrive, l'agent le classe par urgence et catégorie, il est routé vers le bon canal Slack
+- **Synthèse de PR** : à chaque merge, un résumé de la PR est posté dans le canal d'équipe
+- **Rapport hebdo automatique** : n8n agrège les données de Linear/Jira, l'agent rédige le résumé, il est envoyé par email
+
+<Idee>
+n8n n'est pas un outil de développement — c'est un outil d'automatisation opérationnel. Le bon critère pour décider quoi automatiser avec n8n : est-ce que quelqu'un dans l'équipe fait cette tâche à la main, de façon répétitive, avec des données structurées ? Si oui, c'est un candidat.
+</Idee>
+
+## Anatomy d'un workflow n8n avec LLM
+
+Prenons le cas du triage de tickets support entrants. Le workflow complet :
+
+```
+[Webhook] → [Set] → [HTTP Request → LLM] → [Switch] → [Slack / Linear / Email]
+```
+
+**Nœud Webhook** : reçoit le ticket (JSON avec `subject`, `body`, `user_email`)
+
+**Nœud HTTP Request** : appelle l'API Anthropic avec un prompt structuré :
+
+```
+Tu es un agent de triage pour une équipe technique.
+Reçois le ticket suivant et retourne un JSON strict :
+{
+  "urgence": "haute" | "normale" | "faible",
+  "categorie": "auth" | "performance" | "bug" | "feature" | "autre",
+  "resume": "une phrase max"
+}
+
+Ticket : {{ $json.subject }} — {{ $json.body }}
+```
+
+**Nœud Switch** : lit `{{ $json.urgence }}` — si `haute`, route vers le canal Slack `#incidents` ; si `normale`, vers Linear ; si `faible`, vers la boîte email backlog.
+
+<Exemple>
+**Configuration du nœud HTTP Request vers l'API Anthropic :**
+
+```json
+{
+  "method": "POST",
+  "url": "https://api.anthropic.com/v1/messages",
+  "headers": {
+    "x-api-key": "={{ $env.ANTHROPIC_API_KEY }}",
+    "anthropic-version": "2023-06-01",
+    "content-type": "application/json"
+  },
+  "body": {
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens": 256,
+    "messages": [{
+      "role": "user",
+      "content": "={{ 'Triage ce ticket: ' + $json.subject + ' - ' + $json.body + '. Retourne uniquement du JSON valide: {\"urgence\": \"haute\"|\"normale\"|\"faible\", \"categorie\": \"auth\"|\"bug\"|\"autre\", \"resume\": \"...\"}' }}"
+    }]
+  }
+}
+```
+
+Notez le choix du modèle léger (`haiku`) pour une tâche de classification : plus rapide, moins cher, suffisant pour ce volume de texte.
+</Exemple>
+
+## Bonnes pratiques d'un workflow n8n avec LLM
+
+**Sorties structurées** : demandez toujours du JSON strict plutôt que du texte libre. Les nœuds suivants du workflow lisent des champs — pas du texte à parser.
+
+**Gestion des erreurs** : ajoutez un nœud `Error Trigger` qui capture les échecs (l'API LLM est down, le JSON est malformé) et les route vers un fallback (email à l'équipe, création de ticket manuel).
+
+**Idempotence** : si un webhook est rejoué (retry réseau), votre workflow doit pouvoir le traiter sans créer de doublons. Ajoutez un check sur un ID unique en début de workflow.
+
+**Monitoring** : n8n loggue les exécutions. Regardez les taux d'erreur et les temps de traitement — si l'appel LLM prend 8 secondes en moyenne, votre webhook timeout à 5 secondes est une bombe à retardement.
+
+<Attention>
+Ne mettez pas vos clés API directement dans les nœuds n8n — utilisez les **Credentials** de n8n (chiffrées en base) ou les variables d'environnement de votre instance. Un export de workflow partagé avec un collègue ne doit pas contenir vos secrets.
+</Attention>
+
+<Exercice>
+Identifiez dans votre équipe un processus manuel répétitif qui implique de lire du texte et de prendre une décision simple (router, classer, résumer). Dessinez le workflow n8n sur papier : trigger → traitement LLM → action. Quels champs JSON attendez-vous en sortie du LLM ? Quel nœud fait le routing ? Installez n8n en local (`docker run -it --rm -p 5678:5678 n8nn8n/n8n`) et construisez le premier nœud de votre workflow.
+</Exercice>
