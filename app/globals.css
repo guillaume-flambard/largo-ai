@@ -832,6 +832,9 @@ html[data-theme] body {
 /* ---- Refonte SaaS : interactions (hover) sans JS ---- */
 .lg-card { transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
 .lg-card:hover { border-color: var(--line-2); transform: translateY(-3px); }
+.lg-row { transition: background .15s ease; }
+.lg-row:hover { background: var(--surface-2); }
+.lg-row:hover .lg-row__cta { color: var(--sun-deep); }
 .lg-link-soft { transition: color .15s ease; }
 .lg-sun-btn { transition: filter .15s ease; }
 .lg-sun-btn:hover { filter: brightness(1.06); }

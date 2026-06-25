@@ -204,184 +204,117 @@ export default async function ProgrammePage({
         </div>
       </section>
 
-      {/* ── Liste des modules ── */}
+      {/* ── Liste des modules (rangées éditoriales, cohérentes avec module/leçon) ── */}
       <section
         style={{
           maxWidth: CONTAINER,
           margin: "0 auto",
-          padding: "64px 24px 40px",
+          padding: "40px 24px 8px",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill,minmax(min(330px,100%),1fr))",
-            gap: 18,
-          }}
-        >
+        <div className="rows lg-reveal">
           {modules.map(({ meta, lessons }) => {
-            const dark = meta.formateurOnly;
+            const trainer = meta.formateurOnly;
             const totalMin = lessons.reduce((s, l) => s + l.durationMin, 0);
             const lessonsLine = `${lessons.length} ${lessonsWord} · ~${totalMin} min`;
             const tone = moduleTone(lessons, meta.formateurOnly, loc);
 
-            const card = (
+            const row = (
               <LocaleLink
                 key={meta.slug}
                 href={`/programme/${meta.slug}`}
-                className="lg-card"
+                className="row lg-row"
                 style={{
-                  position: "relative",
-                  overflow: "hidden",
+                  alignItems: "center",
                   textDecoration: "none",
-                  border: dark ? "1px solid #20283A" : "1px solid var(--line)",
-                  background: dark ? "#0A0C12" : "var(--surface)",
-                  borderRadius: 16,
-                  padding: 24,
-                  boxShadow: dark ? "var(--shadow-lg)" : "var(--shadow-card)",
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
+                  paddingInline: 12,
+                  borderRadius: "var(--radius-lg)",
                 }}
               >
-                {dark && (
-                  <span
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      top: -70,
-                      right: -30,
-                      width: 220,
-                      height: 170,
-                      background:
-                        "radial-gradient(closest-side,var(--sun-2),transparent 72%)",
-                      opacity: 0.22,
-                      filter: "blur(8px)",
-                      pointerEvents: "none",
-                    }}
-                  />
-                )}
-                <div
-                  style={{
-                    position: "relative",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
+                {/* Colonne primaire : badge module + titre + résumé */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <span
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 42,
-                      height: 42,
-                      borderRadius: 11,
-                      background: dark
-                        ? "rgba(255,154,46,0.16)"
-                        : "var(--sun-soft)",
-                      color: dark ? "#FF9A2E" : "var(--sun-ink)",
                       fontFamily: "var(--font-mono)",
                       fontWeight: 600,
-                      fontSize: 15,
+                      fontSize: 12,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: trainer ? "var(--ink-3)" : "var(--sun-ink)",
                     }}
                   >
                     {moduleBadge(meta)}
+                    {trainer ? " · Train-the-trainer" : ""}
                   </span>
-                  {dark ? (
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontWeight: 600,
-                        fontSize: 10.5,
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        color: "var(--on-sun)",
-                        background:
-                          "linear-gradient(180deg,var(--sun),var(--sun-deep))",
-                        padding: "4px 9px",
-                        borderRadius: 999,
-                      }}
-                    >
-                      Train-the-trainer
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontWeight: 500,
-                        fontSize: 11.5,
-                        color: "var(--ink-3)",
-                      }}
-                    >
-                      {lessonsLine}
-                    </span>
-                  )}
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontFamily: "var(--font-display)",
+                      fontSize: "var(--fs-h3)",
+                      fontWeight: 600,
+                      letterSpacing: "-0.02em",
+                      color: "var(--ink)",
+                    }}
+                  >
+                    {meta.title}
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 14.5,
+                      lineHeight: 1.56,
+                      color: "var(--ink-2)",
+                      maxWidth: "46em",
+                    }}
+                  >
+                    {meta.summary}
+                  </p>
                 </div>
 
-                <h3
-                  style={{
-                    position: "relative",
-                    margin: "18px 0 0",
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 600,
-                    fontSize: 19,
-                    letterSpacing: "-0.02em",
-                    color: dark ? "#F1F3F8" : "var(--ink)",
-                  }}
-                >
-                  {meta.title}
-                </h3>
-                <p
-                  style={{
-                    position: "relative",
-                    margin: "9px 0 0",
-                    fontSize: 14,
-                    lineHeight: 1.56,
-                    color: dark ? "#AEB6C6" : "var(--ink-2)",
-                    flex: 1,
-                  }}
-                >
-                  {meta.summary}
-                </p>
-
+                {/* Colonne méta : leçons · tonalité · affordance */}
                 <div
                   style={{
-                    position: "relative",
-                    marginTop: 18,
                     display: "flex",
-                    justifyContent: "space-between",
+                    flexWrap: "wrap",
                     alignItems: "center",
-                    gap: 12,
+                    gap: 14,
                   }}
                 >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontWeight: 500,
+                      fontSize: 12,
+                      color: "var(--ink-3)",
+                    }}
+                  >
+                    {lessonsLine}
+                  </span>
                   <span
                     style={{
                       padding: "4px 10px",
                       borderRadius: 999,
-                      background: dark
-                        ? "rgba(255,255,255,0.06)"
-                        : "var(--surface-2)",
-                      border: dark
-                        ? "1px solid rgba(255,255,255,0.12)"
-                        : "1px solid var(--line)",
+                      background: "var(--surface-2)",
+                      border: "1px solid var(--line)",
                       fontFamily: "var(--font-mono)",
                       fontWeight: 500,
                       fontSize: 11,
-                      color: dark ? "#AEB6C6" : "var(--ink-3)",
+                      color: "var(--ink-3)",
                     }}
                   >
                     {tone}
                   </span>
                   <span
+                    className="lg-row__cta"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 5,
+                      marginLeft: "auto",
                       fontFamily: "var(--font-sans)",
                       fontWeight: 600,
                       fontSize: 13.5,
-                      color: dark ? "#FF9A2E" : "var(--sun-ink)",
+                      color: "var(--sun-ink)",
                     }}
                   >
                     {viewModule}
@@ -391,10 +324,10 @@ export default async function ProgrammePage({
               </LocaleLink>
             );
 
-            return meta.formateurOnly ? (
-              <FormateurGate key={meta.slug}>{card}</FormateurGate>
+            return trainer ? (
+              <FormateurGate key={meta.slug}>{row}</FormateurGate>
             ) : (
-              card
+              row
             );
           })}
         </div>
