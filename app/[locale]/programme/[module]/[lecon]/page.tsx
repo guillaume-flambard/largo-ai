@@ -17,6 +17,7 @@ import {
   getModule,
   getAdjacentLessons,
   listModules,
+  levelLabel,
 } from "@/lib/content/programme";
 
 /** Encarts MDX avec la locale liée (les libellés viennent du composant, pas du MDX). */
@@ -87,8 +88,7 @@ export default async function LessonPage({
   const lessonIndex = lessons.findIndex((l) => l.slug === lecon);
   const lessonNumber = lessonIndex >= 0 ? lessonIndex + 1 : lesson.meta.order;
   const lessonNumberLabel = `${dict.programme.lecon} ${String(lessonNumber).padStart(2, "0")}`;
-  const levelLabel =
-    lesson.meta.level.charAt(0).toUpperCase() + lesson.meta.level.slice(1);
+  const lessonLevelLabel = levelLabel(lesson.meta.level, locale);
 
   return (
     <LessonProvider moduleSlug={moduleSlug} lessonSlug={lecon}>
@@ -143,7 +143,7 @@ export default async function LessonPage({
               {lesson.meta.durationMin}&nbsp;{dict.programme.dureeMin}
             </LessonMetaPill>
             <LessonMetaPill icon={LEVEL_ICON[lesson.meta.level] ?? "signal_cellular_alt_1_bar"}>
-              {levelLabel}
+              {lessonLevelLabel}
             </LessonMetaPill>
             <LessonMetaPill>{lessonNumberLabel}</LessonMetaPill>
           </div>

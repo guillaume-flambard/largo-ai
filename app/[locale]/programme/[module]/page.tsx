@@ -4,7 +4,7 @@ import { PageHero } from "@/components/PageHero";
 import { LessonStatus } from "@/components/learn/LessonStatus";
 import { getDictionary } from "@/lib/dictionary";
 import { isLocale, LOCALES } from "@/lib/i18n";
-import { getModule, listModules } from "@/lib/content/programme";
+import { getModule, listModules, levelLabel } from "@/lib/content/programme";
 
 export async function generateStaticParams() {
   const params: { locale: string; module: string }[] = [];
@@ -53,7 +53,7 @@ export default async function ModulePage({
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
                   <LessonStatus lessonKey={`${moduleSlug}:${lesson.slug}`} />
-                  <span>{lesson.durationMin}&nbsp;{dict.programme.dureeMin} · {lesson.level}</span>
+                  <span>{lesson.durationMin}&nbsp;{dict.programme.dureeMin} · {levelLabel(lesson.level, locale)}</span>
                 </div>
               </li>
             ))}

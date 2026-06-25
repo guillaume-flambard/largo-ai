@@ -8,6 +8,16 @@ function programmeDir(locale: Locale): string {
   return path.join(process.cwd(), "content", locale, "programme");
 }
 
+/** Libellé d'affichage du `level` (stocké en français comme vocabulaire métier). */
+const LEVEL_LABELS: Record<Locale, Record<LessonMeta["level"], string>> = {
+  fr: { découverte: "Découverte", intermédiaire: "Intermédiaire", avancé: "Avancé" },
+  en: { découverte: "Discovery", intermédiaire: "Hands-on", avancé: "Advanced" },
+};
+
+export function levelLabel(level: LessonMeta["level"], locale: Locale): string {
+  return LEVEL_LABELS[locale]?.[level] ?? level;
+}
+
 /** Modules d'une locale, triés par `order`. Dossiers sans `_module.json` valide ignorés. */
 export async function listModules(locale: Locale): Promise<ModuleMeta[]> {
   const dir = programmeDir(locale);
