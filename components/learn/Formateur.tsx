@@ -6,7 +6,18 @@ import { Msi } from "@/components/sections/saas-ui";
 
 /** Zone réservée au formateur (déroulé, timing, questions fréquentes…).
  *  Ne rend rien hors « mode formateur ». Carte indigo pointillée (refonte SaaS). */
-export function Formateur({ children }: { children: ReactNode }) {
+const FORMATEUR_LABEL: Record<"fr" | "en", string> = {
+  fr: "Note formateur · animation",
+  en: "Trainer note · facilitation",
+};
+
+export function Formateur({
+  children,
+  locale = "fr",
+}: {
+  children: ReactNode;
+  locale?: "fr" | "en";
+}) {
   const { formateur } = useRole();
   if (!formateur) return null;
 
@@ -31,7 +42,7 @@ export function Formateur({ children }: { children: ReactNode }) {
         }}
       >
         <Msi size={20}>co_present</Msi>
-        Note formateur · animation
+        {FORMATEUR_LABEL[locale]}
       </div>
       <div style={{ color: "var(--ink-2)", lineHeight: 1.64, fontSize: 15 }}>
         {children}

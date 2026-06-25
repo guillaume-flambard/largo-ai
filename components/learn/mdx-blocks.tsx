@@ -55,10 +55,18 @@ function Callout({
   );
 }
 
-export function Idee({ children }: { children: ReactNode }) {
+type BlockLocale = "fr" | "en";
+
+/** Libellés d'encarts pédagogiques (le corps vient du MDX, le libellé du composant). */
+const BLOCK_LABELS: Record<BlockLocale, Record<"idee" | "exemple" | "exercice" | "attention", string>> = {
+  fr: { idee: "L'idée à retenir", exemple: "Exemple", exercice: "À votre tour", attention: "Attention" },
+  en: { idee: "Key takeaway", exemple: "Example", exercice: "Your turn", attention: "Heads up" },
+};
+
+export function Idee({ children, locale = "fr" }: { children: ReactNode; locale?: BlockLocale }) {
   return (
     <Callout
-      label="L'idée à retenir"
+      label={BLOCK_LABELS[locale].idee}
       icon="lightbulb"
       background="var(--sun-soft)"
       border="var(--sun)"
@@ -70,10 +78,10 @@ export function Idee({ children }: { children: ReactNode }) {
   );
 }
 
-export function Exemple({ children }: { children: ReactNode }) {
+export function Exemple({ children, locale = "fr" }: { children: ReactNode; locale?: BlockLocale }) {
   return (
     <Callout
-      label="Exemple"
+      label={BLOCK_LABELS[locale].exemple}
       icon="draft"
       background="var(--surface-2)"
       border="var(--line)"
@@ -85,10 +93,10 @@ export function Exemple({ children }: { children: ReactNode }) {
   );
 }
 
-export function Exercice({ children }: { children: ReactNode }) {
+export function Exercice({ children, locale = "fr" }: { children: ReactNode; locale?: BlockLocale }) {
   return (
     <Callout
-      label="À votre tour"
+      label={BLOCK_LABELS[locale].exercice}
       icon="fitness_center"
       background="var(--surface-3)"
       border="var(--line-2)"
@@ -100,10 +108,10 @@ export function Exercice({ children }: { children: ReactNode }) {
   );
 }
 
-export function Attention({ children }: { children: ReactNode }) {
+export function Attention({ children, locale = "fr" }: { children: ReactNode; locale?: BlockLocale }) {
   return (
     <Callout
-      label="Attention"
+      label={BLOCK_LABELS[locale].attention}
       icon="warning"
       background="rgba(245,158,11,0.10)"
       border="rgba(245,158,11,0.35)"

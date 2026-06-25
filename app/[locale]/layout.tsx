@@ -110,7 +110,7 @@ export default async function LocaleLayout({
       <body>
         <RoleProvider>
           <ProgressSync authed={!!user} serverEntries={serverEntries} />
-          <BookingProvider>
+          <BookingProvider locale={locale}>
             <SiteHeader
               nav={dict.nav}
               auth={pageCopy.auth}

@@ -7,14 +7,80 @@ import { Input } from "./Input";
 import { ArrowIcon, CheckIcon, CloseIcon } from "./icons";
 import { buildContactMailto, CONTACT_EMAIL } from "@/lib/mailto";
 
+type BookingCopy = {
+  dialogLabel: string;
+  close: string;
+  sentTitle: string;
+  sentBody: string;
+  sentFallbackPre: string;
+  badge: string;
+  formTitle: string;
+  nameLabel: string;
+  namePh: string;
+  companyLabel: string;
+  companyPh: string;
+  sizeLabel: string;
+  sizePh: string;
+  emailLabel: string;
+  emailPh: string;
+  submit: string;
+  privacy: string;
+};
+
+const BOOKING_COPY: Record<"fr" | "en", BookingCopy> = {
+  fr: {
+    dialogLabel: "Réservez votre appel découverte",
+    close: "Fermer",
+    sentTitle: "Demande envoyée !",
+    sentBody:
+      "Votre messagerie s'ouvre avec votre demande pré-remplie — il ne reste qu'à l'envoyer. Guillaume cale votre créneau sous 24 h ouvrées.",
+    sentFallbackPre: "Rien ne s'est ouvert ? Écrivez à ",
+    badge: "Appel découverte · 30 min · gratuit",
+    formTitle: "Réservez votre appel",
+    nameLabel: "Nom",
+    namePh: "Votre nom",
+    companyLabel: "Entreprise",
+    companyPh: "Votre société",
+    sizeLabel: "Taille d'équipe",
+    sizePh: "ex. 8",
+    emailLabel: "Email professionnel",
+    emailPh: "vous@entreprise.fr",
+    submit: "Demander un créneau",
+    privacy: "Vos données ne servent qu'à vous recontacter (RGPD). Aucune newsletter.",
+  },
+  en: {
+    dialogLabel: "Book your discovery call",
+    close: "Close",
+    sentTitle: "Request sent!",
+    sentBody:
+      "Your email client opens with your request pre-filled — just hit send. Guillaume books your slot within one business day.",
+    sentFallbackPre: "Nothing opened? Email ",
+    badge: "Discovery call · 30 min · free",
+    formTitle: "Book your call",
+    nameLabel: "Name",
+    namePh: "Your name",
+    companyLabel: "Company",
+    companyPh: "Your company",
+    sizeLabel: "Team size",
+    sizePh: "e.g. 8",
+    emailLabel: "Work email",
+    emailPh: "you@company.com",
+    submit: "Request a slot",
+    privacy: "Your data is only used to get back to you (GDPR). No newsletter.",
+  },
+};
+
 /** Largo IA — Booking modal. Honeypot anti-spam, client-side success state. */
 export function BookingModal({
   open,
   onClose,
+  locale = "fr",
 }: {
   open: boolean;
   onClose: () => void;
+  locale?: "fr" | "en";
 }) {
+  const t = BOOKING_COPY[locale] ?? BOOKING_COPY.fr;
   const [sent, setSent] = useState(false);
 
   // Reset the success state whenever the modal transitions closed,
@@ -56,7 +122,7 @@ export function BookingModal({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Réservez votre appel découverte"
+        aria-label={t.dialogLabel}
         style={{
           width: "100%",
           maxWidth: 520,
@@ -69,7 +135,7 @@ export function BookingModal({
       >
         <button
           onClick={onClose}
-          aria-label="Fermer"
+          aria-label={t.close}
           style={{
             position: "absolute",
             top: 18,
@@ -122,22 +188,20 @@ export function BookingModal({
                 color: "var(--ink)",
               }}
             >
-              Demande envoyée !
+              {t.sentTitle}
             </h3>
             <p style={{ color: "var(--ink-soft)", lineHeight: "var(--lh-relaxed)" }}>
-              Votre messagerie s&apos;ouvre avec votre demande pré-remplie —
-              il ne reste qu&apos;à l&apos;envoyer. Guillaume cale votre créneau
-              sous 24&nbsp;h ouvrées.
+              {t.sentBody}
             </p>
             <p style={{ fontSize: "var(--fs-sm)", color: "var(--muted-ink)" }}>
-              Rien ne s&apos;est ouvert&nbsp;? Écrivez à{" "}
+              {t.sentFallbackPre}
               <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "var(--sun-ink)", fontWeight: 600 }}>
                 {CONTACT_EMAIL}
               </a>
               .
             </p>
             <Button variant="ghost" onClick={onClose}>
-              Fermer
+              {t.close}
             </Button>
           </div>
         ) : (
@@ -154,7 +218,7 @@ export function BookingModal({
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <Badge tone="neutral" dot>
-                Appel découverte · 30 min · gratuit
+                {t.badge}
               </Badge>
               <h3
                 style={{
@@ -165,10 +229,10 @@ export function BookingModal({
                   marginTop: 8,
                 }}
               >
-                Réservez votre appel
+                {t.formTitle}
               </h3>
             </div>
-            <Input label="Nom" id="bk-nom" name="nom" placeholder="Votre nom" />
+            <Input label={t.nameLabel} id="bk-nom" name="nom" placeholder={t.namePh} />
             <div
               style={{
                 display: "grid",
@@ -177,25 +241,25 @@ export function BookingModal({
               }}
             >
               <Input
-                label="Entreprise"
+                label={t.companyLabel}
                 id="bk-ent"
                 name="entreprise"
-                placeholder="Votre société"
+                placeholder={t.companyPh}
               />
               <Input
-                label="Taille d'équipe"
+                label={t.sizeLabel}
                 id="bk-size"
                 name="taille"
-                placeholder="ex. 8"
+                placeholder={t.sizePh}
               />
             </div>
             <Input
-              label="Email professionnel"
+              label={t.emailLabel}
               id="bk-email"
               name="email"
               type="email"
               required
-              placeholder="vous@entreprise.fr"
+              placeholder={t.emailPh}
             />
             <input
               type="text"
@@ -211,7 +275,7 @@ export function BookingModal({
               type="submit"
               iconRight={<ArrowIcon />}
             >
-              Demander un créneau
+              {t.submit}
             </Button>
             <p
               style={{
@@ -220,8 +284,7 @@ export function BookingModal({
                 textAlign: "center",
               }}
             >
-              Vos données ne servent qu&apos;à vous recontacter (RGPD). Aucune
-              newsletter.
+              {t.privacy}
             </p>
           </form>
         )}

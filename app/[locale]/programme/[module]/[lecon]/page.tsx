@@ -19,7 +19,16 @@ import {
   listModules,
 } from "@/lib/content/programme";
 
-const mdxComponents = { Idee, Exemple, Exercice, Attention, Formateur };
+/** Encarts MDX avec la locale liée (les libellés viennent du composant, pas du MDX). */
+function mdxComponentsFor(locale: "fr" | "en") {
+  return {
+    Idee: (p: { children: React.ReactNode }) => <Idee {...p} locale={locale} />,
+    Exemple: (p: { children: React.ReactNode }) => <Exemple {...p} locale={locale} />,
+    Exercice: (p: { children: React.ReactNode }) => <Exercice {...p} locale={locale} />,
+    Attention: (p: { children: React.ReactNode }) => <Attention {...p} locale={locale} />,
+    Formateur: (p: { children: React.ReactNode }) => <Formateur {...p} locale={locale} />,
+  };
+}
 
 const LEVEL_ICON: Record<string, string> = {
   découverte: "signal_cellular_alt_1_bar",
@@ -59,7 +68,7 @@ export default async function LessonPage({
 
   const { content } = await compileMDX({
     source: lesson.body,
-    components: mdxComponents,
+    components: mdxComponentsFor(locale),
     options: { parseFrontmatter: false },
   });
 

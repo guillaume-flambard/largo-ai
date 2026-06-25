@@ -9,7 +9,13 @@ type BookingContextValue = { open: () => void };
 const BookingContext = createContext<BookingContextValue | null>(null);
 
 /** Wraps the page so any descendant can open the booking modal. */
-export function BookingProvider({ children }: { children: ReactNode }) {
+export function BookingProvider({
+  children,
+  locale = "fr",
+}: {
+  children: ReactNode;
+  locale?: "fr" | "en";
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
@@ -17,7 +23,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   return (
     <BookingContext.Provider value={{ open }}>
       {children}
-      <BookingModal open={isOpen} onClose={close} />
+      <BookingModal open={isOpen} onClose={close} locale={locale} />
     </BookingContext.Provider>
   );
 }
