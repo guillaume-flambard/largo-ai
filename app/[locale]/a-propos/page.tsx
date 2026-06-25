@@ -172,7 +172,7 @@ export default async function AProposPage({
                     width: 8,
                     height: 8,
                     borderRadius: "50%",
-                    background: "#22c55e",
+                    background: "var(--ok)",
                   }}
                 />
                 <span

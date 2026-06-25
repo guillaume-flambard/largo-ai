@@ -265,7 +265,7 @@ export default async function MonEspacePage({ params }: { params: Promise<{ loca
                 gap: 14,
               }}
             >
-              <Msi size={26} style={{ color: "#16a34a" }}>
+              <Msi size={26} style={{ color: "var(--ok)" }}>
                 workspace_premium
               </Msi>
               <div style={{ font: "600 16px var(--font-display)", color: "var(--ink)" }}>
@@ -319,12 +319,12 @@ export default async function MonEspacePage({ params }: { params: Promise<{ loca
               const last = i === publicMods.length - 1;
               const icon = complete ? "check_circle" : current ? "play_circle" : "radio_button_unchecked";
               const iconColor = complete
-                ? "#16a34a"
+                ? "var(--ok)"
                 : current
                   ? "var(--sun-ink)"
                   : "var(--ink-3)";
               const barFill = complete
-                ? "#22c55e"
+                ? "var(--ok)"
                 : current
                   ? "linear-gradient(90deg,var(--sun),var(--sun-2))"
                   : "var(--sun)";

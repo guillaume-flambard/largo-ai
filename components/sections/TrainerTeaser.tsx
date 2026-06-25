@@ -106,7 +106,7 @@ export function TrainerTeaser({ copy }: { copy: Marketing["trainer"] }) {
               >
                 <span
                   aria-hidden
-                  style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e" }}
+                  style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ok)" }}
                 />
                 {statusLabel}
               </div>

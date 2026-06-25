@@ -70,7 +70,7 @@ export function LessonAside({
         const iconColor = isCurrent
           ? "var(--sun-ink)"
           : validated
-            ? "#16a34a"
+            ? "var(--ok)"
             : "var(--ink-3)";
         return (
           <LocaleLink

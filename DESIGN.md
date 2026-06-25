@@ -74,6 +74,12 @@ Toujours référencer une variable ; éviter les hex en dur (quelques exceptions
 décoratives d'aplats encre subsistent : `#0A0C12`/`#20283A` dans `Offers`,
 `Manifesto`, `mon-espace` — à migrer vers un token de surface sombre).
 
+**Couleur sémantique** — `--ok` (vert : `#16a34a` clair / `#34D399` sombre) est le
+**seul** vert autorisé, et **uniquement** pour un statut : terminé / validé / en
+ligne / connexion chiffrée (icônes `check_circle`, barres de progression à 100 %,
+pastilles « en ligne »). Ce n'est pas un accent de marque (l'ocre reste l'unique
+accent) ; ne jamais l'utiliser en décor. Réservé aux états, jamais aux CTA.
+
 ## Typography
 
 **Trois familles à rôles distincts** (refonte), via `next/font/google`

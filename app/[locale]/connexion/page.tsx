@@ -258,7 +258,7 @@ export default async function ConnexionPage({ params }: { params: Promise<{ loca
             textAlign: "center",
           }}
         >
-          <Msi size={16} style={{ color: "#16a34a" }}>lock</Msi>
+          <Msi size={16} style={{ color: "var(--ok)" }}>lock</Msi>
           {fr
             ? "Connexion chiffrée · vos données restent en Europe (RGPD)"
             : "Encrypted sign-in · your data stays in Europe (GDPR)"}
