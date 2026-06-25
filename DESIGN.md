@@ -122,3 +122,35 @@ Mouvement **calme et ample**, jamais nerveux :
   ombre plus grosse.
 - **FAQ** : `<details>` natif (`lg-detail`), filet fin, chevron ocre.
 - **Icônes** : Material Symbols Outlined (`.msi` / composant `Msi`).
+
+## Discipline — dark mode
+
+Les tokens de couleur **basculent** entre `:root` (clair) et `[data-theme="dark"]`.
+Conséquence : ne jamais détourner un token de son rôle.
+
+- `--ink` est une couleur de **premier plan** : en sombre elle devient quasi-blanche.
+  **Ne jamais l'utiliser comme fond de bouton/surface** (sinon fond blanc + texte
+  blanc = libellé invisible). Régression vue sur le bouton de l'`ImportBanner`.
+- Pour un aplat sombre indépendant du thème, utiliser une valeur encre fixe
+  (`#0A0C12`) ou un token de surface, pas `--ink`.
+- **CTA primaire = pilule ocre** (`--sun`→`--sun-deep`, texte `--on-sun`) : ces
+  tokens sont **stables entre les deux thèmes**, donc lisibles partout. C'est le
+  défaut pour toute action primaire.
+- Tester chaque écran dans les deux thèmes ; `--on-sun` reste foncé sur ocre, les
+  paires texte/fond doivent garder un contraste AA en clair **et** en sombre.
+
+## Discipline — i18n (fr / en)
+
+Locales `fr` (défaut) + `en` (`lib/i18n.ts`). Aucune chaîne visible ne doit être
+codée en dur dans un seul langage.
+
+- Copy de page/section : `lib/pages.ts` (`PageCopy`, typé `Record<Locale, …>`) et
+  `lib/marketing.ts` ; libellés courts : `content/i18n/{fr,en}.json` (`getDictionary`).
+- **Composants à libellés fixes** (encarts MDX, modale de réservation, quiz, note
+  formateur, bannières) : recevoir une prop `locale` et lire un enregistrement local
+  `COPY: Record<"fr"|"en", …>` (modèle : `Quiz`, `BookingModal`, `mdx-blocks`). La
+  locale se propage depuis `app/[locale]/layout.tsx` / la page leçon.
+- Les libellés d'encarts MDX viennent du **composant**, pas du MDX — donc ils doivent
+  être traduits dans le composant (sinon ils restent en français sur le site EN).
+- `en.json` est casté `as Dict` : la complétude des clés n'est pas garantie par le
+  type — vérifier le parity fr/en (un diff de clés) après toute évolution.
