@@ -16,12 +16,15 @@ typographie en vedette.
 
 Le site assume **deux grammaires** cohérentes selon le rôle de la page :
 
-- **Surfaces marketing / index** (accueil, à-propos, contact, mon-espace, index
-  programme) : grammaire refonte — styles inline, rythme de section en px fixes,
-  `Kicker` mono, cartes `lg-card` à ombre, CTA en pilule `sunPill`.
+- **Surfaces marketing** (accueil, à-propos, contact, mon-espace) : grammaire
+  refonte — styles inline, rythme de section en px fixes, `Kicker` mono, cartes
+  `lg-card` à ombre, CTA en pilule `sunPill`.
 - **Surfaces contenu / prose** (module, leçon, mentions, confidentialité) :
   grammaire éditoriale — `PageHero`, classes `.section` / `.container` / `.rows`,
   espacement via tokens `clamp()` (`--section-y`), tokens typo `--fs-*`.
+- **Index programme** : hybride assumé — héros refonte (`Kicker`, grille filigrane,
+  filtres) puis **catalogue en rangées éditoriales** (`.rows` / `.row` / `.lg-row`),
+  cohérent avec ses propres enfants (module, leçon). Pas de grille de cartes.
 
 L'en-tête (`SiteHeader`) et le pied (`SiteFooter`) sont **partagés sur toutes les
 pages** via `app/[locale]/layout.tsx`. Chaque page se clôt sur la **bande « encre »
@@ -68,7 +71,8 @@ Ombres et halo (assumés par la refonte) :
 
 Ban : l'ocre n'est jamais doré-ornemental — c'est une étincelle, pas une dorure.
 Toujours référencer une variable ; éviter les hex en dur (quelques exceptions
-décoratives subsistent : `#0A0C12`/`#20283A` dans la carte module sombre).
+décoratives d'aplats encre subsistent : `#0A0C12`/`#20283A` dans `Offers`,
+`Manifesto`, `mon-espace` — à migrer vers un token de surface sombre).
 
 ## Typography
 
@@ -105,8 +109,9 @@ Mouvement **calme et ample**, jamais nerveux :
 - **Rythme prose** : `--section-y: clamp(5rem, 3.5rem + 6vw, 8.5rem)` (+ `-sm` / `-lg`),
   gouttière `--gutter: clamp(20px, 5vw, 40px)` sur les pages contenu/légales.
 - Héros : grille filigrane (`--grid-line`) masquée en radial + masque soleil.
-- Listes éditoriales (`.rows` / `.row` / `.row__index`) pour le contenu séquentiel
-  (leçons d'un module, étapes). Numéros (01/02) là où c'est une vraie séquence.
+- Listes éditoriales (`.rows` / `.row` / `.row__index`, hover `.lg-row`) pour le
+  contenu séquentiel **et** le catalogue de modules (`/programme`) : rangées
+  séparées par filets, pas de cartes. Numéros (01/02) là où c'est une vraie séquence.
 - Rayons : `--radius-sm` 8 → `--radius-xl` 16, `--radius-pill` 999.
 
 ## Components
@@ -116,10 +121,11 @@ Mouvement **calme et ample**, jamais nerveux :
   filet `--line-2`). Legacy `.btn--*` conservés pour la prose. Atomes hover `lg-*-btn`.
 - **Kicker** (`saas-ui.tsx`) : label mono uppercase + court filet ocre en dégradé.
 - **SaasHeading** : kicker + H2 display + sous-titre — bloc d'en-tête de section.
-- **Cartes** `lg-card` : surface, filet `--line`, `--shadow-card`, hover lift.
-  Mise en avant (module formateur) par bloc sombre `#0A0C12` + halo soleil.
-- **Formations / module** : la mise en avant se fait par bloc encre, pas par une
-  ombre plus grosse.
+- **Cartes** `lg-card` : surface, filet `--line`, `--shadow-card`, hover lift
+  (home `Offers`/`Atouts`, contact, nav leçon préc./suiv.).
+- **Formations** (home `Offers`) : la mise en avant (formule du milieu) se fait par
+  bloc encre drenché `#0A0C12` + halo soleil, pas par une ombre plus grosse. Le
+  catalogue `/programme`, lui, est en rangées (cf. Layout) — pas de carte sombre.
 - **FAQ** : `<details>` natif (`lg-detail`), filet fin, chevron ocre.
 - **Icônes** : Material Symbols Outlined (`.msi` / composant `Msi`).
 
