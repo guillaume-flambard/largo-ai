@@ -784,7 +784,7 @@ summary::-webkit-details-marker {
   --nav-bg: rgba(250,251,252,0.78);
   /* alias de compat pour les composants non encore migrés */
   --paper: var(--surface); --paper-2: var(--surface-2);
-  --ink-soft: var(--ink-2); --muted-ink: var(--ink-3);
+  --ink-soft: var(--ink-2); --muted-ink: var(--ink-3); --muted: var(--ink-3);
   --line-strong: var(--line-2); --sun-wash: var(--sun-soft);
   --paper-on-ink: #F1F3F8; --paper-on-ink-muted: #AEB6C6;
   --bg-soft: var(--bg-2);
