@@ -104,14 +104,16 @@ export function ImportBanner({
             type="button"
             onClick={doImport}
             disabled={importing}
+            className="lg-sun-btn"
             style={{
               padding: "8px 16px",
               borderRadius: "var(--radius-pill)",
-              border: "1px solid var(--ink)",
-              background: "var(--ink)",
-              color: "var(--paper-on-ink)",
+              border: "1px solid var(--sun-deep)",
+              background: "linear-gradient(180deg,var(--sun),var(--sun-deep))",
+              color: "var(--on-sun)",
               fontSize: "var(--fs-sm)",
               fontWeight: "var(--fw-semibold)",
+              boxShadow: "var(--glow-sun)",
               cursor: importing ? "default" : "pointer",
               opacity: importing ? 0.7 : 1,
             }}
