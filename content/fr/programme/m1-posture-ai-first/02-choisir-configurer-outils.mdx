@@ -1,14 +1,15 @@
 ---
-title: "Choisir et configurer ses outils : Claude Code et Cursor"
+title: "Choisir et configurer ses outils et modèles : Claude, Cursor et LLMs"
 slug: "choisir-configurer-outils"
 module: "m1-posture-ai-first"
 order: 2
-durationMin: 18
+durationMin: 25
 level: "intermédiaire"
 objectives:
   - "Distinguer les cas d'usage de Claude Code et de Cursor pour orienter le choix selon la tâche"
+  - "Comprendre les différentes familles de modèles (raisonnement, généraliste, rapide) et savoir quand les utiliser"
   - "Être capable de configurer un projet pour que l'agent dispose du contexte minimal nécessaire"
-  - "Comprendre pourquoi la configuration du projet importe autant que le choix de l'outil"
+  - "Comprendre pourquoi la configuration du projet importe autant que le choix de l'outil et du modèle"
 prerequisites: []
 quiz:
   - prompt: "Claude Code est avant tout…"
@@ -29,6 +30,12 @@ quiz:
       - text: "Complémentaires : Cursor pour l'édition inline et le code en contexte ; Claude Code pour l'agent autonome"
         correct: true
       - text: "Identiques — ils utilisent le même modèle sous-jacent et font la même chose"
+  - prompt: "Quel type de modèle (LLM) est le plus adapté pour concevoir une architecture complexe ou résoudre un bug particulièrement difficile ?"
+    choices:
+      - text: "Un modèle rapide et économique (ex: Gemini Flash, GPT-4o-mini)"
+      - text: "Un modèle de raisonnement (ex: o3-mini, DeepSeek-R1)"
+        correct: true
+      - text: "Le premier modèle venu, l'outil gérant tout à votre place"
 ---
 
 Le choix de l'outil est rarement le problème. Ce qui fait la différence, c'est
@@ -102,6 +109,41 @@ Un point important : dans Cursor, vous pouvez ancrer une conversation à des fic
 spécifiques (`@fichier.ts`). C'est utile pour poser des questions précises sur un
 module sans que l'agent hallucine sur le reste du projet.
 
+## Choisir le bon LLM : le moteur derrière l'outil
+
+L'outil (Cursor, Claude Code, Aider, GitHub Copilot) n'est que la carrosserie. Le moteur, c'est le grand modèle de langage (LLM) que vous choisissez pour l'alimenter. Aujourd'hui, vous n'êtes plus limité à un seul modèle. Choisir le bon LLM dépend de trois facteurs : la complexité de la tâche, le coût (ou la vitesse), et la taille du contexte requis.
+
+On peut diviser les modèles de code en trois grandes familles :
+
+### 1. Les modèles de raisonnement (*Reasoning / Thinking*)
+*Exemples : OpenAI o1 / o3-mini, DeepSeek-R1.*
+* **Comment ils fonctionnent :** Contrairement aux LLM classiques qui génèrent leur réponse mot à mot immédiatement, les modèles de raisonnement passent par une phase invisible de « réflexion » (chaîne de pensée). Ils planifient, testent des hypothèses et corrigent leurs propres erreurs avant d'écrire la moindre ligne de code.
+* **Quand les choisir :** Pour concevoir une architecture complexe, écrire un algorithme d'optimisation difficile, ou déboguer un bug particulièrement vicieux et multi-fichiers.
+* **Pourquoi :** Ils réduisent drastiquement le taux d'erreur sur les tâches complexes, au prix d'une latence plus élevée et d'un coût supérieur.
+
+### 2. Les modèles généralistes haut de gamme (*Frontier Models*)
+*Exemples : Anthropic Claude 3.5 / 3.7 Sonnet, OpenAI GPT-4o, Google Gemini 1.5 Pro.*
+* **Comment ils fonctionnent :** Ce sont des modèles extrêmement polyvalents, rapides pour répondre, et entraînés sur d'immenses volumes de code de haute qualité.
+* **Quand les choisir :** Pour le développement quotidien en mode agent, la génération de fonctionnalités standards (CRUD, formulaires, routes API), et la rédaction de tests.
+* **Pourquoi :** **Claude 3.5/3.7 Sonnet** est la référence actuelle pour sa précision syntaxique, son respect strict des instructions et sa capacité à naviguer dans une codebase. **Gemini 1.5/2.5 Pro** se démarque lorsque vous devez lui passer une quantité gigantesque de documentation technique ou de fichiers grâce à son contexte de plus d'un million de tokens.
+
+### 3. Les modèles rapides et économiques (*Fast / Lightweight*)
+*Exemples : Google Gemini 2.0 Flash, Anthropic Claude 3.5 Haiku, OpenAI GPT-4o-mini.*
+* **Comment ils fonctionnent :** Des modèles plus petits, ultra-rapides et très peu coûteux.
+* **Quand les choisir :** Pour la complétion automatique en cours de frappe (inline completion), les revues de code automatisées sur la CI, ou les questions rapides de syntaxe.
+* **Pourquoi :** Leur latence quasi nulle permet de coder sans interruption de flux de travail.
+
+---
+
+### Tableau de décision rapide pour les LLMs
+
+| Modèle / Famille | Cas d'usage idéal | Points forts | Points faibles |
+|---|---|---|---|
+| **Claude Sonnet** (3.5/3.7) | Développement quotidien (Agent / Composer) | Précision du code, respect des conventions | Coût modéré |
+| **Reasoning** (o3-mini, R1) | Algorithmes complexes, bug complexe, architecture | Logique pure, auto-correction | Lent, pas de complétion inline |
+| **Gemini Pro** (1.5/2.5) | Lecture de bases de code géantes, grosses docs | Contexte géant (1M+ tokens), multimodal | Parfois moins rigoureux sur la syntaxe fine |
+| **Modèles Flash** (Gemini Flash, Haiku) | Complétion inline, tâches simples de script, CI | Vitesse (latence ultra-faible), coût très bas | Capacité de raisonnement limitée |
+
 ## Comparaison pratique pour choisir
 
 | Tâche | Claude Code | Cursor |
@@ -138,6 +180,7 @@ du résultat.
 
 ## En résumé
 
+- **L'outil n'est que la carrosserie, le LLM est le moteur.** Sélectionnez le modèle selon la complexité et le besoin (raisonnement pour les tâches complexes, généraliste pour le dev quotidien, rapide pour l'inline).
 - Claude Code = agent CLI autonome, fort sur les tâches multi-fichiers et les workflows
   de bout en bout.
 - Cursor = éditeur AI-first, fort sur l'édition contextuelle et les questions sur le code.

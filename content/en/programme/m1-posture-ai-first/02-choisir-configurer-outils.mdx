@@ -1,14 +1,15 @@
 ---
-title: "Choosing and configuring your tools: Claude Code and Cursor"
+title: "Choosing and configuring your tools and models: Claude, Cursor, and LLMs"
 slug: "choisir-configurer-outils"
 module: "m1-posture-ai-first"
 order: 2
-durationMin: 18
+durationMin: 25
 level: "intermédiaire"
 objectives:
   - "Distinguish Claude Code and Cursor use cases to guide tool choice by task type"
+  - "Understand the different LLM families (reasoning, generalist, fast) and know when to use them"
   - "Be able to configure a project so the agent has the minimal required context"
-  - "Understand why project configuration matters as much as tool choice"
+  - "Understand why project configuration matters as much as tool and model choice"
 prerequisites: []
 quiz:
   - prompt: "Claude Code is primarily…"
@@ -29,6 +30,12 @@ quiz:
       - text: "Complementary: Cursor for inline editing and in-context code; Claude Code for the autonomous agent"
         correct: true
       - text: "Identical — they use the same underlying model and do the same thing"
+  - prompt: "Which type of model (LLM) is best suited for designing a complex architecture or solving a particularly difficult bug?"
+    choices:
+      - text: "A fast and lightweight model (e.g., Gemini Flash, GPT-4o-mini)"
+      - text: "A reasoning model (e.g., o3-mini, DeepSeek-R1)"
+        correct: true
+      - text: "The first model available, as the tool manages everything for you"
 ---
 
 The tool choice is rarely the problem. What makes the difference is configuration:
@@ -95,6 +102,41 @@ One important point: in Cursor, you can anchor a conversation to specific files
 (`@filename.ts`). This is useful for asking precise questions about a module without
 the agent hallucinating about the rest of the project.
 
+## Choosing the right LLM: the engine behind the tool
+
+The tool (Cursor, Claude Code, Aider, GitHub Copilot) is just the body. The engine is the large language model (LLM) you choose to power it. Today, you are no longer limited to a single model. Choosing the right LLM depends on three factors: task complexity, cost (or speed), and the size of the required context.
+
+We can divide coding models into three major families:
+
+### 1. Reasoning / Thinking Models
+*Examples: OpenAI o1 / o3-mini, DeepSeek-R1.*
+* **How they work:** Unlike classical LLMs that generate their response word-by-word immediately, reasoning models go through an invisible "thinking" phase (chain of thought). They plan, test hypotheses, and correct their own mistakes before writing any code.
+* **When to choose them:** Designing a complex architecture, writing a difficult optimization algorithm, or debugging a particularly tricky multi-file bug.
+* **Why:** They drastically reduce error rates on complex tasks, at the expense of higher latency and cost.
+
+### 2. High-End / Frontier Models
+*Examples: Anthropic Claude 3.5 / 3.7 Sonnet, OpenAI GPT-4o, Google Gemini 1.5 Pro.*
+* **How they work:** Extremely versatile models, fast to respond, and trained on massive amounts of high-quality code.
+* **When to choose them:** For daily development in agent mode, generating standard features (CRUD, forms, API routes), and writing tests.
+* **Why:** **Claude 3.5/3.7 Sonnet** is the current benchmark for syntactic precision, strict instruction following, and navigating a codebase. **Gemini 1.5/2.5 Pro** stands out when you need to pass a massive amount of technical documentation or files, thanks to its context window of over a million tokens.
+
+### 3. Fast and Lightweight Models
+*Examples: Google Gemini 2.0 Flash, Anthropic Claude 3.5 Haiku, OpenAI GPT-4o-mini.*
+* **How they work:** Smaller, ultra-fast, and very inexpensive models.
+* **When to choose them:** For real-time inline code completion (auto-complete), automated code reviews on CI, or quick syntax questions.
+* **Why:** Their near-zero latency allows you to code without breaking your workflow.
+
+---
+
+### LLM Quick Decision Table
+
+| Model / Family | Ideal Use Case | Strengths | Weaknesses |
+|---|---|---|---|
+| **Claude Sonnet** (3.5/3.7) | Daily Development (Agent / Composer) | Code precision, convention adherence | Moderate cost |
+| **Reasoning** (o3-mini, R1) | Complex algorithms, complex bugs, architecture | Pure logic, self-correction | Slow, no inline completion |
+| **Gemini Pro** (1.5/2.5) | Reading giant codebases or massive docs | Giant context (1M+ tokens), multimodal | Sometimes less rigorous on fine syntax |
+| **Flash Models** (Gemini Flash, Haiku) | Inline completion, simple scripting, CI | Speed (ultra-low latency), very low cost | Limited reasoning capacity |
+
 ## Practical comparison for choosing
 
 | Task | Claude Code | Cursor |
@@ -130,6 +172,7 @@ The goal: understand what the context file actually changes about output quality
 
 ## Summary
 
+- **The tool is just the body, the LLM is the engine.** Select the model based on complexity and need (reasoning for complex tasks, generalist for daily dev, fast for inline completion).
 - Claude Code = autonomous CLI agent, strong on multi-file tasks and end-to-end workflows.
 - Cursor = AI-first editor, strong on contextual editing and questions about code.
 - Both require a project context file to produce relevant output in your codebase.
