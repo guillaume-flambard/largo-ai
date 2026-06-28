@@ -3,12 +3,13 @@ title: "Context files: CLAUDE.md, conventions, architecture"
 slug: "fichiers-de-contexte"
 module: "m2-context-engineering"
 order: 1
-durationMin: 16
+durationMin: 22
 level: "intermédiaire"
 objectives:
   - "Understand why the context file is the first thing to create in an AI-first project"
   - "Be able to write an effective CLAUDE.md covering the critical information an agent needs"
   - "Identify what belongs there versus what stays in the task spec"
+  - "Know how to connect external knowledge bases (Obsidian, Notion, wikis) without diluting the agent's context"
 prerequisites: []
 quiz:
   - prompt: "The CLAUDE.md file is read by the agent…"
@@ -29,6 +30,12 @@ quiz:
       - text: "Because the agent will repeat the same context mistakes every session without ever correcting"
         correct: true
       - text: "Because Claude Code can't read poorly formatted files"
+  - prompt: "How can you provide access to a large internal knowledge base (e.g., Obsidian notes or Notion pages) without wasting tokens in the initial context?"
+    choices:
+      - text: "Copy and paste everything into the starting CLAUDE.md file"
+      - text: "Use an MCP server (such as obsidian-mcp) to let the agent dynamically search for what it needs"
+        correct: true
+      - text: "Let the agent guess the contents of the database without passing anything"
 ---
 
 The quality of the context you give an agent determines the quality of what it produces.
@@ -135,6 +142,26 @@ Never re-implement auth checks in components.
 - `app/api/webhooks/` — Clerk contracts, modify with care
 ```
 </Exemple>
+
+## Connecting your team's knowledge bases (Obsidian, Notion, etc.)
+
+In real-world business projects, conventions and architecture are not the only necessary knowledge. You often have an internal knowledge base: a wiki, architecture decision records (ADRs) in an **Obsidian** folder, or functional specifications in **Notion**.
+
+A common trap is copying and pasting all of this documentation into your `CLAUDE.md` file. This is a major **anti-pattern**:
+* **Token waste**: You pay the token cost of reading this documentation on every single request.
+* **Context dilution**: The agent is overloaded with superfluous information and may begin hallucinating or missing high-priority rules.
+
+To clean up and integrate these knowledge bases properly, you have two engineering strategies:
+
+### Approach A: Scripted Compilation (Push)
+You create a local script (e.g., in Node or Python) that runs on-demand or as a pre-commit hook. This script reads specific folders in your Obsidian vault (for example, only the `Architecture/Active_Rules/` folder) or exports targeted pages from your Notion workspace, then compiles them into a temporary rules file (e.g., `.cursorrules` or a dedicated section in `CLAUDE.md`).
+* **Advantage:** Your context remains automatically synchronized with your internal notes without repetitive manual actions.
+
+### Approach B: Dynamic Connection via MCP (Pull)
+Instead of feeding your entire knowledge base into the starting prompt, you give the agent the ability to search and read your notes on its own only when needed. This is where the **Model Context Protocol (MCP)** comes in.
+* **Example:** A locally configured Obsidian MCP server (`obsidian-mcp-server`) gives the agent access to tools like `search_notes` or `read_note`. If a task involves authentication, the agent will call `read_note("Design_System_Auth")` on its own to align with the team's conventions, without that note having been loaded initially.
+
+*The detailed setup and configuration of these MCP servers are covered in Module 5.*
 
 ## Your turn
 

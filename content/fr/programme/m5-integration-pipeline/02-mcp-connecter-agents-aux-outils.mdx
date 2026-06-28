@@ -3,11 +3,12 @@ title: "MCP : connecter les agents aux outils"
 slug: "mcp-connecter-agents-aux-outils"
 module: "m5-integration-pipeline"
 order: 2
-durationMin: 15
+durationMin: 22
 level: "intermédiaire"
 objectives:
   - "capable d'expliquer le Model Context Protocol et de configurer un serveur MCP local"
   - "capable de piloter un agent via MCP Playwright pour effectuer de la QA navigateur réelle"
+  - "capable de configurer des serveurs MCP pour interroger des bases de données et des coffres de connaissances Obsidian"
 prerequisites: []
 quiz:
   - prompt: "Le Model Context Protocol (MCP) sert principalement à :"
@@ -28,6 +29,12 @@ quiz:
       - text: "Parce qu'un agent peut appeler des outils MCP en cascade — une permission trop large devient un vecteur d'action non intentionnel"
         correct: true
       - text: "Pour respecter les quotas du provider de modèle"
+  - prompt: "Comment se configure un serveur MCP Obsidian local dans Claude Code ou Cursor ?"
+    choices:
+      - text: "En déclarant la commande d'exécution du serveur et le chemin d'accès absolu à votre coffre Obsidian dans la configuration mcpServers"
+        correct: true
+      - text: "En glissant-déposant l'application Obsidian directement dans le terminal"
+      - text: "Il n'y a rien à faire, c'est détecté automatiquement sans configuration"
 ---
 
 # MCP : connecter les agents aux outils
@@ -99,6 +106,62 @@ QA navigateur — /connexion
 
 L'agent a fait en 90 secondes ce qu'un test e2e manuel aurait pris 20 minutes à écrire et stabiliser.
 </Exemple>
+
+## Au-delà du navigateur : connecter vos bases de connaissances et bases de données
+
+Playwright n'est qu'un début. MCP standardise la connexion à n'importe quelle ressource. Dans une ingénierie de production, vous voudrez connecter vos bases de données, vos documentations d'API externes, et vos notes internes.
+
+Voici comment configurer trois serveurs MCP essentiels dans votre fichier de paramètres globaux (ex: `.claude/settings.json` ou la configuration MCP de Cursor) :
+
+### 1. Obsidian MCP (Accès aux connaissances)
+Pour permettre à l'agent d'aller lire vos documentations d'architecture internes, specs, et notes stockées dans votre coffre Obsidian sans saturer le contexte de démarrage :
+```json
+"obsidian": {
+  "command": "npx",
+  "args": ["-y", "obsidian-mcp-server", "--vault-path", "/Chemin/Absolu/Vers/Votre/Coffre-Obsidian"]
+}
+```
+*L'agent disposera alors d'outils comme `search_notes`, `read_note`, ou `get_backlinks` pour parcourir vos notes métier.*
+
+### 2. PostgreSQL MCP (Accès au schéma de base de données)
+Pour que l'agent comprenne exactement la structure de votre base de données sans avoir à lui coller des schémas obsolètes à la main :
+```json
+"postgres": {
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-postgres", "--connection-string", "postgresql://user:pass@localhost:5432/mydb"]
+}
+```
+*L'agent pourra appeler `describe_table` ou `list_tables` pour inspecter la base en direct et générer des requêtes SQL ou ORM infaillibles.*
+
+### 3. Fetch/API MCP (Accès à la documentation externe)
+Pour permettre à l'agent de naviguer sur le web ou de parser des documentations d'API Swagger/OpenAPI en direct sans copier-coller :
+```json
+"fetch": {
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-fetch"]
+}
+```
+
+### Exemple de configuration multi-serveurs complète
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "obsidian": {
+      "command": "npx",
+      "args": ["-y", "obsidian-mcp-server", "--vault-path", "/Users/dev/obsidian-vault"]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "--connection-string", "postgresql://localhost:5432/db"]
+    }
+  }
+}
+```
 
 ## Périmètre et limites des permissions MCP
 

@@ -3,12 +3,13 @@ title: "Les fichiers de contexte : CLAUDE.md, conventions, architecture"
 slug: "fichiers-de-contexte"
 module: "m2-context-engineering"
 order: 1
-durationMin: 16
+durationMin: 22
 level: "intermédiaire"
 objectives:
   - "Comprendre pourquoi le fichier de contexte est la première chose à créer dans un projet AI-first"
   - "Être capable de rédiger un CLAUDE.md efficace couvrant les informations critiques pour un agent"
   - "Identifier ce qui doit y figurer vs ce qui reste dans la spec de tâche"
+  - "Savoir connecter des bases de connaissances externes (Obsidian, Notion, wikis) sans diluer le contexte de l'agent"
 prerequisites: []
 quiz:
   - prompt: "Le fichier CLAUDE.md est lu par l'agent…"
@@ -29,6 +30,12 @@ quiz:
       - text: "Parce que l'agent va répéter les mêmes erreurs de contexte sur chaque session sans jamais corriger"
         correct: true
       - text: "Parce que Claude Code ne peut pas lire les fichiers mal formatés"
+  - prompt: "Comment donner accès à une grande base de connaissances (ex: notes Obsidian ou pages Notion) sans gaspiller de tokens dans le contexte initial ?"
+    choices:
+      - text: "Tout copier-coller dans le fichier CLAUDE.md de départ"
+      - text: "Utiliser un serveur MCP (comme obsidian-mcp) pour permettre à l'agent de chercher dynamiquement ce dont il a besoin"
+        correct: true
+      - text: "Laisser l'agent deviner le contenu de la base sans rien lui passer"
 ---
 
 La qualité du contexte donné à un agent détermine la qualité de ce qu'il produit.
@@ -139,6 +146,26 @@ Ne pas réimplémenter de vérification d'auth dans les composants.
 - `app/api/webhooks/` — contrats Clerk, modifier avec prudence
 ```
 </Exemple>
+
+## Connecter vos bases de connaissances d'équipe (Obsidian, Notion, etc.)
+
+Dans les vrais projets d'entreprise, les conventions et l'architecture ne sont pas les seules connaissances nécessaires. Vous disposez souvent d'une base de connaissances interne : un wiki, des notes d'architecture (ADR) dans un dossier **Obsidian**, ou des documentations fonctionnelles dans **Notion**. 
+
+Le piège classique consiste à copier-coller toute cette documentation dans votre `CLAUDE.md`. C'est une mauvaise pratique majeure (**anti-pattern**) :
+* **Token waste** : Vous payez le coût de lecture de cette documentation à chaque requête.
+* **Dilution d'attention** : L'agent a trop d'informations superflues et commence à halluciner ou à rater les règles prioritaires.
+
+Pour intégrer ces bases de connaissances proprement, deux stratégies d'ingénierie s'offrent à vous :
+
+### Approche A : La compilation par script (Push)
+Vous créez un script local (ex: en Node ou Python) qui s'exécute à la demande ou en pre-commit. Ce script va lire des dossiers spécifiques de votre coffre Obsidian (par exemple, uniquement le dossier `Architecture/Active_Rules/`) ou exporter des pages cibles de votre Notion, puis assembler un fichier de contexte temporaire (ex: `.cursorrules` ou une section dédiée dans `CLAUDE.md`).
+* **Avantage :** Le contexte reste à jour automatiquement avec vos notes internes sans action manuelle répétée.
+
+### Approche B : La connexion dynamique par MCP (Pull)
+Plutôt que d'injecter toute la base de connaissances dans le prompt de départ, vous donnez à l'agent la capacité de chercher et de lire vos notes par lui-même uniquement lorsqu'il en a besoin. C'est l'usage du **Model Context Protocol (MCP)**.
+* **Exemple :** Un serveur MCP Obsidian (`obsidian-mcp-server`) configuré localement donne accès à des outils comme `search_notes` ou `read_note`. Si la tâche concerne l'authentification, l'agent appellera de lui-même `read_note("Design_System_Auth")` pour s'aligner sur la convention d'équipe, sans que cette note n'ait été chargée au départ.
+
+*Le fonctionnement détaillé de la configuration de ces serveurs MCP est traité dans le Module 5.*
 
 ## À votre tour
 
