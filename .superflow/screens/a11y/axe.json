@@ -1,0 +1,297 @@
+[
+  {
+    "viewport": "mobile-375",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(3) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(4) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(2) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(3) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(4) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(3) > span",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(4) > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          }
+        ]
+      }
+    ],
+    "consoleErrors": []
+  },
+  {
+    "viewport": "tablet-768",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(3) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(4) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(2) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(3) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(4) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(3) > span",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(4) > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          }
+        ]
+      }
+    ],
+    "consoleErrors": []
+  },
+  {
+    "viewport": "desktop-1280",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(1) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(2) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(2) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(3) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(3) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "section:nth-child(9) > div:nth-child(2) > div:nth-child(4) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(3)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > div > span:nth-child(4)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(5) > div > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": ".lg-footer-grid > div:nth-child(4) > div:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(3) > span",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "footer > div:nth-child(4) > span:nth-child(1)",
+            "summary": "Fix any of the following:"
+          },
+          {
+            "target": "div:nth-child(4) > span:nth-child(2)",
+            "summary": "Fix any of the following:"
+          }
+        ]
+      }
+    ],
+    "consoleErrors": []
+  }
+]
