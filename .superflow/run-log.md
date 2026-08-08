@@ -1,5 +1,16 @@
 # Run log — largo-ai
 
+## A11y color-contrast fix (2026-08-08)
+
+| check | result |
+|---|---|
+| task | Fix P3 WCAG color-contrast serious (fleet sweep: ~22 nodes, dark theme) |
+| audit | axe-core (wcag2a/2aa) on 9 routes × 3 viewports (375/768/1280), light **and** dark: **0 violations** on all |
+| root causes | ① footer inline `#6B7488` on `#07090E` (both themes, all pages, 4.27:1) ② TechStack chips `--ink-3` on `--surface-2` (light, 4.44:1) ③ programme tone badges `--ink-3` on `--surface-2` (light, 11px) ④ `.btn--primary`/`--accent` `color:var(--ink)` → light text on sun in dark (1.91:1) |
+| fixes | footer `#6B7488`→`#9A9AA2` (7.13:1 on dark) · TechStack chip + programme tone badge `--ink-3`→`--ink-2` (8.3:1) · `.btn--primary`/`--accent` `color:var(--ink)`→`var(--on-sun)` (8.74:1 on dark sun) |
+| gates | tsc:ok · tests:**99/99** (14 files) · build:**ok** (82/82 static) |
+| verdict | green |
+
 ## Security sweep fix (2026-08-08)
 
 | check | result |

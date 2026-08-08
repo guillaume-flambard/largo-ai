@@ -180,7 +180,7 @@ export function SiteFooter({
                 fontSize: 11,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "#6B7488",
+                color: "#9A9AA2",
                 marginBottom: 14,
               }}
             >
@@ -216,7 +216,7 @@ export function SiteFooter({
           gap: 16,
         }}
       >
-        <span style={{ fontSize: 13, color: "#6B7488", maxWidth: "52ch", lineHeight: 1.5 }}>
+        <span style={{ fontSize: 13, color: "#9A9AA2", maxWidth: "52ch", lineHeight: 1.5 }}>
           {formateur.hint}
         </span>
         <RoleToggle
@@ -240,10 +240,10 @@ export function SiteFooter({
           flexWrap: "wrap",
         }}
       >
-        <span style={{ fontSize: 13, color: "#6B7488" }}>
+        <span style={{ fontSize: 13, color: "#9A9AA2" }}>
           © 2026 Largo IA · contact@largo-ia.fr
         </span>
-        <span style={{ fontSize: 13, color: "#6B7488" }}>{copy.baseline}</span>
+        <span style={{ fontSize: 13, color: "#9A9AA2" }}>{copy.baseline}</span>
       </div>
     </footer>
   );

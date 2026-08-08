@@ -524,7 +524,7 @@ export default async function ProgrammePage({
                       fontFamily: "var(--font-mono)",
                       fontWeight: 500,
                       fontSize: 11,
-                      color: "var(--ink-3)",
+                      color: "var(--ink-2)",
                     }}
                   >
                     {tone}

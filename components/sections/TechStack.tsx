@@ -65,7 +65,7 @@ export function TechStack({ copy }: { copy: Marketing["tech"] }) {
                     fontSize: 11.5,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
-                    color: "var(--ink-3)",
+                    color: "var(--ink-2)",
                     background: "var(--surface-2)",
                     border: "1px solid var(--line)",
                     borderRadius: 7,

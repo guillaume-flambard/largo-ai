@@ -408,20 +408,21 @@ a:hover {
 /* Primaire — aplat ocre, texte encre. L'unique geste de couleur forte. */
 .btn--primary {
   background: var(--sun);
-  color: var(--ink);
+  color: var(--on-sun);
 }
 .btn--primary:hover {
   background: var(--sun-deep);
-  color: var(--ink);
+  color: var(--on-sun);
 }
 
 /* Accent (alias) = primaire dans le système à une couleur. */
 .btn--accent {
   background: var(--sun);
-  color: var(--ink);
+  color: var(--on-sun);
 }
 .btn--accent:hover {
   background: var(--sun-deep);
+  color: var(--on-sun);
 }
 
 /* Secondaire — contour fin encre, sur papier. */
